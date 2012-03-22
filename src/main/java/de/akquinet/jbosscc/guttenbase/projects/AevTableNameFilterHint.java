@@ -1,7 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects;
 
 import de.akquinet.jbosscc.guttenbase.hints.TableNameFilter;
-import de.akquinet.jbosscc.guttenbase.hints.impl.TableNameFilterHint;
+import de.akquinet.jbosscc.guttenbase.hints.TableNameFilterHint;
 
 public final class AevTableNameFilterHint extends TableNameFilterHint {
   private static final long serialVersionUID = 1L;

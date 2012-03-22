@@ -1,7 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects;
 
 import de.akquinet.jbosscc.guttenbase.hints.SplitByColumn;
-import de.akquinet.jbosscc.guttenbase.hints.impl.SplitByColumnHint;
+import de.akquinet.jbosscc.guttenbase.hints.SplitByColumnHint;
 
 public final class AevSplitByColumnHint extends SplitByColumnHint {
   private static final long serialVersionUID = 1L;
