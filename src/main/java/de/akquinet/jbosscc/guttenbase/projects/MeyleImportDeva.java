@@ -19,8 +19,12 @@ public class MeyleImportDeva {
       connectorRepository.addConnectionInfo("meyleImport", new ImportDumpConnectionInfo("deva.dump"));
       connectorRepository.addConnectionInfo("meylePostgresql", new MeylePostgresqlConnectionInfo());
 
-      new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
-      // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl")
+      try {
+        new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
+      } catch (final SQLException e) {
+      }
+
+      new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
       // new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
     } catch (final SQLException e) {
