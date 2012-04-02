@@ -31,34 +31,6 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
---
--- TOC entry 302 (class 1255 OID 220088)
--- Dependencies: 5 932
--- Name: oninsertprocesstrigger(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION oninsertprocesstrigger() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$BEGIN
-  IF(TG_OP = 'INSERT') THEN
-    INSERT INTO JMAY(SID, PID, WIID) VALUES(NEW.ksession_id, NEW.process_id, NEW.workitem_id);
-  END IF;
-
-  RETURN NEW;
-END$$;
-
-
-ALTER FUNCTION public.oninsertprocesstrigger() OWNER TO postgres;
-
---
--- TOC entry 2704 (class 0 OID 0)
--- Dependencies: 302
--- Name: FUNCTION oninsertprocesstrigger(); Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON FUNCTION oninsertprocesstrigger() IS 'Soll für Juljan die relevanten jBPM-IDs kopieren';
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
