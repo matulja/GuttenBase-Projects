@@ -16,8 +16,10 @@ public class MeyleExportDeva {
     try {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
-      connectorRepository.addConnectionInfo("meyleExport", new ExportDumpConnectionInfo("meyleMsSql", "deva.dump"));
       connectorRepository.addConnectionInfo("meyleMsSql", new MeyleMsSqlConnectionInfo());
+      connectorRepository.addConnectionInfo("meyleExport", new ExportDumpConnectionInfo("meyleMsSql", "deva.dump"));
+      connectorRepository.addConnectionHint("meyleMsSql", new MeyleTableNameFilterHint());
+      connectorRepository.addConnectionHint("meyleExport", new MeyleTableNameFilterHint());
 
       new DefaultTableCopier(connectorRepository).copyTables("meyleMsSql", "meyleExport");
     } catch (final SQLException e) {
