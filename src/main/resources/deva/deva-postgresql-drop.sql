@@ -1,3 +1,18 @@
+create or replace function drop_all_sequences() returns integer as '
+declare
+ rec record;
+begin
+ for rec in select relname as seqname
+   from pg_class where relkind=''S''
+ loop
+   execute ''drop sequence '' || rec.seqname;
+ end loop;
+ return 1;
+end;
+' language 'plpgsql';
+
+SELECT drop_all_sequences();
+
 ALTER TABLE "public"."deva_artikel_zubehoer" DROP CONSTRAINT "fk5d10f7783d3b7a12";
 
 ALTER TABLE "public"."deva_artikel_kommentar" DROP CONSTRAINT "fk792535b27ffed7f4";
@@ -405,15 +420,3 @@ DROP TABLE "public"."deva_faelligkeiten" CASCADE;
 DROP TABLE "public"."deva_dokument_binaerdaten" CASCADE;
 
 
-create or replace function drop_all_sequences() returns integer as '
-declare
- rec record;
-begin
- for rec in select relname as seqname
-   from pg_class where relkind=''S''
- loop
-   execute ''drop sequence '' || rec.seqname;
- end loop;
- return 1;
-end;
-' language 'plpgsql';

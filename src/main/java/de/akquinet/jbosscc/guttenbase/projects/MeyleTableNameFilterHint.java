@@ -14,7 +14,7 @@ public final class MeyleTableNameFilterHint extends TableNameFilterHint {
       public boolean accept(final TableMetaData table) {
         final String lowerCase = table.getTableName().toLowerCase();
         return lowerCase.startsWith("deva_") || lowerCase.startsWith("drools_") || lowerCase.startsWith("jbpm_")
-            || lowerCase.contains("_seq");
+        /* || lowerCase.contains("_seq") */;
       }
     };
   }
