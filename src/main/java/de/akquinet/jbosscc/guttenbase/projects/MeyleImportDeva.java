@@ -7,7 +7,10 @@ import org.apache.log4j.Logger;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
+import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
+import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
 
 public class MeyleImportDeva {
   private static final Logger LOG = Logger.getLogger(KvbbCopyAev.class);
@@ -26,7 +29,9 @@ public class MeyleImportDeva {
 
       new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
-      // new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
+      new TableConfigurationChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
+      new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
+      new TableDataChecker(connectorRepository).checkTableData("meyleImport", "meylePostgresql");
     } catch (final SQLException e) {
       LOG.error("main", e);
     }
