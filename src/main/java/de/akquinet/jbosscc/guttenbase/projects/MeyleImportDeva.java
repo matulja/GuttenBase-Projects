@@ -8,9 +8,7 @@ import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
-import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
 import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
-import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
 
 public class MeyleImportDeva {
   private static final Logger LOG = Logger.getLogger(KvbbCopyAev.class);
@@ -21,17 +19,19 @@ public class MeyleImportDeva {
 
       connectorRepository.addConnectionInfo("meyleImport", new ImportDumpConnectionInfo("deva.dump"));
       connectorRepository.addConnectionInfo("meylePostgresql", new MeylePostgresqlConnectionInfo());
+      connectorRepository.addConnectionHint("meyleImport", new MeyleTableNameFilterHint());
+      connectorRepository.addConnectionHint("meylePostgresql", new MeyleTableNameFilterHint());
 
-      try {
-        new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
-      } catch (final SQLException e) {
-      }
-
-      new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
+      // try {
+      // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
+      // } catch (final SQLException e) {
+      // LOG.error("drop", e);
+      // }
+      //
+      // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
       new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
-      new TableDataChecker(connectorRepository).checkTableData("meyleImport", "meylePostgresql");
     } catch (final SQLException e) {
       LOG.error("main", e);
     }
