@@ -1,4 +1,4 @@
-package de.akquinet.jbosscc.guttenbase.projects;
+package de.akquinet.jbosscc.guttenbase.projects.aev;
 
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
 import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfo;

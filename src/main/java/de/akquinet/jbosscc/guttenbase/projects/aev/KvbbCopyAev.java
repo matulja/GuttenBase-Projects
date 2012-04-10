@@ -1,4 +1,4 @@
-package de.akquinet.jbosscc.guttenbase.projects;
+package de.akquinet.jbosscc.guttenbase.projects.aev;
 
 import java.sql.SQLException;
 

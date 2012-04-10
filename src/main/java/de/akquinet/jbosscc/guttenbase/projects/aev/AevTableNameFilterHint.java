@@ -1,4 +1,4 @@
-package de.akquinet.jbosscc.guttenbase.projects;
+package de.akquinet.jbosscc.guttenbase.projects.aev;
 
 import de.akquinet.jbosscc.guttenbase.hints.TableNameFilter;
 import de.akquinet.jbosscc.guttenbase.hints.TableNameFilterHint;

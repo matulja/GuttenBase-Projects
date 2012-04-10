@@ -80,7 +80,7 @@
                 directory. -->
               <classpathPrefix>lib/</classpathPrefix>
               <!-- Specifies the main class of the application -->
-              <mainClass>de.akquinet.jbosscc.guttenbase.projects.MeyleExportDeva</mainClass>
+              <mainClass>de.akquinet.jbosscc.guttenbase.projects.deva.MeyleExportDeva</mainClass>
             </manifest>
           </archive>
         </configuration>
