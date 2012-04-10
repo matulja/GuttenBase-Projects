@@ -7,14 +7,19 @@ import de.akquinet.jbosscc.guttenbase.repository.TableMetaData;
 public final class MeyleTableNameFilterHint extends TableNameFilterHint {
   private static final long serialVersionUID = 1L;
 
+  private final boolean _withJbpm;
+
+  public MeyleTableNameFilterHint(final boolean withJbpm) {
+    _withJbpm = withJbpm;
+  }
+
   @Override
   public TableNameFilter getValue() {
     return new TableNameFilter() {
       @Override
       public boolean accept(final TableMetaData table) {
         final String lowerCase = table.getTableName().toLowerCase();
-        return lowerCase.startsWith("deva_") || lowerCase.startsWith("drools_") || lowerCase.startsWith("jbpm_")
-        /* || lowerCase.contains("_seq") */;
+        return lowerCase.startsWith("deva_") || (_withJbpm && (lowerCase.startsWith("drools_") || lowerCase.startsWith("jbpm_")));
       }
     };
   }

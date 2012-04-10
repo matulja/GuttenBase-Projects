@@ -5,11 +5,8 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
-import de.akquinet.jbosscc.guttenbase.hints.SplitColumn;
-import de.akquinet.jbosscc.guttenbase.hints.SplitColumnHint;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlSequenceUpdater;
 
@@ -22,8 +19,8 @@ public class MeyleImportDeva {
 
       connectorRepository.addConnectionInfo("meyleImport", new ImportDumpConnectionInfo("deva.dump"));
       connectorRepository.addConnectionInfo("meylePostgresql", new MeylePostgresqlConnectionInfo());
-      connectorRepository.addConnectionHint("meyleImport", new MeyleTableNameFilterHint());
-      connectorRepository.addConnectionHint("meylePostgresql", new MeyleTableNameFilterHint());
+      connectorRepository.addConnectionHint("meyleImport", new MeyleTableNameFilterHint(true));
+      connectorRepository.addConnectionHint("meylePostgresql", new MeyleTableNameFilterHint(true));
 
       // try {
       // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
@@ -34,16 +31,9 @@ public class MeyleImportDeva {
       // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
-      new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
+      connectorRepository.addConnectionHint("meylePostgresql", new MeyleTableNameFilterHint(false));
 
-      connectorRepository.addConnectionHint("meylePostgresql", new SplitColumnHint() {
-
-        @Override
-        public SplitColumn getValue() {
-          // TODO Auto-generated method stub
-          return null;
-        }
-      });
+      // new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
 
       new PostgresqlSequenceUpdater(connectorRepository).updateSequences("meylePostgresql");
     } catch (final SQLException e) {
