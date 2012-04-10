@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
 import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlSequenceUpdater;
 
@@ -28,13 +30,12 @@ public class MeyleImportDeva {
       // LOG.error("drop", e);
       // }
       //
-      // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
+      new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
+      new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
+
       connectorRepository.addConnectionHint("meylePostgresql", new MeyleTableNameFilterHint(false));
-
-      // new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
-
       new PostgresqlSequenceUpdater(connectorRepository).updateSequences("meylePostgresql");
     } catch (final SQLException e) {
       LOG.error("main", e);
