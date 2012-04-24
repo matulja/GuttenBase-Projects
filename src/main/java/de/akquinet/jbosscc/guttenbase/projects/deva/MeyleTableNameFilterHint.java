@@ -1,10 +1,10 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
-import de.akquinet.jbosscc.guttenbase.hints.TableNameFilter;
-import de.akquinet.jbosscc.guttenbase.hints.TableNameFilterHint;
+import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilter;
+import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilterHint;
 import de.akquinet.jbosscc.guttenbase.repository.TableMetaData;
 
-public final class MeyleTableNameFilterHint extends TableNameFilterHint {
+public final class MeyleTableNameFilterHint extends DatabaseMetaDataTableNameFilterHint {
   private static final long serialVersionUID = 1L;
 
   private final boolean _withJbpm;
@@ -16,8 +16,8 @@ public final class MeyleTableNameFilterHint extends TableNameFilterHint {
   }
 
   @Override
-  public TableNameFilter getValue() {
-    return new TableNameFilter() {
+  public DatabaseMetaDataTableNameFilter getValue() {
+    return new DatabaseMetaDataTableNameFilter() {
       @Override
       public boolean accept(final TableMetaData table) {
         final String lowerCase = table.getTableName().toLowerCase();

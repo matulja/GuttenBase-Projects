@@ -2,6 +2,7 @@ package de.akquinet.jbosscc.guttenbase.projects.aev;
 
 import de.akquinet.jbosscc.guttenbase.hints.SplitColumn;
 import de.akquinet.jbosscc.guttenbase.hints.SplitColumnHint;
+import de.akquinet.jbosscc.guttenbase.repository.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.TableMetaData;
 
 public final class AevSplitByColumnHint extends SplitColumnHint {
@@ -11,14 +12,14 @@ public final class AevSplitByColumnHint extends SplitColumnHint {
   public SplitColumn getValue() {
     return new SplitColumn() {
       @Override
-      public String getSplitColumn(final TableMetaData table) {
+      public ColumnMetaData getSplitColumn(final TableMetaData table) {
         final String lowerCase = table.getTableName().toLowerCase();
 
         if (lowerCase.endsWith("ar_leart") || lowerCase.endsWith("ar_arztgruppe") || lowerCase.endsWith("ar_pb")
             || lowerCase.endsWith("ar_praxisbes")) {
-          return "TKID";
+          return table.getColumnMetaData("TKID");
         } else {
-          return "OID";
+          return table.getColumnMetaData("OID");
         }
       }
     };

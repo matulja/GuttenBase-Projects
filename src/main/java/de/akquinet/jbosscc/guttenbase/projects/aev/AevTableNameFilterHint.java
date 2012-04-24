@@ -1,15 +1,15 @@
 package de.akquinet.jbosscc.guttenbase.projects.aev;
 
-import de.akquinet.jbosscc.guttenbase.hints.TableNameFilter;
-import de.akquinet.jbosscc.guttenbase.hints.TableNameFilterHint;
+import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilter;
+import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilterHint;
 import de.akquinet.jbosscc.guttenbase.repository.TableMetaData;
 
-public final class AevTableNameFilterHint extends TableNameFilterHint {
+public final class AevTableNameFilterHint extends DatabaseMetaDataTableNameFilterHint {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public TableNameFilter getValue() {
-    return new TableNameFilter() {
+  public DatabaseMetaDataTableNameFilter getValue() {
+    return new DatabaseMetaDataTableNameFilter() {
       @Override
       public boolean accept(final TableMetaData table) {
         return true;
