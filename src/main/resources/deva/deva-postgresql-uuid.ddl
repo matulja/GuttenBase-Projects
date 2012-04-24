@@ -42,13 +42,13 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE deva_angemeldeter_benutzer (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     datum timestamp without time zone NOT NULL,
     remotehost character varying(100) NOT NULL,
     session_id character varying(100) NOT NULL,
-    benutzer bigint NOT NULL,
-    benutzer_liste bigint
+    benutzer VARCHAR(40) NOT NULL,
+    benutzer_liste VARCHAR(40)
 );
 
 
@@ -86,8 +86,8 @@ ALTER SEQUENCE deva_angemeldeter_benutzer_id_seq OWNED BY deva_angemeldeter_benu
 --
 
 CREATE TABLE deva_artikel (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     ampel_status character varying(255) NOT NULL,
     artikelprozess_status character varying(255) NOT NULL,
     beim_lieferanten_vorhanden character(1),
@@ -108,13 +108,13 @@ CREATE TABLE deva_artikel (
     raw_meylenummer character varying(255) NOT NULL,
     orig_oenummer character varying(50) NOT NULL,
     raw_oenummer character varying(255) NOT NULL,
-    angelegt_von bigint NOT NULL,
-    artikelbild bigint,
-    artikelprozess bigint,
-    artikelbezeichnung bigint NOT NULL,
-    kunde bigint,
-    lieferant bigint,
-    paarbeziehung bigint
+    angelegt_von VARCHAR(40) NOT NULL,
+    artikelbild VARCHAR(40),
+    artikelprozess VARCHAR(40),
+    artikelbezeichnung VARCHAR(40) NOT NULL,
+    kunde VARCHAR(40),
+    lieferant VARCHAR(40),
+    paarbeziehung VARCHAR(40)
 );
 
 
@@ -127,12 +127,12 @@ ALTER TABLE public.deva_artikel OWNER TO meyle;
 --
 
 CREATE TABLE deva_artikel_bestandteil (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     anzahl bigint NOT NULL,
     hinweis character varying(100) NOT NULL,
-    artikel bigint NOT NULL,
-    artikel_bestandteil bigint NOT NULL,
+    artikel VARCHAR(40) NOT NULL,
+    artikel_bestandteil VARCHAR(40) NOT NULL,
     CONSTRAINT deva_artikel_bestandteil_anzahl_check CHECK ((anzahl >= 1))
 );
 
@@ -171,8 +171,8 @@ ALTER SEQUENCE deva_artikel_bestandteil_id_seq OWNED BY deva_artikel_bestandteil
 --
 
 CREATE TABLE deva_artikel_dokumente (
-    artikel_id bigint NOT NULL,
-    dokument_id bigint NOT NULL
+    artikel_id VARCHAR(40) NOT NULL,
+    dokument_id VARCHAR(40) NOT NULL
 );
 
 
@@ -185,8 +185,8 @@ ALTER TABLE public.deva_artikel_dokumente OWNER TO meyle;
 --
 
 CREATE TABLE deva_artikel_fahrzeuge (
-    artikel_id bigint NOT NULL,
-    fahrzeug_id bigint NOT NULL,
+    artikel_id VARCHAR(40) NOT NULL,
+    fahrzeug_id VARCHAR(40) NOT NULL,
     sort_order integer NOT NULL
 );
 
@@ -225,12 +225,12 @@ ALTER SEQUENCE deva_artikel_id_seq OWNED BY deva_artikel.id;
 --
 
 CREATE TABLE deva_artikel_kommentar (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     datum timestamp without time zone NOT NULL,
     text character varying(1024) NOT NULL,
-    benutzer bigint NOT NULL,
-    artikel_id bigint
+    benutzer VARCHAR(40) NOT NULL,
+    artikel_id VARCHAR(40)
 );
 
 
@@ -268,12 +268,12 @@ ALTER SEQUENCE deva_artikel_kommentar_id_seq OWNED BY deva_artikel_kommentar.id;
 --
 
 CREATE TABLE deva_artikel_komponente (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     anzahl bigint NOT NULL,
     hinweis character varying(100) NOT NULL,
-    artikel bigint NOT NULL,
-    komponente bigint NOT NULL,
+    artikel VARCHAR(40) NOT NULL,
+    komponente VARCHAR(40) NOT NULL,
     CONSTRAINT deva_artikel_komponente_anzahl_check CHECK ((anzahl >= 1))
 );
 
@@ -312,13 +312,13 @@ ALTER SEQUENCE deva_artikel_komponente_id_seq OWNED BY deva_artikel_komponente.i
 --
 
 CREATE TABLE deva_artikel_logbuch (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     aktion character varying(255) NOT NULL,
     bezugsobjekt_text character varying(100) NOT NULL,
     datum timestamp without time zone NOT NULL,
-    benutzer bigint NOT NULL,
-    artikel_id bigint
+    benutzer VARCHAR(40) NOT NULL,
+    artikel_id VARCHAR(40)
 );
 
 
@@ -356,12 +356,12 @@ ALTER SEQUENCE deva_artikel_logbuch_id_seq OWNED BY deva_artikel_logbuch.id;
 --
 
 CREATE TABLE deva_artikel_zubehoer (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     anzahl bigint NOT NULL,
     hinweis character varying(100) NOT NULL,
-    artikel bigint NOT NULL,
-    zubehoer bigint NOT NULL,
+    artikel VARCHAR(40) NOT NULL,
+    zubehoer VARCHAR(40) NOT NULL,
     CONSTRAINT deva_artikel_zubehoer_anzahl_check CHECK ((anzahl >= 1))
 );
 
@@ -400,8 +400,8 @@ ALTER SEQUENCE deva_artikel_zubehoer_id_seq OWNED BY deva_artikel_zubehoer.id;
 --
 
 CREATE TABLE deva_artikel_zusatzinformationen (
-    artikel_id bigint NOT NULL,
-    zusatzinfo_id bigint NOT NULL
+    artikel_id VARCHAR(40) NOT NULL,
+    zusatzinfo_id VARCHAR(40) NOT NULL
 );
 
 
@@ -414,13 +414,13 @@ ALTER TABLE public.deva_artikel_zusatzinformationen OWNER TO meyle;
 --
 
 CREATE TABLE deva_benutzer (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     email character varying(255) NOT NULL,
     username character varying(100) NOT NULL,
     name character varying(100) NOT NULL,
     password character varying(255) NOT NULL,
-    firma bigint NOT NULL
+    firma VARCHAR(40) NOT NULL
 );
 
 
@@ -433,8 +433,8 @@ ALTER TABLE public.deva_benutzer OWNER TO meyle;
 --
 
 CREATE TABLE deva_benutzer_firma (
-    benutzer bigint NOT NULL,
-    zugeordnete_firma bigint NOT NULL
+    benutzer VARCHAR(40) NOT NULL,
+    zugeordnete_firma VARCHAR(40) NOT NULL
 );
 
 
@@ -472,8 +472,8 @@ ALTER SEQUENCE deva_benutzer_id_seq OWNED BY deva_benutzer.id;
 --
 
 CREATE TABLE deva_benutzer_liste (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     singleton character varying(255) NOT NULL
 );
 
@@ -512,8 +512,8 @@ ALTER SEQUENCE deva_benutzer_liste_id_seq OWNED BY deva_benutzer_liste.id;
 --
 
 CREATE TABLE deva_benutzer_produktgruppe (
-    benutzer bigint NOT NULL,
-    produktgruppe bigint NOT NULL
+    benutzer VARCHAR(40) NOT NULL,
+    produktgruppe VARCHAR(40) NOT NULL
 );
 
 
@@ -526,8 +526,8 @@ ALTER TABLE public.deva_benutzer_produktgruppe OWNER TO meyle;
 --
 
 CREATE TABLE deva_benutzer_rollen (
-    benutzer bigint NOT NULL,
-    rolle bigint NOT NULL
+    benutzer VARCHAR(40) NOT NULL,
+    rolle VARCHAR(40) NOT NULL
 );
 
 
@@ -540,10 +540,10 @@ ALTER TABLE public.deva_benutzer_rollen OWNER TO meyle;
 --
 
 CREATE TABLE deva_bezeichnung_artikel (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     klassifikation character varying(255) NOT NULL,
-    produktgruppe bigint NOT NULL
+    produktgruppe VARCHAR(40) NOT NULL
 );
 
 
@@ -581,8 +581,8 @@ ALTER SEQUENCE deva_bezeichnung_artikel_id_seq OWNED BY deva_bezeichnung_artikel
 --
 
 CREATE TABLE deva_bezeichnung_komponente (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     klassifikation character varying(255) NOT NULL
 );
 
@@ -621,8 +621,8 @@ ALTER SEQUENCE deva_bezeichnung_komponente_id_seq OWNED BY deva_bezeichnung_komp
 --
 
 CREATE TABLE deva_bezeichnung_produktgruppe (
-    id bigint NOT NULL,
-    version bigint
+    id VARCHAR(40) NOT NULL,
+    version BIGINT
 );
 
 
@@ -660,8 +660,8 @@ ALTER SEQUENCE deva_bezeichnung_produktgruppe_id_seq OWNED BY deva_bezeichnung_p
 --
 
 CREATE TABLE deva_bezeichnung_zubehoer (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     klassifikation character varying(255) NOT NULL
 );
 
@@ -700,8 +700,8 @@ ALTER SEQUENCE deva_bezeichnung_zubehoer_id_seq OWNED BY deva_bezeichnung_zubeho
 --
 
 CREATE TABLE deva_bezeichnung_zusatzinformation (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     typ character varying(255) NOT NULL
 );
 
@@ -740,8 +740,8 @@ ALTER SEQUENCE deva_bezeichnung_zusatzinformation_id_seq OWNED BY deva_bezeichnu
 --
 
 CREATE TABLE deva_bezeichung_prozess_schritt (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     artikel_schritt character(1),
     identifier character varying(100) NOT NULL,
     komponenten_schritt character(1),
@@ -786,13 +786,13 @@ ALTER SEQUENCE deva_bezeichung_prozess_schritt_id_seq OWNED BY deva_bezeichung_p
 --
 
 CREATE TABLE deva_bonuszeit (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     bonus_tage integer NOT NULL,
     gewaehrt_am date,
     kommentar character varying(1024) NOT NULL,
-    gewaehrt_von bigint NOT NULL,
-    prozess_schritt bigint,
+    gewaehrt_von VARCHAR(40) NOT NULL,
+    prozess_schritt VARCHAR(40),
     CONSTRAINT deva_bonuszeit_bonus_tage_check CHECK ((bonus_tage >= 1))
 );
 
@@ -831,7 +831,7 @@ ALTER SEQUENCE deva_bonuszeit_id_seq OWNED BY deva_bonuszeit.id;
 --
 
 CREATE TABLE deva_bpmn_definition_task_handler_names (
-    bpmn_definition_id bigint NOT NULL,
+    bpmn_definition_id VARCHAR(40) NOT NULL,
     taskhandlernames character varying(255)
 );
 
@@ -845,14 +845,14 @@ ALTER TABLE public.deva_bpmn_definition_task_handler_names OWNER TO meyle;
 --
 
 CREATE TABLE deva_bpmndefinition (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     bpmn oid NOT NULL,
     bpmn_process_id character varying(100) NOT NULL,
     bpmn_version integer NOT NULL,
     datum timestamp without time zone NOT NULL,
     name character varying(100) NOT NULL,
-    prozessdefinition_id bigint
+    prozessdefinition_id VARCHAR(40)
 );
 
 
@@ -890,14 +890,14 @@ ALTER SEQUENCE deva_bpmndefinition_id_seq OWNED BY deva_bpmndefinition.id;
 --
 
 CREATE TABLE deva_dokument (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     image_height bigint NOT NULL,
     image_width bigint NOT NULL,
     mime_type character varying(100) NOT NULL,
     name character varying(100) NOT NULL,
-    data_id bigint NOT NULL,
-    thumbnail_id bigint NOT NULL,
+    data_id VARCHAR(40) NOT NULL,
+    thumbnail_id VARCHAR(40) NOT NULL,
     CONSTRAINT deva_dokument_image_height_check CHECK ((image_height >= 1)),
     CONSTRAINT deva_dokument_image_width_check CHECK ((image_width >= 1))
 );
@@ -912,8 +912,8 @@ ALTER TABLE public.deva_dokument OWNER TO meyle;
 --
 
 CREATE TABLE deva_dokument_binaerdaten (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     data oid NOT NULL
 );
 
@@ -977,8 +977,8 @@ ALTER SEQUENCE deva_dokument_id_seq OWNED BY deva_dokument.id;
 --
 
 CREATE TABLE deva_faelligkeiten (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     faelligkeit_nachher bigint NOT NULL,
     singleton character varying(255) NOT NULL,
     faelligkeit_vorher bigint NOT NULL,
@@ -1021,8 +1021,8 @@ ALTER SEQUENCE deva_faelligkeiten_id_seq OWNED BY deva_faelligkeiten.id;
 --
 
 CREATE TABLE deva_fahrzeug_bezeichnung (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     bezeichnung character varying(100) NOT NULL,
     fahrzeug_typ character varying(100) NOT NULL,
     hersteller character varying(30) NOT NULL
@@ -1063,8 +1063,8 @@ ALTER SEQUENCE deva_fahrzeug_bezeichnung_id_seq OWNED BY deva_fahrzeug_bezeichnu
 --
 
 CREATE TABLE deva_firma (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     arbeitet_mit_deva character(1),
     lieferant character(1),
     name character varying(100) NOT NULL
@@ -1080,8 +1080,8 @@ ALTER TABLE public.deva_firma OWNER TO meyle;
 --
 
 CREATE TABLE deva_firma_ansprechpartner (
-    firma_id bigint NOT NULL,
-    benutzer_id bigint NOT NULL
+    firma_id VARCHAR(40) NOT NULL,
+    benutzer_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1119,8 +1119,8 @@ ALTER SEQUENCE deva_firma_id_seq OWNED BY deva_firma.id;
 --
 
 CREATE TABLE deva_firma_lieferanten (
-    lieferant_id bigint NOT NULL,
-    lieferant_fuer_firma_id bigint NOT NULL
+    lieferant_id VARCHAR(40) NOT NULL,
+    lieferant_fuer_firma_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1133,8 +1133,8 @@ ALTER TABLE public.deva_firma_lieferanten OWNER TO meyle;
 --
 
 CREATE TABLE deva_firma_sollzeiten_artikel (
-    firma_id bigint NOT NULL,
-    sollzeiten_artikel_id bigint NOT NULL
+    firma_id VARCHAR(40) NOT NULL,
+    sollzeiten_artikel_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1147,8 +1147,8 @@ ALTER TABLE public.deva_firma_sollzeiten_artikel OWNER TO meyle;
 --
 
 CREATE TABLE deva_firma_sollzeiten_komponente (
-    firma_id bigint NOT NULL,
-    sollzeiten_komponente_id bigint NOT NULL
+    firma_id VARCHAR(40) NOT NULL,
+    sollzeiten_komponente_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1161,19 +1161,19 @@ ALTER TABLE public.deva_firma_sollzeiten_komponente OWNER TO meyle;
 --
 
 CREATE TABLE deva_komponente (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     beim_lieferanten_vorhanden character(1),
     klassifikation character varying(255) NOT NULL,
     komponente_prozess_status character varying(255) NOT NULL,
     orig_lieferantennummer character varying(50) NOT NULL,
     raw_lieferantennummer character varying(255) NOT NULL,
-    angelegt_von bigint NOT NULL,
-    artikelbild bigint,
-    komponente_prozess bigint,
-    komponentenbezeichnung bigint NOT NULL,
-    kunde bigint NOT NULL,
-    lieferant bigint
+    angelegt_von VARCHAR(40) NOT NULL,
+    artikelbild VARCHAR(40),
+    komponente_prozess VARCHAR(40),
+    komponentenbezeichnung VARCHAR(40) NOT NULL,
+    kunde VARCHAR(40) NOT NULL,
+    lieferant VARCHAR(40)
 );
 
 
@@ -1186,8 +1186,8 @@ ALTER TABLE public.deva_komponente OWNER TO meyle;
 --
 
 CREATE TABLE deva_komponente_dokumente (
-    komponente_id bigint NOT NULL,
-    dokument_id bigint NOT NULL
+    komponente_id VARCHAR(40) NOT NULL,
+    dokument_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1225,12 +1225,12 @@ ALTER SEQUENCE deva_komponente_id_seq OWNED BY deva_komponente.id;
 --
 
 CREATE TABLE deva_komponente_kommentar (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     datum timestamp without time zone NOT NULL,
     text character varying(1024) NOT NULL,
-    benutzer bigint NOT NULL,
-    komponente_id bigint
+    benutzer VARCHAR(40) NOT NULL,
+    komponente_id VARCHAR(40)
 );
 
 
@@ -1268,13 +1268,13 @@ ALTER SEQUENCE deva_komponente_kommentar_id_seq OWNED BY deva_komponente_komment
 --
 
 CREATE TABLE deva_komponente_logbuch (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     aktion character varying(255) NOT NULL,
     bezugsobjekt_text character varying(100) NOT NULL,
     datum timestamp without time zone NOT NULL,
-    benutzer bigint NOT NULL,
-    komponente_id bigint
+    benutzer VARCHAR(40) NOT NULL,
+    komponente_id VARCHAR(40)
 );
 
 
@@ -1312,8 +1312,8 @@ ALTER SEQUENCE deva_komponente_logbuch_id_seq OWNED BY deva_komponente_logbuch.i
 --
 
 CREATE TABLE deva_komponente_zusatzinformationen (
-    komponente_id bigint NOT NULL,
-    zusatzinfo_id bigint NOT NULL
+    komponente_id VARCHAR(40) NOT NULL,
+    zusatzinfo_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1326,10 +1326,10 @@ ALTER TABLE public.deva_komponente_zusatzinformationen OWNER TO meyle;
 --
 
 CREATE TABLE deva_produktgruppe (
-    id bigint NOT NULL,
-    version bigint,
-    bezeichnung bigint NOT NULL,
-    obergruppe bigint
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
+    bezeichnung VARCHAR(40) NOT NULL,
+    obergruppe VARCHAR(40)
 );
 
 
@@ -1367,16 +1367,16 @@ ALTER SEQUENCE deva_produktgruppe_id_seq OWNED BY deva_produktgruppe.id;
 --
 
 CREATE TABLE deva_prozess (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     soll_datum date NOT NULL,
     ampel_status character varying(255) NOT NULL,
-    ksession_id bigint,
-    process_id bigint NOT NULL,
-    workitem_id bigint,
-    bpmn_definition bigint NOT NULL,
-    naechster_meilenstein bigint NOT NULL,
-    prozess_definition bigint NOT NULL
+    ksession_id VARCHAR(40),
+    process_id VARCHAR(40) NOT NULL,
+    workitem_id VARCHAR(40),
+    bpmn_definition VARCHAR(40) NOT NULL,
+    naechster_meilenstein VARCHAR(40) NOT NULL,
+    prozess_definition VARCHAR(40) NOT NULL
 );
 
 
@@ -1414,19 +1414,19 @@ ALTER SEQUENCE deva_prozess_id_seq OWNED BY deva_prozess.id;
 --
 
 CREATE TABLE deva_prozess_schritt (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     ist_datum date,
     soll_datum date,
-    processnode_id bigint,
+    processnode_id VARCHAR(40),
     typ character varying(100),
     zaehler integer,
     zuletzt_bestaetigt character(1),
     weitergeschaltet_datum date,
-    prozess_schritt_definition bigint NOT NULL,
-    aktueller_schritt bigint,
+    prozess_schritt_definition VARCHAR(40) NOT NULL,
+    aktueller_schritt VARCHAR(40),
     index_aktueller_schritt integer,
-    abgeschlossener_schritt bigint,
+    abgeschlossener_schritt VARCHAR(40),
     index_abgeschlossener_schritt integer
 );
 
@@ -1465,11 +1465,11 @@ ALTER SEQUENCE deva_prozess_schritt_id_seq OWNED BY deva_prozess_schritt.id;
 --
 
 CREATE TABLE deva_prozessdefinition (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     prozessart character varying(255) NOT NULL,
-    kunde bigint NOT NULL,
-    lieferant bigint NOT NULL
+    kunde VARCHAR(40) NOT NULL,
+    lieferant VARCHAR(40) NOT NULL
 );
 
 
@@ -1507,8 +1507,8 @@ ALTER SEQUENCE deva_prozessdefinition_id_seq OWNED BY deva_prozessdefinition.id;
 --
 
 CREATE TABLE deva_rolle (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     feste_rolle character(1),
     rolle character varying(100) NOT NULL
 );
@@ -1523,7 +1523,7 @@ ALTER TABLE public.deva_rolle OWNER TO meyle;
 --
 
 CREATE TABLE deva_rolle_aktions_berechtigungen (
-    berechtigung_id bigint NOT NULL,
+    berechtigung_id VARCHAR(40) NOT NULL,
     aktion_berechtigungen character varying(255)
 );
 
@@ -1537,7 +1537,7 @@ ALTER TABLE public.deva_rolle_aktions_berechtigungen OWNER TO meyle;
 --
 
 CREATE TABLE deva_rolle_ampelstatus (
-    ampelstatus_id bigint NOT NULL,
+    ampelstatus_id VARCHAR(40) NOT NULL,
     ampelstatus character varying(255)
 );
 
@@ -1576,8 +1576,8 @@ ALTER SEQUENCE deva_rolle_id_seq OWNED BY deva_rolle.id;
 --
 
 CREATE TABLE deva_rolle_prozess_schritt (
-    rolle bigint NOT NULL,
-    prozess_schritt_definition bigint NOT NULL
+    rolle VARCHAR(40) NOT NULL,
+    prozess_schritt_definition VARCHAR(40) NOT NULL
 );
 
 
@@ -1590,7 +1590,7 @@ ALTER TABLE public.deva_rolle_prozess_schritt OWNER TO meyle;
 --
 
 CREATE TABLE deva_rolle_sicht_berechtigungen (
-    berechtigung_id bigint NOT NULL,
+    berechtigung_id VARCHAR(40) NOT NULL,
     sicht_berechtigungen character varying(255)
 );
 
@@ -1604,8 +1604,8 @@ ALTER TABLE public.deva_rolle_sicht_berechtigungen OWNER TO meyle;
 --
 
 CREATE TABLE deva_sollzeit_wdh_klassifikation (
-    sollzeiten_id bigint NOT NULL,
-    sollzeit bigint,
+    sollzeiten_id VARCHAR(40) NOT NULL,
+    sollzeit BIGINT,
     klassifikation character varying(255) NOT NULL
 );
 
@@ -1619,11 +1619,11 @@ ALTER TABLE public.deva_sollzeit_wdh_klassifikation OWNER TO meyle;
 --
 
 CREATE TABLE deva_sollzeiten (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     sollzeit_bereits_vorhanden bigint,
     sollzeit_bereits_vorhanden_wdh bigint,
-    meilenstein_definition bigint NOT NULL,
+    meilenstein_definition VARCHAR(40) NOT NULL,
     CONSTRAINT deva_sollzeiten_sollzeit_bereits_vorhanden_check CHECK ((sollzeit_bereits_vorhanden >= 1)),
     CONSTRAINT deva_sollzeiten_sollzeit_bereits_vorhanden_wdh_check CHECK ((sollzeit_bereits_vorhanden_wdh >= 1))
 );
@@ -1663,7 +1663,7 @@ ALTER SEQUENCE deva_sollzeiten_id_seq OWNED BY deva_sollzeiten.id;
 --
 
 CREATE TABLE deva_sollzeiten_klassifikation (
-    sollzeiten_id bigint NOT NULL,
+    sollzeiten_id VARCHAR(40) NOT NULL,
     sollzeit bigint,
     klassifikation character varying(255) NOT NULL
 );
@@ -1678,11 +1678,11 @@ ALTER TABLE public.deva_sollzeiten_klassifikation OWNER TO meyle;
 --
 
 CREATE TABLE deva_uebersetzung_artikel (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     locale character varying(2) NOT NULL,
     wort character varying(100) NOT NULL,
-    bezeichnung bigint
+    bezeichnung VARCHAR(40)
 );
 
 
@@ -1720,11 +1720,11 @@ ALTER SEQUENCE deva_uebersetzung_artikel_id_seq OWNED BY deva_uebersetzung_artik
 --
 
 CREATE TABLE deva_uebersetzung_komponente (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     locale character varying(2) NOT NULL,
     wort character varying(100) NOT NULL,
-    bezeichnung bigint
+    bezeichnung VARCHAR(40)
 );
 
 
@@ -1762,11 +1762,11 @@ ALTER SEQUENCE deva_uebersetzung_komponente_id_seq OWNED BY deva_uebersetzung_ko
 --
 
 CREATE TABLE deva_uebersetzung_produktgruppe (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     locale character varying(2) NOT NULL,
     wort character varying(100) NOT NULL,
-    bezeichnung bigint
+    bezeichnung VARCHAR(40)
 );
 
 
@@ -1804,11 +1804,11 @@ ALTER SEQUENCE deva_uebersetzung_produktgruppe_id_seq OWNED BY deva_uebersetzung
 --
 
 CREATE TABLE deva_uebersetzung_prozess_schritt (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     locale character varying(2) NOT NULL,
     wort character varying(100) NOT NULL,
-    bezeichnung bigint
+    bezeichnung VARCHAR(40)
 );
 
 
@@ -1846,11 +1846,11 @@ ALTER SEQUENCE deva_uebersetzung_prozess_schritt_id_seq OWNED BY deva_uebersetzu
 --
 
 CREATE TABLE deva_uebersetzung_zubehoer (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     locale character varying(2) NOT NULL,
     wort character varying(100) NOT NULL,
-    bezeichnung bigint
+    bezeichnung VARCHAR(40)
 );
 
 
@@ -1888,11 +1888,11 @@ ALTER SEQUENCE deva_uebersetzung_zubehoer_id_seq OWNED BY deva_uebersetzung_zube
 --
 
 CREATE TABLE deva_uebersetzung_zusatzinformation (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     locale character varying(2) NOT NULL,
     wort character varying(100) NOT NULL,
-    bezeichnung bigint
+    bezeichnung VARCHAR(40)
 );
 
 
@@ -1930,12 +1930,12 @@ ALTER SEQUENCE deva_uebersetzung_zusatzinformation_id_seq OWNED BY deva_ueberset
 --
 
 CREATE TABLE deva_zubehoer (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     klassifikation character varying(255) NOT NULL,
     orig_oenummer character varying(50) NOT NULL,
     raw_oenummer character varying(255) NOT NULL,
-    zubehoerbezeichnung bigint NOT NULL
+    zubehoerbezeichnung VARCHAR(40) NOT NULL
 );
 
 
@@ -1973,10 +1973,10 @@ ALTER SEQUENCE deva_zubehoer_id_seq OWNED BY deva_zubehoer.id;
 --
 
 CREATE TABLE deva_zusatzinformation (
-    id bigint NOT NULL,
-    version bigint,
+    id VARCHAR(40) NOT NULL,
+    version BIGINT,
     wert character varying(1024) NOT NULL,
-    zusatzinformationbezeichnung bigint NOT NULL
+    zusatzinformationbezeichnung VARCHAR(40) NOT NULL
 );
 
 
@@ -2031,10 +2031,10 @@ ALTER TABLE public.drools_sessioninfo OWNER TO meyle;
 --
 
 CREATE TABLE drools_workiteminfo (
-    workitemid bigint NOT NULL,
+    workitemid VARCHAR(40) NOT NULL,
     creationdate timestamp without time zone,
     name character varying(255),
-    processinstanceid bigint NOT NULL,
+    processinstanceid VARCHAR(40) NOT NULL,
     state bigint NOT NULL,
     optlock integer,
     workitembytearray oid
@@ -2066,15 +2066,15 @@ ALTER TABLE public.hibernate_sequence OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_attachment (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     accesstype integer,
     attachedat timestamp without time zone,
-    attachmentcontentid bigint NOT NULL,
+    attachmentcontentid VARCHAR(40) NOT NULL,
     contenttype character varying(255),
     name character varying(255),
     attachment_size integer,
     attachedby_id character varying(255),
-    taskdata_attachments_id bigint
+    taskdata_attachments_id VARCHAR(40)
 );
 
 
@@ -2087,10 +2087,10 @@ ALTER TABLE public.jbpm_attachment OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_boolean_expression (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     expression text,
     type character varying(255),
-    escalation_constraints_id bigint
+    escalation_constraints_id VARCHAR(40)
 );
 
 
@@ -2103,7 +2103,7 @@ ALTER TABLE public.jbpm_boolean_expression OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_content (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     content oid
 );
 
@@ -2117,11 +2117,11 @@ ALTER TABLE public.jbpm_content OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_deadline (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     deadline_date date,
     escalated integer NOT NULL,
-    deadlines_startdeadline_id bigint,
-    deadlines_enddeadline_id bigint
+    deadlines_startdeadline_id VARCHAR(40),
+    deadlines_enddeadline_id VARCHAR(40)
 );
 
 
@@ -2134,7 +2134,7 @@ ALTER TABLE public.jbpm_deadline OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_delegation_delegates (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2148,7 +2148,7 @@ ALTER TABLE public.jbpm_delegation_delegates OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_email_header (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     body text,
     fromaddress character varying(255),
     language character varying(255),
@@ -2166,9 +2166,9 @@ ALTER TABLE public.jbpm_email_header OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_email_notification (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     priority integer NOT NULL,
-    escalation_notifications_id bigint
+    escalation_notifications_id VARCHAR(40)
 );
 
 
@@ -2181,8 +2181,8 @@ ALTER TABLE public.jbpm_email_notification OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_email_notification_jbpm_email_header (
-    jbpm_email_notification_id bigint NOT NULL,
-    emailheaders_id bigint NOT NULL,
+    jbpm_email_notification_id VARCHAR(40) NOT NULL,
+    emailheaders_id VARCHAR(40) NOT NULL,
     emailheaders_key character varying(255) NOT NULL
 );
 
@@ -2196,9 +2196,9 @@ ALTER TABLE public.jbpm_email_notification_jbpm_email_header OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_escalation (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     name character varying(255),
-    deadline_escalation_id bigint
+    deadline_escalation_id VARCHAR(40)
 );
 
 
@@ -2224,18 +2224,18 @@ ALTER TABLE public.jbpm_group OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_i18ntext (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     language character varying(255),
     text text,
-    task_subjects_id bigint,
-    task_names_id bigint,
-    task_descriptions_id bigint,
-    reassignment_documentation_id bigint,
-    notification_subjects_id bigint,
-    notification_names_id bigint,
-    notification_documentation_id bigint,
-    notification_descriptions_id bigint,
-    deadline_documentation_id bigint
+    task_subjects_id VARCHAR(40),
+    task_names_id VARCHAR(40),
+    task_descriptions_id VARCHAR(40),
+    reassignment_documentation_id VARCHAR(40),
+    notification_subjects_id VARCHAR(40),
+    notification_names_id VARCHAR(40),
+    notification_documentation_id VARCHAR(40),
+    notification_descriptions_id VARCHAR(40),
+    deadline_documentation_id VARCHAR(40)
 );
 
 
@@ -2248,9 +2248,9 @@ ALTER TABLE public.jbpm_i18ntext OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_notification (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     priority integer NOT NULL,
-    escalation_notifications_id bigint
+    escalation_notifications_id VARCHAR(40)
 );
 
 
@@ -2263,7 +2263,7 @@ ALTER TABLE public.jbpm_notification OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_notification_bas (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2277,7 +2277,7 @@ ALTER TABLE public.jbpm_notification_bas OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_notification_recipients (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2291,7 +2291,7 @@ ALTER TABLE public.jbpm_notification_recipients OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_peopleassignments_bas (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2305,7 +2305,7 @@ ALTER TABLE public.jbpm_peopleassignments_bas OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_peopleassignments_exclowners (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2319,7 +2319,7 @@ ALTER TABLE public.jbpm_peopleassignments_exclowners OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_peopleassignments_potowners (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2333,7 +2333,7 @@ ALTER TABLE public.jbpm_peopleassignments_potowners OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_peopleassignments_recipients (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2347,7 +2347,7 @@ ALTER TABLE public.jbpm_peopleassignments_recipients OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_peopleassignments_stakeholders (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2361,9 +2361,9 @@ ALTER TABLE public.jbpm_peopleassignments_stakeholders OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_processinstance_eventinfo (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     eventtype character varying(255),
-    processinstanceid bigint NOT NULL,
+    processinstanceid VARCHAR(40) NOT NULL,
     optlock integer
 );
 
@@ -2377,7 +2377,7 @@ ALTER TABLE public.jbpm_processinstance_eventinfo OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_processinstance_info (
-    instanceid bigint NOT NULL,
+    instanceid VARCHAR(40) NOT NULL,
     lastmodificationdate timestamp without time zone,
     lastreaddate timestamp without time zone,
     processid character varying(255),
@@ -2397,7 +2397,7 @@ ALTER TABLE public.jbpm_processinstance_info OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_processinstance_info_eventtypes (
-    jbpm_processinstance_info_id bigint NOT NULL,
+    jbpm_processinstance_info_id VARCHAR(40) NOT NULL,
     eventtypes character varying(255)
 );
 
@@ -2411,8 +2411,8 @@ ALTER TABLE public.jbpm_processinstance_info_eventtypes OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_reassignment (
-    id bigint NOT NULL,
-    escalation_reassignments_id bigint
+    id VARCHAR(40) NOT NULL,
+    escalation_reassignments_id VARCHAR(40)
 );
 
 
@@ -2425,7 +2425,7 @@ ALTER TABLE public.jbpm_reassignment OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_reassignment_potentialowners (
-    task_id bigint NOT NULL,
+    task_id VARCHAR(40) NOT NULL,
     entity_id character varying(255) NOT NULL
 );
 
@@ -2440,9 +2440,9 @@ ALTER TABLE public.jbpm_reassignment_potentialowners OWNER TO meyle;
 
 CREATE TABLE jbpm_subtasksstrategy (
     dtype character varying(100) NOT NULL,
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     name character varying(255),
-    task_id bigint
+    task_id VARCHAR(40)
 );
 
 
@@ -2455,28 +2455,28 @@ ALTER TABLE public.jbpm_subtasksstrategy OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_task (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     allowedtodelegate character varying(255),
     priority integer NOT NULL,
     activationtime timestamp without time zone,
     createdon date,
     documentaccesstype character varying(255),
-    documentcontentid bigint NOT NULL,
+    documentcontentid VARCHAR(40) NOT NULL,
     documenttype character varying(255),
     expirationtime timestamp without time zone,
     faultaccesstype character varying(255),
-    faultcontentid bigint NOT NULL,
+    faultcontentid VARCHAR(40) NOT NULL,
     faultname character varying(255),
     faulttype character varying(255),
     outputaccesstype character varying(255),
-    outputcontentid bigint NOT NULL,
+    outputcontentid VARCHAR(40) NOT NULL,
     outputtype character varying(255),
-    parentid bigint NOT NULL,
+    parentid VARCHAR(40) NOT NULL,
     previousstatus integer,
-    processinstanceid bigint NOT NULL,
+    processinstanceid VARCHAR(40) NOT NULL,
     skipable integer NOT NULL,
     status character varying(255),
-    workitemid bigint NOT NULL,
+    workitemid VARCHAR(40) NOT NULL,
     taskinitiator_id character varying(255),
     actualowner_id character varying(255),
     createdby_id character varying(255)
@@ -2492,11 +2492,11 @@ ALTER TABLE public.jbpm_task OWNER TO meyle;
 --
 
 CREATE TABLE jbpm_task_comment (
-    id bigint NOT NULL,
+    id VARCHAR(40) NOT NULL,
     addedat timestamp without time zone,
     text text,
     addedby_id character varying(255),
-    taskdata_comments_id bigint
+    taskdata_comments_id VARCHAR(40)
 );
 
 

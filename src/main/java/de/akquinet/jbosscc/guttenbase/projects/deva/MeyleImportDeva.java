@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
-import de.akquinet.jbosscc.guttenbase.projects.aev.KvbbCopyAev;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
@@ -15,7 +14,7 @@ import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
 public class MeyleImportDeva {
   private static final String TARGET = "meylePostgresql";
   private static final String SOURCE = "meyleImport";
-  private static final Logger LOG = Logger.getLogger(KvbbCopyAev.class);
+  private static final Logger LOG = Logger.getLogger(MeyleImportDeva.class);
 
   public static void main(final String[] args) {
     try {
