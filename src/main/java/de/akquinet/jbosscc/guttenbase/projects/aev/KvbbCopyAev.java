@@ -25,11 +25,11 @@ public class KvbbCopyAev {
       connectorRepository.addConnectionInfo("aevExport", new ExportDumpConnectionInfo("aevMySql", "/home/dahm/aev.dump"));
       connectorRepository.addConnectionInfo("aevImport", new ImportDumpConnectionInfo("/home/dahm/aev.dump"));
       connectorRepository.addConnectionInfo("aevPostgresql", new AevPostgresqlConnectionInfo());
-      connectorRepository.addConnectionHint("aevMySql", tableNameHint);
-      connectorRepository.addConnectionHint("aevMySql", new AevSplitByColumnHint());
-      connectorRepository.addConnectionHint("aevExport", tableNameHint);
-      connectorRepository.addConnectionHint("aevImport", tableNameHint);
-      connectorRepository.addConnectionHint("aevPostgresql", tableNameHint);
+      connectorRepository.addConnectorHint("aevMySql", tableNameHint);
+      connectorRepository.addConnectorHint("aevMySql", new AevSplitByColumnHint());
+      connectorRepository.addConnectorHint("aevExport", tableNameHint);
+      connectorRepository.addConnectorHint("aevImport", tableNameHint);
+      connectorRepository.addConnectorHint("aevPostgresql", tableNameHint);
 
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("aevMySql", "aevExport");
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("aevMySql", "aevPostgresql");

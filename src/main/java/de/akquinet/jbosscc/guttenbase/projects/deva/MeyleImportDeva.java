@@ -23,8 +23,8 @@ public class MeyleImportDeva {
 
       connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("deva.dump"));
       connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
-      connectorRepository.addConnectionHint(SOURCE, new MeyleTableNameFilterHint(true, true));
-      connectorRepository.addConnectionHint(TARGET, new MeyleTableNameFilterHint(true, true));
+      connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
+      connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
 
       // try {
       // new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
@@ -37,7 +37,7 @@ public class MeyleImportDeva {
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
       new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
 
-      connectorRepository.addConnectionHint(TARGET, new MeyleTableNameFilterHint(false, false));
+      connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(false, false));
       new MeylePostgresqlSequenceUpdater(connectorRepository).updateSequences(TARGET);
 
       new ScriptExecutor(connectorRepository).executeScript(TARGET, "SELECT setval('public.sessioninfo_id_seq', 351, true);",
