@@ -1,21 +1,21 @@
-create or replace function drop_all_sequences() returns integer as '
-declare
+CREATE OR REPLACE FUNCTION drop_all_sequences() RETURNS INTEGER AS '
+DECLARE
  rec record;
-begin
- for rec in select relname as seqname
-   from pg_class where relkind=''S''
- loop
-   execute ''drop sequence '' || rec.seqname || '' CASCADE'';
- end loop;
- return 1;
-end;
+BEGIN
+ FOR rec IN SELECT relname as seqname FROM pg_class WHERE relkind=''S''
+ LOOP
+   EXECUTE ''DROP SEQUENCE '' || rec.seqname || '' CASCADE'';
+ END LOOP;
+
+ RETURN 1;
+END;
 ' language 'plpgsql';
 
-create or replace function drop_all_constraints() returns integer as '
-DECLARE r record;
+CREATE OR REPLACE FUNCTION drop_all_constraints() RETURNS INTEGER AS '
+DECLARE
+	r record;
 BEGIN
-   FOR r IN SELECT table_name,constraint_name
-            FROM information_schema.constraint_table_usage
+   FOR r IN SELECT table_name, constraint_name FROM information_schema.constraint_table_usage
    LOOP
       EXECUTE ''ALTER TABLE '' || quote_ident(r.table_name) || '' DROP CONSTRAINT '' || quote_ident(r.constraint_name) || '' CASCADE'';
    END LOOP;
@@ -24,13 +24,13 @@ BEGIN
 END;
 ' language 'plpgsql';
 
-create or replace function drop_all_tables() returns integer as '
-DECLARE r record;
+CREATE OR REPLACE FUNCTION drop_all_tables() RETURNS INTEGER AS '
+DECLARE
+	r record;
 BEGIN
-   FOR r IN SELECT table_name,constraint_name
-            FROM information_schema.constraint_table_usage
+   FOR r IN SELECT schemaname, tablename FROM pg_tables WHERE schemaname =''public''
    LOOP
-      EXECUTE ''DROP TABLE public.'' || quote_ident(r.table_name) || '' CASCADE'';
+      EXECUTE ''DROP TABLE IF EXISTS '' || quote_ident(r.schemaname) || ''.'' || quote_ident(r.tablename) || '' CASCADE'';
    END LOOP;
 
    RETURN 1;
@@ -38,4 +38,5 @@ END;
 ' language 'plpgsql';
 
 
+SELECT drop_all_tables();
 SELECT drop_all_sequences();
