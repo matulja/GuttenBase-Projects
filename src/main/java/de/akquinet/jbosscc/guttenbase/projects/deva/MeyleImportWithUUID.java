@@ -26,7 +26,7 @@ public class MeyleImportWithUUID {
         "artikelprozess", "artikelbild", "artikelbezeichnung"));
 
     @Override
-    public Object map(final Object value) {
+    public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value) {
       return value != null ? String.valueOf(value) : null;
     }
 

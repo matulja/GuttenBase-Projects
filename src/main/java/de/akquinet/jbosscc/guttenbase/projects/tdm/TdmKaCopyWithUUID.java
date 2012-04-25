@@ -15,12 +15,8 @@ import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
 
 public class TdmKaCopyWithUUID {
   public static final class IdColumnMapper implements ColumnDataMapper {
-    // private final Set<String> KNOWN_ID_COLUMNS = new HashSet<String>(Arrays.asList("id", "benutzer", "benutzer_liste", "angelegt_von",
-    // "zugeordnete_firma", "firma", "zubehoer", "komponente", "artikel_bestandteil", "artikel", "paarbeziehung", "kunde", "lieferant",
-    // "artikelprozess", "artikelbild", "artikelbezeichnung"));
-
     @Override
-    public Object map(final Object value) {
+    public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value) {
       return value != null ? String.valueOf(value) : null;
     }
 

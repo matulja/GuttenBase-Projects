@@ -58,7 +58,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE tdm_abstractreportparameter (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -70,7 +70,7 @@ CREATE TABLE tdm_abstractreportparameter (
     selectedreportfuturetimespan character varying(255),
     periodicity character varying(255),
     quartztriggername character varying(255),
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -83,8 +83,8 @@ ALTER TABLE public.tdm_abstractreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_abstractreportparameter_tdm_nonusermessagerecipient (
-    tdm_abstractreportparameter_id bigint NOT NULL,
-    nonuserrecipients_id bigint NOT NULL
+    tdm_abstractreportparameter_id VARCHAR(40) NOT NULL,
+    nonuserrecipients_id VARCHAR(40) NOT NULL
 );
 
 
@@ -97,8 +97,8 @@ ALTER TABLE public.tdm_abstractreportparameter_tdm_nonusermessagerecipient OWNER
 --
 
 CREATE TABLE tdm_abstractreportparameter_tdm_user (
-    tdm_abstractreportparameter_id bigint NOT NULL,
-    userrecipients_id bigint NOT NULL
+    tdm_abstractreportparameter_id VARCHAR(40) NOT NULL,
+    userrecipients_id VARCHAR(40) NOT NULL
 );
 
 
@@ -111,7 +111,7 @@ ALTER TABLE public.tdm_abstractreportparameter_tdm_user OWNER TO tdm;
 --
 
 CREATE TABLE tdm_access_collection (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -120,15 +120,15 @@ CREATE TABLE tdm_access_collection (
     unlockaftershockreduction boolean NOT NULL,
     validuntil timestamp without time zone,
     accesscollectiontype character varying(255) NOT NULL,
-    organisationalunit_id bigint NOT NULL,
-    rfid_id bigint,
-    reduction_id bigint NOT NULL,
-    lightfeatures_id bigint NOT NULL,
-    card_id bigint,
-    drivergroup_id bigint,
-    driver_id bigint,
-    pin_id bigint,
-    client_id bigint NOT NULL
+    organisationalunit_id VARCHAR(40) NOT NULL,
+    rfid_id VARCHAR(40),
+    reduction_id VARCHAR(40) NOT NULL,
+    lightfeatures_id VARCHAR(40) NOT NULL,
+    card_id VARCHAR(40),
+    drivergroup_id VARCHAR(40),
+    driver_id VARCHAR(40),
+    pin_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -141,7 +141,7 @@ ALTER TABLE public.tdm_access_collection OWNER TO tdm;
 --
 
 CREATE TABLE tdm_access_id_generator (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -170,15 +170,15 @@ ALTER TABLE public.tdm_accessid OWNER TO tdm;
 --
 
 CREATE TABLE tdm_access_token (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     deletedsince bigint NOT NULL,
     tdmaccessid character varying(255) DEFAULT nextval('tdm_accessid'::regclass) NOT NULL,
     active boolean NOT NULL,
-    accesscollection_id bigint,
-    client_id bigint NOT NULL
+    accesscollection_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -191,12 +191,12 @@ ALTER TABLE public.tdm_access_token OWNER TO tdm;
 --
 
 CREATE TABLE tdm_access_token_assignment (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
-    accesstoken_id bigint NOT NULL,
-    vehicle_id bigint NOT NULL
+    accesstoken_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -209,7 +209,7 @@ ALTER TABLE public.tdm_access_token_assignment OWNER TO tdm;
 --
 
 CREATE TABLE tdm_address (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -233,7 +233,7 @@ ALTER TABLE public.tdm_address OWNER TO tdm;
 --
 
 CREATE TABLE tdm_attachment (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -245,11 +245,11 @@ CREATE TABLE tdm_attachment (
     bringingintoservice date NOT NULL,
     load bigint,
     forkwidth bigint,
-    organisationalunit_id bigint NOT NULL,
-    attachmentmanufacturer_id bigint NOT NULL,
-    attachmentmodel_id bigint NOT NULL,
-    client_id bigint NOT NULL,
-    vehicle_id bigint,
+    organisationalunit_id VARCHAR(40) NOT NULL,
+    attachmentmanufacturer_id VARCHAR(40) NOT NULL,
+    attachmentmodel_id VARCHAR(40) NOT NULL,
+    client_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40),
     CONSTRAINT tdm_attachment_yearofconstruction_check CHECK (((yearofconstruction >= 0) AND (yearofconstruction <= 9999)))
 );
 
@@ -263,12 +263,12 @@ ALTER TABLE public.tdm_attachment OWNER TO tdm;
 --
 
 CREATE TABLE tdm_attachmentmanufacturer (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -281,12 +281,12 @@ ALTER TABLE public.tdm_attachmentmanufacturer OWNER TO tdm;
 --
 
 CREATE TABLE tdm_attachmentmodel (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -299,7 +299,7 @@ ALTER TABLE public.tdm_attachmentmodel OWNER TO tdm;
 --
 
 CREATE TABLE tdm_attachmenttemplate (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -312,9 +312,9 @@ CREATE TABLE tdm_attachmenttemplate (
     load bigint,
     forkwidth bigint,
     templatename character varying(255) NOT NULL,
-    model_id bigint,
-    manufacturer_id bigint,
-    client_id bigint NOT NULL,
+    model_id VARCHAR(40),
+    manufacturer_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL,
     CONSTRAINT tdm_attachmenttemplate_yearofconstruction_check CHECK (((yearofconstruction >= 0) AND (yearofconstruction <= 9999)))
 );
 
@@ -328,7 +328,7 @@ ALTER TABLE public.tdm_attachmenttemplate OWNER TO tdm;
 --
 
 CREATE TABLE tdm_battery (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -342,11 +342,11 @@ CREATE TABLE tdm_battery (
     electrolyte boolean NOT NULL,
     waterrefill boolean NOT NULL,
     inventorynumber character varying(255),
-    batterymanufacturer_id bigint NOT NULL,
-    client_id bigint NOT NULL,
-    batterymodel_id bigint NOT NULL,
-    organisationalunit_id bigint NOT NULL,
-    vehicle_id bigint,
+    batterymanufacturer_id VARCHAR(40) NOT NULL,
+    client_id VARCHAR(40) NOT NULL,
+    batterymodel_id VARCHAR(40) NOT NULL,
+    organisationalunit_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40),
     CONSTRAINT tdm_battery_yearofconstruction_check CHECK (((yearofconstruction >= 0) AND (yearofconstruction <= 9999)))
 );
 
@@ -360,12 +360,12 @@ ALTER TABLE public.tdm_battery OWNER TO tdm;
 --
 
 CREATE TABLE tdm_batterymanufacturer (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -378,12 +378,12 @@ ALTER TABLE public.tdm_batterymanufacturer OWNER TO tdm;
 --
 
 CREATE TABLE tdm_batterymodel (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -396,7 +396,7 @@ ALTER TABLE public.tdm_batterymodel OWNER TO tdm;
 --
 
 CREATE TABLE tdm_card (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     serialnumber character varying(255) NOT NULL,
     automaticextension integer
 );
@@ -411,7 +411,7 @@ ALTER TABLE public.tdm_card OWNER TO tdm;
 --
 
 CREATE TABLE tdm_charger (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -423,10 +423,10 @@ CREATE TABLE tdm_charger (
     bringingintoservice date NOT NULL,
     voltage_value numeric(19,2),
     rating_value numeric(19,2),
-    chargermodel_id bigint NOT NULL,
-    organisationalunit_id bigint NOT NULL,
-    client_id bigint NOT NULL,
-    chargermanufacturer_id bigint NOT NULL
+    chargermodel_id VARCHAR(40) NOT NULL,
+    organisationalunit_id VARCHAR(40) NOT NULL,
+    client_id VARCHAR(40) NOT NULL,
+    chargermanufacturer_id VARCHAR(40) NOT NULL
 );
 
 
@@ -439,12 +439,12 @@ ALTER TABLE public.tdm_charger OWNER TO tdm;
 --
 
 CREATE TABLE tdm_chargermanufacturer (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -457,12 +457,12 @@ ALTER TABLE public.tdm_chargermanufacturer OWNER TO tdm;
 --
 
 CREATE TABLE tdm_chargermodel (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -475,7 +475,7 @@ ALTER TABLE public.tdm_chargermodel OWNER TO tdm;
 --
 
 CREATE TABLE tdm_chargertemplate (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -488,9 +488,9 @@ CREATE TABLE tdm_chargertemplate (
     voltage_value numeric(19,2),
     rating_value numeric(19,2),
     templatename character varying(255) NOT NULL,
-    client_id bigint NOT NULL,
-    model_id bigint,
-    manufacturer_id bigint
+    client_id VARCHAR(40) NOT NULL,
+    model_id VARCHAR(40),
+    manufacturer_id VARCHAR(40)
 );
 
 
@@ -503,14 +503,14 @@ ALTER TABLE public.tdm_chargertemplate OWNER TO tdm;
 --
 
 CREATE TABLE tdm_client (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     clientid character varying(255) NOT NULL,
     clientname character varying(255) NOT NULL,
     lockflag boolean NOT NULL,
-    clientprofile_id bigint NOT NULL
+    clientprofile_id VARCHAR(40) NOT NULL
 );
 
 
@@ -523,7 +523,7 @@ ALTER TABLE public.tdm_client OWNER TO tdm;
 --
 
 CREATE TABLE tdm_clientprofile (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -541,7 +541,7 @@ ALTER TABLE public.tdm_clientprofile OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crash (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -552,8 +552,8 @@ CREATE TABLE tdm_crash (
     severity character varying(255),
     load integer,
     lift real,
-    accesstoken_id bigint NOT NULL,
-    vehicle_id bigint NOT NULL
+    accesstoken_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -566,7 +566,7 @@ ALTER TABLE public.tdm_crash OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crash_brakeactuation (
-    tdm_crash_id bigint NOT NULL,
+    tdm_crash_id VARCHAR(40) NOT NULL,
     element integer,
     mapkey integer NOT NULL
 );
@@ -581,7 +581,7 @@ ALTER TABLE public.tdm_crash_brakeactuation OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crash_drivingspeed (
-    tdm_crash_id bigint NOT NULL,
+    tdm_crash_id VARCHAR(40) NOT NULL,
     element real,
     mapkey integer NOT NULL
 );
@@ -596,7 +596,7 @@ ALTER TABLE public.tdm_crash_drivingspeed OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crash_features (
-    tdm_crash_id bigint NOT NULL,
+    tdm_crash_id VARCHAR(40) NOT NULL,
     element boolean,
     mapkey integer NOT NULL
 );
@@ -611,7 +611,7 @@ ALTER TABLE public.tdm_crash_features OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crash_steeringangle (
-    tdm_crash_id bigint NOT NULL,
+    tdm_crash_id VARCHAR(40) NOT NULL,
     element integer,
     mapkey integer NOT NULL
 );
@@ -626,7 +626,7 @@ ALTER TABLE public.tdm_crash_steeringangle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crashdetailsreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -639,8 +639,8 @@ ALTER TABLE public.tdm_crashdetailsreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_crashdetailsreportparameter_tdm_vehicle (
-    tdm_crashdetailsreportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_crashdetailsreportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -653,7 +653,7 @@ ALTER TABLE public.tdm_crashdetailsreportparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_customer (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     vendortype character varying(255) NOT NULL,
     anonymousemployees boolean NOT NULL,
     suppressedlogbookactiveduration boolean NOT NULL,
@@ -663,9 +663,9 @@ CREATE TABLE tdm_customer (
     periodend date NOT NULL,
     vehiclestatusinterval integer NOT NULL,
     fleetid integer NOT NULL,
-    address_id bigint NOT NULL,
-    overviewsettings_id bigint,
-    vendor_id bigint NOT NULL,
+    address_id VARCHAR(40) NOT NULL,
+    overviewsettings_id VARCHAR(40),
+    vendor_id VARCHAR(40) NOT NULL,
     usermessagepriority character varying(255),
     applicationvisibilitytype integer NOT NULL
 );
@@ -680,8 +680,8 @@ ALTER TABLE public.tdm_customer OWNER TO tdm;
 --
 
 CREATE TABLE tdm_customer_tdm_nonusermessagerecipient (
-    tdm_customer_id bigint NOT NULL,
-    nonuserrecipients_id bigint NOT NULL
+    tdm_customer_id VARCHAR(40) NOT NULL,
+    nonuserrecipients_id VARCHAR(40) NOT NULL
 );
 
 
@@ -694,8 +694,8 @@ ALTER TABLE public.tdm_customer_tdm_nonusermessagerecipient OWNER TO tdm;
 --
 
 CREATE TABLE tdm_customer_tdm_user (
-    tdm_customer_id bigint NOT NULL,
-    userrecipients_id bigint NOT NULL
+    tdm_customer_id VARCHAR(40) NOT NULL,
+    userrecipients_id VARCHAR(40) NOT NULL
 );
 
 
@@ -708,7 +708,7 @@ ALTER TABLE public.tdm_customer_tdm_user OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driver (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -720,9 +720,9 @@ CREATE TABLE tdm_driver (
     costunit character varying(255),
     expirationdateofcommondriveauthority date,
     unlockaftershockreduction boolean,
-    drivergroup_id bigint NOT NULL,
-    client_id bigint NOT NULL,
-    organisationalunit_id bigint NOT NULL
+    drivergroup_id VARCHAR(40) NOT NULL,
+    client_id VARCHAR(40) NOT NULL,
+    organisationalunit_id VARCHAR(40) NOT NULL
 );
 
 
@@ -735,7 +735,7 @@ ALTER TABLE public.tdm_driver OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driveraccesslistreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -748,8 +748,8 @@ ALTER TABLE public.tdm_driveraccesslistreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driveraccesslistreportparameter_tdm_access_collection (
-    tdm_driveraccesslistreportparameter_id bigint NOT NULL,
-    accesscollections_id bigint NOT NULL
+    tdm_driveraccesslistreportparameter_id VARCHAR(40) NOT NULL,
+    accesscollections_id VARCHAR(40) NOT NULL
 );
 
 
@@ -762,16 +762,16 @@ ALTER TABLE public.tdm_driveraccesslistreportparameter_tdm_access_collection OWN
 --
 
 CREATE TABLE tdm_drivergroup (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     deletedsince bigint NOT NULL,
     name character varying(255) NOT NULL,
     description character varying(255),
-    lightfeatures_id bigint,
-    reduction_id bigint,
-    client_id bigint NOT NULL
+    lightfeatures_id VARCHAR(40),
+    reduction_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -784,14 +784,14 @@ ALTER TABLE public.tdm_drivergroup OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driverlicence (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     validitydate date NOT NULL,
     durationofvaliditymonth bigint NOT NULL,
-    driverlicenceclass_id bigint NOT NULL,
-    driver_id bigint NOT NULL
+    driverlicenceclass_id VARCHAR(40) NOT NULL,
+    driver_id VARCHAR(40) NOT NULL
 );
 
 
@@ -804,13 +804,13 @@ ALTER TABLE public.tdm_driverlicence OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driverlicenceclass (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     deletedsince bigint NOT NULL,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -823,8 +823,8 @@ ALTER TABLE public.tdm_driverlicenceclass OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driverlicenceclass_tdm_vehicleclass (
-    tdm_driverlicenceclass_id bigint NOT NULL,
-    vehicleclasses_id bigint NOT NULL
+    tdm_driverlicenceclass_id VARCHAR(40) NOT NULL,
+    vehicleclasses_id VARCHAR(40) NOT NULL
 );
 
 
@@ -837,7 +837,7 @@ ALTER TABLE public.tdm_driverlicenceclass_tdm_vehicleclass OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driverlogbookreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -850,8 +850,8 @@ ALTER TABLE public.tdm_driverlogbookreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driverlogbookreportparameter_tdm_access_collection (
-    tdm_driverlogbookreportparameter_id bigint NOT NULL,
-    accesscollections_id bigint NOT NULL
+    tdm_driverlogbookreportparameter_id VARCHAR(40) NOT NULL,
+    accesscollections_id VARCHAR(40) NOT NULL
 );
 
 
@@ -864,7 +864,7 @@ ALTER TABLE public.tdm_driverlogbookreportparameter_tdm_access_collection OWNER 
 --
 
 CREATE TABLE tdm_driverlogin (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -872,8 +872,8 @@ CREATE TABLE tdm_driverlogin (
     aggregatesince bigint NOT NULL,
     sessionid character varying(255) NOT NULL,
     logintime timestamp without time zone NOT NULL,
-    accesstoken_id bigint NOT NULL,
-    vehicle_id bigint NOT NULL
+    accesstoken_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -886,7 +886,7 @@ ALTER TABLE public.tdm_driverlogin OWNER TO tdm;
 --
 
 CREATE TABLE tdm_driverlogout (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -895,8 +895,8 @@ CREATE TABLE tdm_driverlogout (
     sessionid character varying(255) NOT NULL,
     logouttime timestamp without time zone NOT NULL,
     automaticlogout boolean NOT NULL,
-    accesstoken_id bigint NOT NULL,
-    vehicle_id bigint NOT NULL
+    accesstoken_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -909,7 +909,7 @@ ALTER TABLE public.tdm_driverlogout OWNER TO tdm;
 --
 
 CREATE TABLE tdm_drivertemplate (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -922,7 +922,7 @@ CREATE TABLE tdm_drivertemplate (
     expirationdateofcommondriveauthority date,
     unlockaftershockreduction boolean NOT NULL,
     templatename character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -935,7 +935,7 @@ ALTER TABLE public.tdm_drivertemplate OWNER TO tdm;
 --
 
 CREATE TABLE tdm_energyconsumption (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -945,7 +945,7 @@ CREATE TABLE tdm_energyconsumption (
     readoutduration bigint,
     consumedamount real,
     energyunit character varying(255),
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -958,11 +958,11 @@ ALTER TABLE public.tdm_energyconsumption OWNER TO tdm;
 --
 
 CREATE TABLE tdm_evaluation_dynamicdata (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     evaluation integer,
-    vehicle_id bigint
+    vehicle_id VARCHAR(40)
 );
 
 
@@ -975,7 +975,7 @@ ALTER TABLE public.tdm_evaluation_dynamicdata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_fleetusagereportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -988,8 +988,8 @@ ALTER TABLE public.tdm_fleetusagereportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_fleetusagereportparameter_tdm_vehicle (
-    tdm_fleetusagereportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_fleetusagereportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1002,7 +1002,7 @@ ALTER TABLE public.tdm_fleetusagereportparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_frontend (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1010,7 +1010,7 @@ CREATE TABLE tdm_frontend (
     frontendid character varying(1000),
     description character varying(1000),
     registered boolean NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1023,7 +1023,7 @@ ALTER TABLE public.tdm_frontend OWNER TO tdm;
 --
 
 CREATE TABLE tdm_guarantee (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1044,14 +1044,14 @@ ALTER TABLE public.tdm_guarantee OWNER TO tdm;
 --
 
 CREATE TABLE tdm_licence (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     licencekey character varying(255) NOT NULL,
     active boolean NOT NULL,
     serverid character varying(255),
-    customer_id bigint NOT NULL
+    customer_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1064,7 +1064,7 @@ ALTER TABLE public.tdm_licence OWNER TO tdm;
 --
 
 CREATE TABLE tdm_liftanddrivereportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1077,8 +1077,8 @@ ALTER TABLE public.tdm_liftanddrivereportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_liftanddrivereportparameter_tdm_vehicle (
-    tdm_liftanddrivereportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_liftanddrivereportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1091,7 +1091,7 @@ ALTER TABLE public.tdm_liftanddrivereportparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_liftanddrivetimes (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1103,7 +1103,7 @@ CREATE TABLE tdm_liftanddrivetimes (
     lifttime bigint,
     drivetime bigint,
     liftanddrivetime bigint,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1116,7 +1116,7 @@ ALTER TABLE public.tdm_liftanddrivetimes OWNER TO tdm;
 --
 
 CREATE TABLE tdm_lightfeatures (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1136,7 +1136,7 @@ ALTER TABLE public.tdm_lightfeatures OWNER TO tdm;
 --
 
 CREATE TABLE tdm_loadtransportation (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1151,7 +1151,7 @@ CREATE TABLE tdm_loadtransportation (
     drivewithloadtime integer,
     distancewithload integer,
     numberofdirectionchanges integer,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1164,14 +1164,14 @@ ALTER TABLE public.tdm_loadtransportation OWNER TO tdm;
 --
 
 CREATE TABLE tdm_loadtransportationhistogram (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     "timestamp" timestamp without time zone NOT NULL,
     readouttime timestamp without time zone NOT NULL,
     readoutduration bigint NOT NULL,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1184,7 +1184,7 @@ ALTER TABLE public.tdm_loadtransportationhistogram OWNER TO tdm;
 --
 
 CREATE TABLE tdm_loadtransportationhistogram_addeddistances (
-    tdm_loadtransportationhistogram_id bigint NOT NULL,
+    tdm_loadtransportationhistogram_id VARCHAR(40) NOT NULL,
     element integer,
     mapkey integer NOT NULL
 );
@@ -1199,7 +1199,7 @@ ALTER TABLE public.tdm_loadtransportationhistogram_addeddistances OWNER TO tdm;
 --
 
 CREATE TABLE tdm_loadtransportationhistogram_distanceswithload (
-    tdm_loadtransportationhistogram_id bigint NOT NULL,
+    tdm_loadtransportationhistogram_id VARCHAR(40) NOT NULL,
     element integer,
     mapkey integer NOT NULL
 );
@@ -1214,7 +1214,7 @@ ALTER TABLE public.tdm_loadtransportationhistogram_distanceswithload OWNER TO td
 --
 
 CREATE TABLE tdm_logbook (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1226,9 +1226,9 @@ CREATE TABLE tdm_logbook (
     drivetime bigint NOT NULL,
     numberofcrashs integer NOT NULL,
     complete boolean NOT NULL,
-    preshiftcheck_id bigint,
-    accesstoken_id bigint NOT NULL,
-    vehicle_id bigint NOT NULL
+    preshiftcheck_id VARCHAR(40),
+    accesstoken_id VARCHAR(40) NOT NULL,
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1241,11 +1241,11 @@ ALTER TABLE public.tdm_logbook OWNER TO tdm;
 --
 
 CREATE TABLE tdm_loggedin_dynamicdata (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     loggedin boolean,
-    vehicle_id bigint
+    vehicle_id VARCHAR(40)
 );
 
 
@@ -1258,7 +1258,7 @@ ALTER TABLE public.tdm_loggedin_dynamicdata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_logmessage (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1277,8 +1277,8 @@ ALTER TABLE public.tdm_logmessage OWNER TO tdm;
 --
 
 CREATE TABLE tdm_logmessage_tdm_messageparameter (
-    tdm_logmessage_id bigint NOT NULL,
-    parameters_id bigint NOT NULL
+    tdm_logmessage_id VARCHAR(40) NOT NULL,
+    parameters_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1291,7 +1291,7 @@ ALTER TABLE public.tdm_logmessage_tdm_messageparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_mast (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     form character varying(255),
     load integer,
     loadcenter double precision,
@@ -1313,7 +1313,7 @@ ALTER TABLE public.tdm_mast OWNER TO tdm;
 --
 
 CREATE TABLE tdm_maxloadreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1326,8 +1326,8 @@ ALTER TABLE public.tdm_maxloadreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_maxloadreportparameter_tdm_vehicle (
-    tdm_maxloadreportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_maxloadreportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1341,7 +1341,7 @@ ALTER TABLE public.tdm_maxloadreportparameter_tdm_vehicle OWNER TO tdm;
 
 CREATE TABLE tdm_messageparameter (
     dtype character varying(31) NOT NULL,
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1362,14 +1362,14 @@ ALTER TABLE public.tdm_messageparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_nonusermessagerecipient (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
     locale character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1382,11 +1382,11 @@ ALTER TABLE public.tdm_nonusermessagerecipient OWNER TO tdm;
 --
 
 CREATE TABLE tdm_operatinghour_dynamicdata (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     hoursofoperation bigint,
-    vehicle_id bigint
+    vehicle_id VARCHAR(40)
 );
 
 
@@ -1399,14 +1399,14 @@ ALTER TABLE public.tdm_operatinghour_dynamicdata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_operatinghours (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     "timestamp" timestamp without time zone NOT NULL,
     readouttime timestamp without time zone NOT NULL,
     value integer NOT NULL,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1420,7 +1420,7 @@ ALTER TABLE public.tdm_operatinghours OWNER TO tdm;
 
 CREATE TABLE tdm_organisationalunit (
     type character(1) NOT NULL,
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1430,10 +1430,10 @@ CREATE TABLE tdm_organisationalunit (
     fleetidentifier bigint,
     localidentifier integer,
     treepositionchanged boolean,
-    lightfeatures_id bigint,
-    client_id bigint NOT NULL,
-    reduction_id bigint,
-    organisationalunit_id bigint,
+    lightfeatures_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL,
+    reduction_id VARCHAR(40),
+    organisationalunit_id VARCHAR(40),
     CONSTRAINT tdm_organisationalunit_localidentifier_check CHECK (((localidentifier >= 1) AND (localidentifier <= 15)))
 );
 
@@ -1447,8 +1447,8 @@ ALTER TABLE public.tdm_organisationalunit OWNER TO tdm;
 --
 
 CREATE TABLE tdm_organisationalunit_tdm_shiftmodel (
-    tdm_organisationalunit_id bigint NOT NULL,
-    shiftmodels_id bigint NOT NULL
+    tdm_organisationalunit_id VARCHAR(40) NOT NULL,
+    shiftmodels_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1461,7 +1461,7 @@ ALTER TABLE public.tdm_organisationalunit_tdm_shiftmodel OWNER TO tdm;
 --
 
 CREATE TABLE tdm_outstandingmaintenanceparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1474,8 +1474,8 @@ ALTER TABLE public.tdm_outstandingmaintenanceparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_outstandingmaintenanceparameter_tdm_vehicle (
-    tdm_outstandingmaintenanceparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_outstandingmaintenanceparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1488,7 +1488,7 @@ ALTER TABLE public.tdm_outstandingmaintenanceparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_overviewsettings (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1517,8 +1517,8 @@ ALTER TABLE public.tdm_overviewsettings OWNER TO tdm;
 --
 
 CREATE TABLE tdm_overviewsettings_tdm_vehicle (
-    tdm_overviewsettings_id bigint NOT NULL,
-    vehicleselection_id bigint NOT NULL
+    tdm_overviewsettings_id VARCHAR(40) NOT NULL,
+    vehicleselection_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1531,14 +1531,14 @@ ALTER TABLE public.tdm_overviewsettings_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_performedmaintenance (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     dateofperformance timestamp without time zone NOT NULL,
     maintenancetype character varying(255),
     operatinghoursreading integer NOT NULL,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1551,7 +1551,7 @@ ALTER TABLE public.tdm_performedmaintenance OWNER TO tdm;
 --
 
 CREATE TABLE tdm_performedmaintenanceparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1564,8 +1564,8 @@ ALTER TABLE public.tdm_performedmaintenanceparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_performedmaintenanceparameter_tdm_vehicle (
-    tdm_performedmaintenanceparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_performedmaintenanceparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1578,7 +1578,7 @@ ALTER TABLE public.tdm_performedmaintenanceparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_pin (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     number character varying(8) NOT NULL
 );
 
@@ -1592,7 +1592,7 @@ ALTER TABLE public.tdm_pin OWNER TO tdm;
 --
 
 CREATE TABLE tdm_preshiftcheck (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1601,8 +1601,8 @@ CREATE TABLE tdm_preshiftcheck (
     sessionid character varying(255) NOT NULL,
     vehiclestate integer,
     checktime timestamp without time zone NOT NULL,
-    vehicle_id bigint NOT NULL,
-    accesstoken_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL,
+    accesstoken_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1615,7 +1615,7 @@ ALTER TABLE public.tdm_preshiftcheck OWNER TO tdm;
 --
 
 CREATE TABLE tdm_preshiftcheckreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1628,8 +1628,8 @@ ALTER TABLE public.tdm_preshiftcheckreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_preshiftcheckreportparameter_tdm_vehicle (
-    tdm_preshiftcheckreportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_preshiftcheckreportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1642,12 +1642,12 @@ ALTER TABLE public.tdm_preshiftcheckreportparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_profiletype (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1660,7 +1660,7 @@ ALTER TABLE public.tdm_profiletype OWNER TO tdm;
 --
 
 CREATE TABLE tdm_reduction (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1674,7 +1674,7 @@ CREATE TABLE tdm_reduction (
     declinespeedreductionforward double precision,
     declinespeedreductionbackward double precision,
     profiletypeactive boolean,
-    profiletype_id bigint
+    profiletype_id VARCHAR(40)
 );
 
 
@@ -1687,7 +1687,7 @@ ALTER TABLE public.tdm_reduction OWNER TO tdm;
 --
 
 CREATE TABLE tdm_rfid (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     rfid_identity character varying(255) NOT NULL,
     rfid_type character varying(2) NOT NULL
 );
@@ -1702,7 +1702,7 @@ ALTER TABLE public.tdm_rfid OWNER TO tdm;
 --
 
 CREATE TABLE tdm_sessioncorrelation (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1720,7 +1720,7 @@ ALTER TABLE public.tdm_sessioncorrelation OWNER TO tdm;
 --
 
 CREATE TABLE tdm_shift (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1728,7 +1728,7 @@ CREATE TABLE tdm_shift (
     name character varying(255) NOT NULL,
     starttime time without time zone NOT NULL,
     endtime time without time zone NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1741,7 +1741,7 @@ ALTER TABLE public.tdm_shift OWNER TO tdm;
 --
 
 CREATE TABLE tdm_shiftmodel (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1755,7 +1755,7 @@ CREATE TABLE tdm_shiftmodel (
     friday boolean NOT NULL,
     saturday boolean NOT NULL,
     sunday boolean NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1768,8 +1768,8 @@ ALTER TABLE public.tdm_shiftmodel OWNER TO tdm;
 --
 
 CREATE TABLE tdm_shiftmodel_tdm_shift (
-    tdm_shiftmodel_id bigint NOT NULL,
-    shifts_id bigint NOT NULL
+    tdm_shiftmodel_id VARCHAR(40) NOT NULL,
+    shifts_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1782,7 +1782,7 @@ ALTER TABLE public.tdm_shiftmodel_tdm_shift OWNER TO tdm;
 --
 
 CREATE TABLE tdm_shock (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1792,7 +1792,7 @@ CREATE TABLE tdm_shock (
     occurrencetime timestamp without time zone NOT NULL,
     shocktotal real,
     directional boolean,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1805,7 +1805,7 @@ ALTER TABLE public.tdm_shock OWNER TO tdm;
 --
 
 CREATE TABLE tdm_shockanalysisreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1818,8 +1818,8 @@ ALTER TABLE public.tdm_shockanalysisreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_shockanalysisreportparameter_tdm_vehicle (
-    tdm_shockanalysisreportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_shockanalysisreportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1832,7 +1832,7 @@ ALTER TABLE public.tdm_shockanalysisreportparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_simultaneouslyusedvehiclesreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -1845,8 +1845,8 @@ ALTER TABLE public.tdm_simultaneouslyusedvehiclesreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_simultaneouslyusedvehiclesreportparameter_tdm_vehicle (
-    tdm_simultaneouslyusedvehiclesreportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_simultaneouslyusedvehiclesreportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1859,7 +1859,7 @@ ALTER TABLE public.tdm_simultaneouslyusedvehiclesreportparameter_tdm_vehicle OWN
 --
 
 CREATE TABLE tdm_synchronisationdata (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1867,7 +1867,7 @@ CREATE TABLE tdm_synchronisationdata (
     synchronisationmessagetype character varying(255) NOT NULL,
     messageid character varying(255),
     timestampsync timestamp without time zone,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1880,13 +1880,13 @@ ALTER TABLE public.tdm_synchronisationdata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_templates (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     templatename character varying(255) NOT NULL,
     entityname character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1899,11 +1899,11 @@ ALTER TABLE public.tdm_templates OWNER TO tdm;
 --
 
 CREATE TABLE tdm_templates_property (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     propertyname character varying(255) NOT NULL,
     propertyvalue character varying(255) NOT NULL,
-    template_id bigint
+    template_id VARCHAR(40)
 );
 
 
@@ -1916,7 +1916,7 @@ ALTER TABLE public.tdm_templates_property OWNER TO tdm;
 --
 
 CREATE TABLE tdm_unknownvehicle (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1934,7 +1934,7 @@ ALTER TABLE public.tdm_unknownvehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_user (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1945,10 +1945,10 @@ CREATE TABLE tdm_user (
     lockflag boolean NOT NULL,
     password character varying(255),
     username character varying(255) NOT NULL,
-    organisationalunit_id bigint,
-    address_id bigint NOT NULL,
-    userprofile_id bigint NOT NULL,
-    client_id bigint NOT NULL,
+    organisationalunit_id VARCHAR(40),
+    address_id VARCHAR(40) NOT NULL,
+    userprofile_id VARCHAR(40) NOT NULL,
+    client_id VARCHAR(40) NOT NULL,
     firstlogin boolean NOT NULL
 );
 
@@ -1962,7 +1962,7 @@ ALTER TABLE public.tdm_user OWNER TO tdm;
 --
 
 CREATE TABLE tdm_user_roles (
-    tdm_user_id bigint NOT NULL,
+    tdm_user_id VARCHAR(40) NOT NULL,
     element character varying(255)
 );
 
@@ -1976,7 +1976,7 @@ ALTER TABLE public.tdm_user_roles OWNER TO tdm;
 --
 
 CREATE TABLE tdm_usermessage (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -1985,8 +1985,8 @@ CREATE TABLE tdm_usermessage (
     priority integer NOT NULL,
     read boolean NOT NULL,
     relating integer NOT NULL,
-    recipient_id bigint,
-    client_id bigint NOT NULL
+    recipient_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -1999,8 +1999,8 @@ ALTER TABLE public.tdm_usermessage OWNER TO tdm;
 --
 
 CREATE TABLE tdm_usermessage_tdm_messageparameter (
-    tdm_usermessage_id bigint NOT NULL,
-    messageparameter_id bigint NOT NULL
+    tdm_usermessage_id VARCHAR(40) NOT NULL,
+    messageparameter_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2013,7 +2013,7 @@ ALTER TABLE public.tdm_usermessage_tdm_messageparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_userprofile (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2030,7 +2030,7 @@ ALTER TABLE public.tdm_userprofile OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicle (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2041,11 +2041,11 @@ CREATE TABLE tdm_vehicle (
     serialnumber character varying(12) NOT NULL,
     localidentifier integer NOT NULL,
     watingforrelease timestamp without time zone,
-    organisationalunit_id bigint NOT NULL,
-    vehiclemodel_id bigint NOT NULL,
-    client_id bigint NOT NULL,
-    vehicledataunit_id bigint,
-    vehicleconfiguration_id bigint NOT NULL,
+    organisationalunit_id VARCHAR(40) NOT NULL,
+    vehiclemodel_id VARCHAR(40) NOT NULL,
+    client_id VARCHAR(40) NOT NULL,
+    vehicledataunit_id VARCHAR(40),
+    vehicleconfiguration_id VARCHAR(40) NOT NULL,
     CONSTRAINT tdm_vehicle_localidentifier_check CHECK (((localidentifier >= 1) AND (localidentifier <= 255)))
 );
 
@@ -2059,7 +2059,7 @@ ALTER TABLE public.tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleaccident (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     silentrunning boolean NOT NULL,
     sendimmediately boolean NOT NULL
 );
@@ -2074,11 +2074,11 @@ ALTER TABLE public.tdm_vehicleaccident OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclebasedata (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     yearofconstruction bigint NOT NULL,
     bringingintoservicedate date,
     bringingintoserviceoperatinghours bigint,
-    evaluation_id bigint,
+    evaluation_id VARCHAR(40),
     CONSTRAINT tdm_vehiclebasedata_yearofconstruction_check CHECK (((yearofconstruction >= 0) AND (yearofconstruction <= 9999)))
 );
 
@@ -2092,13 +2092,13 @@ ALTER TABLE public.tdm_vehiclebasedata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclecategory (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     deletedsince bigint NOT NULL,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2111,14 +2111,14 @@ ALTER TABLE public.tdm_vehiclecategory OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleclass (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     deletedsince bigint NOT NULL,
     name character varying(255) NOT NULL,
     description character varying(255),
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2131,7 +2131,7 @@ ALTER TABLE public.tdm_vehicleclass OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleconfiguration (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2143,7 +2143,7 @@ CREATE TABLE tdm_vehicleconfiguration (
     preshiftcheckactive boolean NOT NULL,
     autologoff integer,
     cominghome integer,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2156,13 +2156,13 @@ ALTER TABLE public.tdm_vehicleconfiguration OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicledata (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     discriminator character varying(255),
-    vehicle_id bigint,
-    vehiclemodel_id bigint
+    vehicle_id VARCHAR(40),
+    vehiclemodel_id VARCHAR(40)
 );
 
 
@@ -2175,7 +2175,7 @@ ALTER TABLE public.tdm_vehicledata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicledataunit (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2201,7 +2201,7 @@ ALTER TABLE public.tdm_vehicledataunit OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleenvironment (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     lightingsystem character varying(255),
     searchlight character varying(255),
     allaroundlight character varying(255),
@@ -2219,7 +2219,7 @@ ALTER TABLE public.tdm_vehicleenvironment OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleerror (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2227,7 +2227,7 @@ CREATE TABLE tdm_vehicleerror (
     errorcode character varying(10) NOT NULL,
     errorocurrencetime timestamp without time zone NOT NULL,
     errormessage character varying(100) NOT NULL,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2240,13 +2240,13 @@ ALTER TABLE public.tdm_vehicleerror OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleevaluation (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
     description character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2259,12 +2259,12 @@ ALTER TABLE public.tdm_vehicleevaluation OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclelocation (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     latitude double precision,
     longitude double precision,
-    vehicle_id bigint,
+    vehicle_id VARCHAR(40),
     CONSTRAINT tdm_vehiclelocation_latitude_check CHECK (((latitude >= ((-90))::double precision) AND (latitude <= (90)::double precision))),
     CONSTRAINT tdm_vehiclelocation_longitude_check CHECK (((longitude >= ((-180))::double precision) AND (longitude <= (180)::double precision)))
 );
@@ -2279,7 +2279,7 @@ ALTER TABLE public.tdm_vehiclelocation OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclelogbookreportparameter (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
@@ -2292,8 +2292,8 @@ ALTER TABLE public.tdm_vehiclelogbookreportparameter OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclelogbookreportparameter_tdm_vehicle (
-    tdm_vehiclelogbookreportparameter_id bigint NOT NULL,
-    vehicles_id bigint NOT NULL
+    tdm_vehiclelogbookreportparameter_id VARCHAR(40) NOT NULL,
+    vehicles_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2306,11 +2306,11 @@ ALTER TABLE public.tdm_vehiclelogbookreportparameter_tdm_vehicle OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclemaintenance (
-    id bigint NOT NULL,
-    exhaustservice_id bigint,
-    maintenanceservice_id bigint NOT NULL,
-    uvvservice_id bigint NOT NULL,
-    guarantee_id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL,
+    exhaustservice_id VARCHAR(40),
+    maintenanceservice_id VARCHAR(40) NOT NULL,
+    uvvservice_id VARCHAR(40) NOT NULL,
+    guarantee_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2323,12 +2323,12 @@ ALTER TABLE public.tdm_vehiclemaintenance OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclemanufacturer (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2341,7 +2341,7 @@ ALTER TABLE public.tdm_vehiclemanufacturer OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclemodel (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2350,9 +2350,9 @@ CREATE TABLE tdm_vehiclemodel (
     vehicledrive character varying(255),
     load integer,
     speed integer,
-    vehicleseries_id bigint,
-    vehiclecategory_id bigint,
-    client_id bigint NOT NULL
+    vehicleseries_id VARCHAR(40),
+    vehiclecategory_id VARCHAR(40),
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2365,9 +2365,9 @@ ALTER TABLE public.tdm_vehiclemodel OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehiclemodeldata (
-    id bigint NOT NULL,
-    manufacturer_id bigint,
-    vehicleclass_id bigint
+    ID VARCHAR(40) NOT NULL,
+    manufacturer_id VARCHAR(40),
+    vehicleclass_id VARCHAR(40)
 );
 
 
@@ -2380,7 +2380,7 @@ ALTER TABLE public.tdm_vehiclemodeldata OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleprofile (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     contracttype character varying(255),
     termofcontract double precision,
     contractstartdate date,
@@ -2404,13 +2404,13 @@ ALTER TABLE public.tdm_vehicleprofile OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleseries (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
     deletedsince bigint NOT NULL,
     name character varying(255) NOT NULL,
-    client_id bigint NOT NULL
+    client_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2423,7 +2423,7 @@ ALTER TABLE public.tdm_vehicleseries OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleservice (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     serviceintervalactive boolean NOT NULL,
     dateoflastservice date NOT NULL,
     monthstonextservice integer,
@@ -2447,7 +2447,7 @@ ALTER TABLE public.tdm_vehicleservice OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleshock (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     active boolean NOT NULL,
     boundary bigint,
     reduceactive boolean NOT NULL,
@@ -2466,7 +2466,7 @@ ALTER TABLE public.tdm_vehicleshock OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicleswitchtimes (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     version bigint NOT NULL,
     createdtimestamp timestamp without time zone NOT NULL,
     updatedtimestamp timestamp without time zone,
@@ -2476,7 +2476,7 @@ CREATE TABLE tdm_vehicleswitchtimes (
     keyswitchtime integer,
     accesstime integer,
     seatswitchtime integer,
-    vehicle_id bigint NOT NULL
+    vehicle_id VARCHAR(40) NOT NULL
 );
 
 
@@ -2489,7 +2489,7 @@ ALTER TABLE public.tdm_vehicleswitchtimes OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicletechnology (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     height double precision,
     emptyweight double precision,
     totalweight double precision,
@@ -2512,7 +2512,7 @@ ALTER TABLE public.tdm_vehicletechnology OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vehicletire (
-    id bigint NOT NULL,
+    ID VARCHAR(40) NOT NULL,
     typefront character varying(255),
     sizefront character varying(255),
     typerear character varying(255),
@@ -2529,7 +2529,7 @@ ALTER TABLE public.tdm_vehicletire OWNER TO tdm;
 --
 
 CREATE TABLE tdm_vendor (
-    id bigint NOT NULL
+    ID VARCHAR(40) NOT NULL
 );
 
 
