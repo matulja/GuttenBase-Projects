@@ -1,6 +1,9 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -11,13 +14,45 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
 
 public class TdmKaCopyWithUUID {
+
   public static final class IdColumnMapper implements ColumnDataMapper {
+    private final Map<String, String> _idMap = new HashMap<String, String>();
+
+    public String createKey(final ColumnMetaData columnMetaData, final long id) {
+      final String key = columnMetaData.getTableMetaData().getTableName() + ":" + columnMetaData.getColumnName() + ":" + id;
+      String newId = _idMap.get(key);
+
+      if (newId == null) {
+        newId = UUID.randomUUID().toString();
+        _idMap.put(key, newId);
+      }
+
+      return newId;
+    }
+
     @Override
     public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value) {
-      return value != null ? String.valueOf(value) : null;
+      final Number number = (Number) value;
+
+      if (number != null) {
+        final long id = number.longValue();
+        final ColumnMetaData referencedColumn = sourceColumnMetaData.getReferencedColumn();
+        String uuid;
+
+        if (referencedColumn != null) {
+          uuid = createKey(referencedColumn, id);
+        } else {
+          uuid = createKey(sourceColumnMetaData, id);
+        }
+
+        return uuid;
+      } else {
+        return null;
+      }
     }
 
     @Override
@@ -53,7 +88,7 @@ public class TdmKaCopyWithUUID {
       });
 
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
-      // new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET);
+      new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET);
     } catch (final SQLException e) {
       LOG.error("main", e);
     }
