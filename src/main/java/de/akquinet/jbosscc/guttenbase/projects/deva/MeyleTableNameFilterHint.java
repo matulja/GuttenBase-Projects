@@ -1,7 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
-import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilter;
 import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilterHint;
+import de.akquinet.jbosscc.guttenbase.repository.DatabaseMetaDataTableNameFilter;
 import de.akquinet.jbosscc.guttenbase.repository.TableMetaData;
 
 public final class MeyleTableNameFilterHint extends DatabaseMetaDataTableNameFilterHint {

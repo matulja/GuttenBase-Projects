@@ -1,7 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects.aev;
 
-import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilter;
 import de.akquinet.jbosscc.guttenbase.hints.DatabaseMetaDataTableNameFilterHint;
+import de.akquinet.jbosscc.guttenbase.repository.DatabaseMetaDataTableNameFilter;
 import de.akquinet.jbosscc.guttenbase.repository.TableMetaData;
 
 public final class AevTableNameFilterHint extends DatabaseMetaDataTableNameFilterHint {
