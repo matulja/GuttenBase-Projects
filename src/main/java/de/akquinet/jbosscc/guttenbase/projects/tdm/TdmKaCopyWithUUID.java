@@ -10,6 +10,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 
 public class TdmKaCopyWithUUID {
   private static final String TARGET = "TARGET";
@@ -39,10 +40,10 @@ public class TdmKaCopyWithUUID {
       // new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(SOURCE);
 
       // new TableConfigurationChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
+      new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(TARGET);
       new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET);
       // new TableDataChecker(connectorRepository).checkTableData(SOURCE, TARGET);
 
-      // new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(TARGET);
       // new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(TARGET);
     } catch (final SQLException e) {
       LOG.error("main", e);
