@@ -15,7 +15,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
-import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
+import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
 
 public class TdmKaCopyWithUUID {
 
@@ -87,8 +87,9 @@ public class TdmKaCopyWithUUID {
         }
       });
 
-      new TableConfigurationChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
+      // new TableConfigurationChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
       new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET);
+      new TableDataChecker(connectorRepository).checkTableData(SOURCE, TARGET);
     } catch (final SQLException e) {
       LOG.error("main", e);
     }

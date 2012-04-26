@@ -40,3 +40,6 @@ END;
 
 SELECT drop_all_tables();
 SELECT drop_all_sequences();
+
+-- SELECT pg_size_pretty(pg_database_size('tdmka'));
+-- SELECT 'VACUUM FULL ANALYZE ' || quote_ident(r.schemaname) || '.' || quote_ident(r.tablename) || ';' FROM pg_tables r WHERE schemaname ='public'
