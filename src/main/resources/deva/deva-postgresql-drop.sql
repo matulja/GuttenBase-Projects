@@ -37,6 +37,19 @@ BEGIN
 END;
 ' language 'plpgsql';
 
+CREATE OR REPLACE FUNCTION truncate_all_tables() RETURNS INTEGER AS '
+DECLARE
+	r record;
+BEGIN
+   FOR r IN SELECT schemaname, tablename FROM pg_tables WHERE schemaname =''public''
+   LOOP
+      EXECUTE ''TRUNCATE TABLE '' || quote_ident(r.schemaname) || ''.'' || quote_ident(r.tablename) || '' CASCADE'';
+   END LOOP;
+
+   RETURN 1;
+END;
+' language 'plpgsql';
+
 
 SELECT drop_all_tables();
 SELECT drop_all_sequences();
