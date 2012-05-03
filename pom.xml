@@ -97,7 +97,7 @@
                 directory. -->
               <classpathPrefix>lib/</classpathPrefix>
               <!-- Specifies the main class of the application -->
-              <mainClass>de.akquinet.jbosscc.guttenbase.projects.deva.MeyleExportDeva</mainClass>
+              <mainClass>${guttenbase.main}</mainClass>
             </manifest>
           </archive>
         </configuration>
