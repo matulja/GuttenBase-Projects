@@ -20,7 +20,9 @@ public class StillReportCopyDb {
 
       connectorRepository.addConnectionInfo("source", new StillReportMysqlConnectionInfo());
       connectorRepository.addConnectionInfo("target", new StillReportPostgresqlConnectionInfo());
-
+      connectorRepository.addConnectorHint("source", new StillTableNameFilterHint());
+      connectorRepository.addConnectorHint("target", new StillTableNameFilterHint());
+      
       new TableConfigurationChecker(connectorRepository).checkTableConfiguration("source", "target");
       new DefaultTableCopier(connectorRepository).copyTables("source", "target");
     } catch (final SQLException e) {
