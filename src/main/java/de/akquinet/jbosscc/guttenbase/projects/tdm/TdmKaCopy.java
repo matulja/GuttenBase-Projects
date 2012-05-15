@@ -5,9 +5,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.connector.Connector;
-import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
 import de.akquinet.jbosscc.guttenbase.connector.impl.AbstractURLConnector;
-import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
@@ -34,54 +32,22 @@ public class TdmKaCopy {
 			final DatabaseMetaData databaseMetaData = new TdmKaMappingTablesCreator(connectorRepository, SOURCE, targetInfo.getSchema())
 					.createMappingTablesDatabase();
 
-			connectorRepository.addConnectionInfo(TARGET_NEW_TABLES, new NewTablesConnectionInfo(databaseMetaData, targetInfo));
+			connectorRepository.addConnectionInfo(TARGET_NEW_TABLES, new NewTablesConnectionInfo(databaseMetaData));
 
 			final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator();
-			new ScriptExecutor(connectorRepository).executeScript(TARGET, creator.createStatements(databaseMetaData));
+			new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createStatements(databaseMetaData));
 
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}
 	}
 
-	private static final class NewTablesConnectionInfo implements URLConnectionInfo {
-		private final URLConnectionInfo _targetInfo;
+	private static final class NewTablesConnectionInfo extends TdmKaPostgresqlConnectionInfo2 {
 		private static final long serialVersionUID = 1L;
 		private final DatabaseMetaData _databaseMetaData;
 
-		private NewTablesConnectionInfo(final DatabaseMetaData databaseMetaData, final URLConnectionInfo targetInfo) {
+		public NewTablesConnectionInfo(final DatabaseMetaData databaseMetaData) {
 			_databaseMetaData = databaseMetaData;
-			_targetInfo = targetInfo;
-		}
-
-		@Override
-		public String getUser() {
-			return _targetInfo.getUser();
-		}
-
-		@Override
-		public String getSchema() {
-			return _targetInfo.getSchema();
-		}
-
-		@Override
-		public String getPassword() {
-			return _targetInfo.getPassword();
-		}
-
-		@Override
-		public DatabaseType getDatabaseType() {
-			return _targetInfo.getDatabaseType();
-		}
-
-		@Override
-		public String getUrl() {
-			return _targetInfo.getUrl();
-		}
-
-		@Override
-		public String getDriver() {
-			return _targetInfo.getDriver();
 		}
 
 		@Override
