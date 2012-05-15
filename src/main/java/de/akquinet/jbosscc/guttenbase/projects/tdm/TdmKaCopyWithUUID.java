@@ -36,8 +36,8 @@ public class TdmKaCopyWithUUID {
 
         @Override
         protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
-          columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, new IdColumnMapper());
-          columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, new IdColumnMapper());
+          columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, new TdmKaEverythingMapper());
+          columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, new TdmKaEverythingMapper());
         }
       });
 

@@ -1,14 +1,19 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import de.akquinet.jbosscc.guttenbase.configuration.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnDataMapper;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
+import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 
-public final class IdColumnMapper implements ColumnDataMapper {
+public final class TdmKaEverythingMapper implements ColumnDataMapper, ColumnNameMapper, TableNameMapper {
 	private final Map<String, String> _idMap = new HashMap<String, String>();
+	public static final String UUID_PREFIX = "UUID_";
 
 	@Override
 	public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value) {
@@ -49,5 +54,15 @@ public final class IdColumnMapper implements ColumnDataMapper {
 		}
 
 		return newId;
+	}
+
+	@Override
+	public String mapTableName(final TableMetaData sourceTableMetaData) throws SQLException {
+		return UUID_PREFIX + sourceTableMetaData.getTableName();
+	}
+
+	@Override
+	public String mapColumnName(final ColumnMetaData sourceColumnMetaData) throws SQLException {
+		return UUID_PREFIX + sourceColumnMetaData.getColumnName();
 	}
 }

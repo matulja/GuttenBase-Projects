@@ -13,10 +13,8 @@ import de.akquinet.jbosscc.guttenbase.meta.builder.DatabaseMetaDataBuilder;
 import de.akquinet.jbosscc.guttenbase.meta.builder.IndexMetaDataBuilder;
 import de.akquinet.jbosscc.guttenbase.meta.builder.TableMetaDataBuilder;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import de.akquinet.jbosscc.guttenbase.utils.DatabaseSchemaScriptCreator;
 
 public class TdmKaMappingTablesCreator {
-	private static final String UUID_PREFIX = "UUID_";
 	private final DatabaseMetaDataBuilder _databaseMetaDataBuilder = new DatabaseMetaDataBuilder();
 	private final ConnectorRepository _connectorRepository;
 	private final String _connectorId;
@@ -29,21 +27,21 @@ public class TdmKaMappingTablesCreator {
 		_targetSchema = targetSchema;
 	}
 
-	public List<String> createStatements() throws SQLException {
+	public DatabaseMetaData createMappingTablesDatabase() throws SQLException {
 		final List<TableMetaData> tableSourceMetaDatas = TableOrderHint.getSortedTables(_connectorRepository, _connectorId);
+
+		final TdmKaEverythingMapper mapper = new TdmKaEverythingMapper();
 
 		for (final TableMetaData sourceTableMetaData : tableSourceMetaDatas) {
 			final List<ColumnMetaData> sourceColumns = sourceTableMetaData.getColumnMetaData();
 			final List<ColumnMetaDataBuilder> targetColumns = new ArrayList<ColumnMetaDataBuilder>();
 
 			for (final ColumnMetaData sourceColumnMetaData : sourceColumns) {
-				final String columnName = sourceColumnMetaData.getColumnName().toLowerCase();
-
-				if (columnName.endsWith("_id") || "id".equals(columnName)) {
+				if (mapper.isApplicable(sourceColumnMetaData, sourceColumnMetaData)) {
 					final ColumnMetaDataBuilder source = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false);
 					final ColumnMetaDataBuilder target = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false)
 							.setColumnClassName(String.class.getName()).setColumnTypeName("VARCHAR(40)")
-							.setColumnName(UUID_PREFIX + sourceColumnMetaData.getColumnName());
+							.setColumnName(mapper.mapColumnName(sourceColumnMetaData));
 
 					targetColumns.add(source);
 					targetColumns.add(target);
@@ -51,8 +49,7 @@ public class TdmKaMappingTablesCreator {
 			}
 
 			if (!targetColumns.isEmpty()) {
-				final TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder().setTableName(UUID_PREFIX
-						+ sourceTableMetaData.getTableName());
+				final TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder().setTableName(mapper.mapTableName(sourceTableMetaData));
 
 				for (final ColumnMetaDataBuilder columnMetaDataBuilder : targetColumns) {
 					tableMetaDataBuilder.addColumn(columnMetaDataBuilder);
@@ -65,8 +62,6 @@ public class TdmKaMappingTablesCreator {
 			}
 		}
 
-		final DatabaseMetaData database = _databaseMetaDataBuilder.setSchema(_targetSchema).build();
-		final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator();
-		return creator.createStatements(database);
+		return _databaseMetaDataBuilder.setSchema(_targetSchema).build();
 	}
 }

@@ -1,9 +1,9 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
-import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfo;
+import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfoImpl;
 
-public class TdmKaPostgresqlConnectionInfo2 extends URLConnectionInfo {
+public class TdmKaPostgresqlConnectionInfo2 extends URLConnectionInfoImpl {
 	private static final long serialVersionUID = 1L;
 
 	public TdmKaPostgresqlConnectionInfo2() {
