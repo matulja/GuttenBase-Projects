@@ -6,11 +6,20 @@ import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.connector.Connector;
 import de.akquinet.jbosscc.guttenbase.connector.impl.AbstractURLConnector;
+import de.akquinet.jbosscc.guttenbase.hints.DatabaseTableFilterHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactory;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnNameMapperHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultTableMapperHint;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnNameMapper;
+import de.akquinet.jbosscc.guttenbase.mapping.TableMapper;
+import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
+import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
+import de.akquinet.jbosscc.guttenbase.repository.DatabaseTableFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
-import de.akquinet.jbosscc.guttenbase.utils.DatabaseSchemaScriptCreator;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 
 public class TdmKaCopy {
 
@@ -29,14 +38,61 @@ public class TdmKaCopy {
 
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaTableNameFilterHint());
 
-			final DatabaseMetaData databaseMetaData = new TdmKaMappingTablesCreator(connectorRepository, SOURCE, targetInfo.getSchema())
+			final DatabaseMetaData mappingDatabaseMetaData = new TdmKaMappingTablesCreator(connectorRepository, SOURCE, targetInfo.getSchema())
 					.createMappingTablesDatabase();
 
-			connectorRepository.addConnectionInfo(TARGET_NEW_TABLES, new NewTablesConnectionInfo(databaseMetaData));
+			connectorRepository.addConnectionInfo(TARGET_NEW_TABLES, new NewTablesConnectionInfo(mappingDatabaseMetaData));
 
-			final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator();
-			new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createStatements(databaseMetaData));
+			// final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator();
+			// new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createStatements(mappingDatabaseMetaData));
 
+			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperFactoryHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, new TdmKaEverythingMapper());
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, new TdmKaEverythingMapper());
+				}
+			});
+
+			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnNameMapperHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public ColumnNameMapper getValue() {
+					return new TdmKaEverythingMapper();
+				}
+			});
+
+			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultTableMapperHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public TableMapper getValue() {
+					return new TdmKaEverythingMapper();
+				}
+			});
+
+			connectorRepository.addConnectorHint(SOURCE, new DatabaseTableFilterHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public DatabaseTableFilter getValue() {
+					return new DatabaseTableFilter() {
+						@Override
+						public boolean accept(final TableMetaData table) throws SQLException {
+							final String mappedTableName = new TdmKaEverythingMapper().mapTableName(table);
+							final TableMetaData tableMetaData = mappingDatabaseMetaData.getTableMetaData(mappedTableName);
+							final String lowerCase = table.getTableName().toLowerCase();
+
+							return lowerCase.startsWith("tdm_") && tableMetaData != null;
+						}
+					};
+				}
+			});
+
+			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET_NEW_TABLES);
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}
