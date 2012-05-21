@@ -1,21 +1,27 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import de.akquinet.jbosscc.guttenbase.configuration.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnDataMapper;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnNameMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.TableMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
+import de.akquinet.jbosscc.guttenbase.repository.TableColumnFilter;
 
-public final class TdmKaEverythingMapper implements ColumnDataMapper, ColumnNameMapper, TableNameMapper, TableMapper {
+public final class TdmKaEverythingMapper implements ColumnMapper, ColumnDataMapper, ColumnNameMapper, TableNameMapper, TableMapper,
+		TableColumnFilter {
 	private final Map<String, String> _idMap = new HashMap<String, String>();
 	public static final String UUID_PREFIX = "UUID_";
+	public static final String UUID_SUFFIX = "_UUID";
 
 	@Override
 	public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value) {
@@ -39,11 +45,12 @@ public final class TdmKaEverythingMapper implements ColumnDataMapper, ColumnName
 	}
 
 	@Override
-	public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData) {
-		final String columnName = sourceColumnMetaData.getColumnName().toLowerCase();
-		final boolean columnNamesEqual = columnName.equalsIgnoreCase(targetColumnMetaData.getColumnName());
+	public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData) throws SQLException {
+		final String sourceColumnName = sourceColumnMetaData.getColumnName().toUpperCase();
+		final String targetColumnName = targetColumnMetaData.getColumnName().toUpperCase();
 
-		return columnNamesEqual && (columnName.endsWith("_id") || "id".equals(columnName));
+		return (sourceColumnName.equalsIgnoreCase(targetColumnName) || targetColumnName.equalsIgnoreCase(mapColumnName(sourceColumnMetaData)))
+				&& accept(sourceColumnMetaData);
 	}
 
 	private String createKey(final ColumnMetaData columnMetaData, final long id) {
@@ -59,18 +66,34 @@ public final class TdmKaEverythingMapper implements ColumnDataMapper, ColumnName
 	}
 
 	@Override
-	public String mapTableName(final TableMetaData sourceTableMetaData) throws SQLException {
+	public String mapTableName(final TableMetaData sourceTableMetaData) {
 		return UUID_PREFIX + sourceTableMetaData.getTableName();
 	}
 
 	@Override
-	public String mapColumnName(final ColumnMetaData sourceColumnMetaData) throws SQLException {
-		return UUID_PREFIX + sourceColumnMetaData.getColumnName();
+	public String mapColumnName(final ColumnMetaData sourceColumnMetaData) {
+		return sourceColumnMetaData.getColumnName() + UUID_SUFFIX;
 	}
 
 	@Override
-	public TableMetaData map(final TableMetaData source, final DatabaseMetaData targetDatabaseMetaData) throws SQLException {
+	public TableMetaData map(final TableMetaData source, final DatabaseMetaData targetDatabaseMetaData) {
 		final String mappedTableName = mapTableName(source);
 		return targetDatabaseMetaData.getTableMetaData(mappedTableName);
+	}
+
+	@Override
+	public boolean accept(final ColumnMetaData column) {
+		final String columnName = column.getColumnName().toUpperCase();
+		return (columnName.endsWith("_ID") || "ID".equals(columnName) || columnName.endsWith("_ID" + UUID_SUFFIX) || ("ID" + UUID_SUFFIX)
+				.equals(columnName));
+	}
+
+	@Override
+	public List<ColumnMetaData> map(final ColumnMetaData source, final TableMetaData targetTableMetaData) throws SQLException {
+		final String columnName = source.getColumnName();
+		final ColumnMetaData columnMetaData1 = targetTableMetaData.getColumnMetaData(columnName);
+		final ColumnMetaData columnMetaData2 = targetTableMetaData.getColumnMetaData(mapColumnName(source));
+
+		return Arrays.asList(columnMetaData1, columnMetaData2);
 	}
 }

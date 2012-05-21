@@ -7,17 +7,19 @@ import org.apache.log4j.Logger;
 import de.akquinet.jbosscc.guttenbase.connector.Connector;
 import de.akquinet.jbosscc.guttenbase.connector.impl.AbstractURLConnector;
 import de.akquinet.jbosscc.guttenbase.hints.DatabaseTableFilterHint;
+import de.akquinet.jbosscc.guttenbase.hints.TableColumnFilterHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactory;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnNameMapperHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnMapperHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultTableMapperHint;
-import de.akquinet.jbosscc.guttenbase.mapping.ColumnNameMapper;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.TableMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.DatabaseTableFilter;
+import de.akquinet.jbosscc.guttenbase.repository.TableColumnFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 
@@ -34,6 +36,8 @@ public class TdmKaCopy {
 			final TdmKaPostgresqlConnectionInfo2 targetInfo = new TdmKaPostgresqlConnectionInfo2();
 
 			connectorRepository.addConnectionInfo(SOURCE, new TdmKaPostgresqlConnectionInfo());
+			// connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("tdmka.jar"));
+
 			connectorRepository.addConnectionInfo(TARGET, targetInfo);
 
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaTableNameFilterHint());
@@ -48,28 +52,38 @@ public class TdmKaCopy {
 
 			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperFactoryHint() {
 				private static final long serialVersionUID = 1L;
+				private final TdmKaEverythingMapper _columnDataMapper = new TdmKaEverythingMapper();
 
 				@Override
 				protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
-					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, new TdmKaEverythingMapper());
-					columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, new TdmKaEverythingMapper());
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, _columnDataMapper);
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, _columnDataMapper);
 				}
 			});
 
-			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnNameMapperHint() {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public ColumnNameMapper getValue() {
-					return new TdmKaEverythingMapper();
-				}
-			});
+			// connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnNameMapperHint() {
+			// private static final long serialVersionUID = 1L;
+			//
+			// @Override
+			// public ColumnNameMapper getValue() {
+			// return new TdmKaEverythingMapper();
+			// }
+			// });
 
 			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultTableMapperHint() {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public TableMapper getValue() {
+					return new TdmKaEverythingMapper();
+				}
+			});
+
+			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnMapperHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public ColumnMapper getValue() {
 					return new TdmKaEverythingMapper();
 				}
 			});
@@ -82,13 +96,29 @@ public class TdmKaCopy {
 					return new DatabaseTableFilter() {
 						@Override
 						public boolean accept(final TableMetaData table) throws SQLException {
-							final String mappedTableName = new TdmKaEverythingMapper().mapTableName(table);
-							final TableMetaData tableMetaData = mappingDatabaseMetaData.getTableMetaData(mappedTableName);
-							final String lowerCase = table.getTableName().toLowerCase();
+							final TableMetaData tableMetaData = new TdmKaEverythingMapper().map(table, mappingDatabaseMetaData);
 
-							return lowerCase.startsWith("tdm_") && tableMetaData != null;
+							return tableMetaData != null;
 						}
 					};
+				}
+			});
+
+			connectorRepository.addConnectorHint(SOURCE, new TableColumnFilterHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public TableColumnFilter getValue() {
+					return new TdmKaEverythingMapper();
+				}
+			});
+
+			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new TableColumnFilterHint() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public TableColumnFilter getValue() {
+					return new TdmKaEverythingMapper();
 				}
 			});
 
