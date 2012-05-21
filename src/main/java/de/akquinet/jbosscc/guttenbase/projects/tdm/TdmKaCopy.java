@@ -34,6 +34,7 @@ public class TdmKaCopy {
 		try {
 			final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 			final TdmKaPostgresqlConnectionInfo2 targetInfo = new TdmKaPostgresqlConnectionInfo2();
+			final TdmKaEverythingMapper tdmKaEverythingMapper = new TdmKaEverythingMapper();
 
 			connectorRepository.addConnectionInfo(SOURCE, new TdmKaPostgresqlConnectionInfo());
 			// connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("tdmka.jar"));
@@ -52,12 +53,11 @@ public class TdmKaCopy {
 
 			connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperFactoryHint() {
 				private static final long serialVersionUID = 1L;
-				private final TdmKaEverythingMapper _columnDataMapper = new TdmKaEverythingMapper();
 
 				@Override
 				protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
-					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, _columnDataMapper);
-					columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, _columnDataMapper);
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, tdmKaEverythingMapper);
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, tdmKaEverythingMapper);
 				}
 			});
 
@@ -75,7 +75,7 @@ public class TdmKaCopy {
 
 				@Override
 				public TableMapper getValue() {
-					return new TdmKaEverythingMapper();
+					return tdmKaEverythingMapper;
 				}
 			});
 
@@ -84,7 +84,7 @@ public class TdmKaCopy {
 
 				@Override
 				public ColumnMapper getValue() {
-					return new TdmKaEverythingMapper();
+					return tdmKaEverythingMapper;
 				}
 			});
 
@@ -109,7 +109,7 @@ public class TdmKaCopy {
 
 				@Override
 				public TableColumnFilter getValue() {
-					return new TdmKaEverythingMapper();
+					return tdmKaEverythingMapper;
 				}
 			});
 
@@ -118,7 +118,7 @@ public class TdmKaCopy {
 
 				@Override
 				public TableColumnFilter getValue() {
-					return new TdmKaEverythingMapper();
+					return tdmKaEverythingMapper;
 				}
 			});
 
