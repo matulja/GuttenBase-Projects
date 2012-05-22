@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactory;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryHint;
@@ -26,10 +25,11 @@ public class TdmKaCopyWithUUID {
 
 			connectorRepository.addConnectionInfo(SOURCE, new TdmKaPostgresqlConnectionInfo());
 			connectorRepository.addConnectionInfo(TARGET, new TdmKaPostgresqlConnectionInfo2());
-			connectorRepository.addConnectionInfo(EXPORT, new ExportDumpConnectionInfo(SOURCE, "tdmka.jar"));
+			// connectorRepository.addConnectionInfo(EXPORT, new ExportDumpConnectionInfo(SOURCE, "tdmka.jar"));
 			connectorRepository.addConnectionInfo(IMPORT, new ImportDumpConnectionInfo("tdmka.jar"));
 
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
+			connectorRepository.addConnectorHint(IMPORT, new TdmKaSourceTableNameFilterHint());
 			final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
 
 			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperFactoryHint() {

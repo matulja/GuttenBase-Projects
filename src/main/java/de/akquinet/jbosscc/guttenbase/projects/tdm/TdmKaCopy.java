@@ -24,7 +24,9 @@ import de.akquinet.jbosscc.guttenbase.utils.DatabaseSchemaScriptCreator;
 public class TdmKaCopy {
 	private static final String SOURCE = "SOURCE";
 	private static final String TARGET = "TARGET";
+	// private static final String IMPORT = "IMPORT";
 	private static final String TARGET_NEW_TABLES = "TARGET_NEW_TABLES";
+
 	private static final Logger LOG = Logger.getLogger(TdmKaCopy.class);
 
 	public static void main(final String[] args) {
@@ -37,8 +39,9 @@ public class TdmKaCopy {
 			connectorRepository.addConnectionInfo(TARGET, targetInfo);
 
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
+			connectorRepository.addConnectorHint(TARGET, new TdmKaSourceTableNameFilterHint());
 
-			// Create insert statements needed later
+			// Create insert statements needed later with ALL column
 			final List<String> insertStatements = new TdmKaInsertSelectStatementCreator(connectorRepository, SOURCE, sourceInfo.getSchema(),
 					targetInfo.getSchema()).createInsertStatements();
 
@@ -58,6 +61,8 @@ public class TdmKaCopy {
 
 			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET_NEW_TABLES);
 
+			removeDuplicates(connectorRepository, targetInfo);
+
 			createNewTablesIndexes(connectorRepository, mappingDatabaseMetaData);
 
 			new ScriptExecutor(connectorRepository).executeScript(TARGET, insertStatements);
@@ -65,6 +70,14 @@ public class TdmKaCopy {
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}
+	}
+
+	private static void removeDuplicates(final ConnectorRepository connectorRepository, final TdmKaPostgresqlConnectionInfo2 targetInfo)
+			throws SQLException {
+		final List<String> removeDuplicates = new TdmKaMappingTablesDuplicateRemover(connectorRepository, TARGET, targetInfo.getSchema())
+				.removeDuplicates("uuid_tdm_crash_brakeactuation", "uuid_tdm_crash_drivingspeed", "uuid_tdm_crash_features",
+						"uuid_tdm_crash_steeringangle");
+		new ScriptExecutor(connectorRepository).executeScript(TARGET, false, true, removeDuplicates);
 	}
 
 	private static void createNewTablesIndexes(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData)
