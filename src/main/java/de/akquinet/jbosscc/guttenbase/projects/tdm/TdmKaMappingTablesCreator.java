@@ -38,8 +38,8 @@ public class TdmKaMappingTablesCreator {
 
 			for (final ColumnMetaData sourceColumnMetaData : sourceColumns) {
 				if (mapper.isApplicable(sourceColumnMetaData, sourceColumnMetaData)) {
-					final ColumnMetaDataBuilder source = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false).setNullable(true);
-					final ColumnMetaDataBuilder target = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false).setNullable(true)
+					final ColumnMetaDataBuilder source = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false);
+					final ColumnMetaDataBuilder target = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false)
 							.setColumnClassName(String.class.getName()).setColumnTypeName("VARCHAR(40)")
 							.setColumnName(mapper.mapColumnName(sourceColumnMetaData));
 
@@ -54,8 +54,11 @@ public class TdmKaMappingTablesCreator {
 				for (final ColumnMetaDataBuilder columnMetaDataBuilder : targetColumns) {
 					tableMetaDataBuilder.addColumn(columnMetaDataBuilder);
 
+					final ColumnMetaData sourceColumnMetaData = sourceTableMetaData.getColumnMetaData(columnMetaDataBuilder.getColumnName());
+					final boolean unique = sourceColumnMetaData != null && sourceColumnMetaData.isPrimaryKey();
+
 					tableMetaDataBuilder.addIndex(new IndexMetaDataBuilder().addColumn(columnMetaDataBuilder)
-							.setIndexName("IDX_" + columnMetaDataBuilder.getColumnName() + "_" + _indexIndex++).setUnique(false));
+							.setIndexName("IDX_" + columnMetaDataBuilder.getColumnName() + "_" + _indexIndex++).setUnique(unique));
 				}
 
 				_databaseMetaDataBuilder.addTable(tableMetaDataBuilder);

@@ -29,7 +29,7 @@ public class TdmKaCopyWithUUID {
       connectorRepository.addConnectionInfo(EXPORT, new ExportDumpConnectionInfo(SOURCE, "tdmka.jar"));
       connectorRepository.addConnectionInfo(IMPORT, new ImportDumpConnectionInfo("tdmka.jar"));
 
-      connectorRepository.addConnectorHint(SOURCE, new TdmKaTableNameFilterHint());
+      connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
 
       connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperFactoryHint() {
         private static final long serialVersionUID = 1L;

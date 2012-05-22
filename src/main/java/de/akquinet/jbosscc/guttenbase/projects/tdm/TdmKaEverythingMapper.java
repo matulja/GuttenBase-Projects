@@ -54,15 +54,19 @@ public final class TdmKaEverythingMapper implements ColumnMapper, ColumnDataMapp
 	}
 
 	private String createKey(final ColumnMetaData columnMetaData, final long id) {
-		final String key = columnMetaData.getTableMetaData().getTableName() + ":" + columnMetaData.getColumnName() + ":" + id;
-		String newId = _idMap.get(key);
+		final String key = columnMetaData.getTableMetaData().getTableName() + ":" + columnMetaData.getColumnName();
 
-		if (newId == null) {
-			newId = UUID.randomUUID().toString();
-			_idMap.put(key, newId);
-		}
+		final UUID uuid = new UUID(key.hashCode(), id);
 
-		return newId;
+		return uuid.toString();
+		// String newId = _idMap.get(key);
+		//
+		// if (newId == null) {
+		// newId = UUID.randomUUID().toString();
+		// _idMap.put(key, newId);
+		// }
+		//
+		// return newId;
 	}
 
 	@Override
