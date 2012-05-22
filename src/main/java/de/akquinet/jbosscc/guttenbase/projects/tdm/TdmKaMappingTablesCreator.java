@@ -60,7 +60,8 @@ public class TdmKaMappingTablesCreator {
 					tableMetaDataBuilder.addColumn(columnMetaDataBuilder);
 
 					final ColumnMetaData sourceColumnMetaData = sourceTableMetaData.getColumnMetaData(columnMetaDataBuilder.getColumnName());
-					final boolean unique = sourceColumnMetaData != null && sourceColumnMetaData.isPrimaryKey();
+					final boolean unique = sourceColumnMetaData != null && sourceColumnMetaData.isPrimaryKey()
+							&& "id".equalsIgnoreCase(sourceColumnMetaData.getColumnName());
 
 					tableMetaDataBuilder.addIndex(new IndexMetaDataBuilder().addColumn(columnMetaDataBuilder)
 							.setIndexName("IDX_" + columnMetaDataBuilder.getColumnName() + "_" + _indexIndex++).setUnique(unique));
