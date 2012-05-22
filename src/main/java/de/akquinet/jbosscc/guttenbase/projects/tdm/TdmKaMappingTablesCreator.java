@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.akquinet.jbosscc.guttenbase.hints.TableOrderHint;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnDataMapper;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
@@ -30,18 +32,20 @@ public class TdmKaMappingTablesCreator {
 	public DatabaseMetaData createMappingTablesDatabase() throws SQLException {
 		final List<TableMetaData> tableSourceMetaDatas = TableOrderHint.getSortedTables(_connectorRepository, _connectorId);
 
-		final TdmKaEverythingMapper mapper = new TdmKaEverythingMapper();
+		final ColumnNameMapper columnNameMapper = new IdColumnsOnlyColumnFilter();
+		final ColumnDataMapper columnDataMapper = new IdColumnDataMapper();
+		final TdmKaTableMapper tableMapper = new TdmKaTableMapper();
 
 		for (final TableMetaData sourceTableMetaData : tableSourceMetaDatas) {
 			final List<ColumnMetaData> sourceColumns = sourceTableMetaData.getColumnMetaData();
 			final List<ColumnMetaDataBuilder> targetColumns = new ArrayList<ColumnMetaDataBuilder>();
 
 			for (final ColumnMetaData sourceColumnMetaData : sourceColumns) {
-				if (mapper.isApplicable(sourceColumnMetaData, sourceColumnMetaData)) {
+				if (columnDataMapper.isApplicable(sourceColumnMetaData, sourceColumnMetaData)) {
 					final ColumnMetaDataBuilder source = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false);
 					final ColumnMetaDataBuilder target = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false)
 							.setColumnClassName(String.class.getName()).setColumnTypeName("VARCHAR(40)")
-							.setColumnName(mapper.mapColumnName(sourceColumnMetaData));
+							.setColumnName(columnNameMapper.mapColumnName(sourceColumnMetaData));
 
 					targetColumns.add(source);
 					targetColumns.add(target);
@@ -49,7 +53,8 @@ public class TdmKaMappingTablesCreator {
 			}
 
 			if (!targetColumns.isEmpty()) {
-				final TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder().setTableName(mapper.mapTableName(sourceTableMetaData));
+				final TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder().setTableName(tableMapper
+						.mapTableName(sourceTableMetaData));
 
 				for (final ColumnMetaDataBuilder columnMetaDataBuilder : targetColumns) {
 					tableMetaDataBuilder.addColumn(columnMetaDataBuilder);

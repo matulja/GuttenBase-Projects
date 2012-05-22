@@ -4,9 +4,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.connector.Connector;
-import de.akquinet.jbosscc.guttenbase.connector.impl.AbstractURLConnector;
-import de.akquinet.jbosscc.guttenbase.hints.DatabaseTableFilterHint;
 import de.akquinet.jbosscc.guttenbase.hints.TableColumnFilterHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactory;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryHint;
@@ -16,9 +13,7 @@ import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.TableMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
-import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import de.akquinet.jbosscc.guttenbase.repository.DatabaseTableFilter;
 import de.akquinet.jbosscc.guttenbase.repository.TableColumnFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
@@ -37,7 +32,7 @@ public class TdmKaCopy {
 			final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 			final TdmKaPostgresqlConnectionInfo sourceInfo = new TdmKaPostgresqlConnectionInfo();
 			final TdmKaPostgresqlConnectionInfo2 targetInfo = new TdmKaPostgresqlConnectionInfo2();
-			final TdmKaEverythingMapper tdmKaEverythingMapper = new TdmKaEverythingMapper();
+			final TdmKaTableMapper tdmKaEverythingMapper = new TdmKaTableMapper();
 
 			connectorRepository.addConnectionInfo(SOURCE, sourceInfo);
 			// connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("tdmka.jar"));
@@ -54,7 +49,7 @@ public class TdmKaCopy {
 			// Create new tables (for performance reasons indexes will be created later)
 			// createNewTables(connectorRepository, mappingDatabaseMetaData);
 
-			setupTargetConnector(connectorRepository, tdmKaEverythingMapper);
+			setupTargetConnector(connectorRepository);
 
 			setupSourceConnector(connectorRepository, tdmKaEverythingMapper, mappingDatabaseMetaData);
 
@@ -79,42 +74,30 @@ public class TdmKaCopy {
 		new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createTableStatements(mappingDatabaseMetaData));
 	}
 
-	private static void setupSourceConnector(final ConnectorRepository connectorRepository,
-			final TdmKaEverythingMapper tdmKaEverythingMapper, final DatabaseMetaData mappingDatabaseMetaData) {
-		connectorRepository.addConnectorHint(SOURCE, new DatabaseTableFilterHint() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public DatabaseTableFilter getValue() {
-				return new DatabaseTableFilter() {
-					@Override
-					public boolean accept(final TableMetaData table) throws SQLException {
-						final TableMetaData tableMetaData = tdmKaEverythingMapper.map(table, mappingDatabaseMetaData);
-
-						return tableMetaData != null;
-					}
-				};
-			}
-		});
+	private static void setupSourceConnector(final ConnectorRepository connectorRepository, final TdmKaTableMapper tdmKaEverythingMapper,
+			final DatabaseMetaData mappingDatabaseMetaData) {
+		connectorRepository.addConnectorHint(SOURCE, new OnlyTablesWithMappingsTableFilter(tdmKaEverythingMapper, mappingDatabaseMetaData));
 
 		connectorRepository.addConnectorHint(SOURCE, new TableColumnFilterHint() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public TableColumnFilter getValue() {
-				return tdmKaEverythingMapper;
+				return new IdColumnsOnlyColumnFilter();
 			}
 		});
 	}
 
-	private static void setupTargetConnector(final ConnectorRepository connectorRepository, final TdmKaEverythingMapper tdmKaEverythingMapper) {
+	private static void setupTargetConnector(final ConnectorRepository connectorRepository) {
+		final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
+
 		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperFactoryHint() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
-				columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, tdmKaEverythingMapper);
-				columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, tdmKaEverythingMapper);
+				columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, columnDataMapper);
+				columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, columnDataMapper);
 			}
 		});
 
@@ -123,7 +106,7 @@ public class TdmKaCopy {
 
 			@Override
 			public TableMapper getValue() {
-				return tdmKaEverythingMapper;
+				return new TdmKaTableMapper();
 			}
 		});
 
@@ -132,7 +115,7 @@ public class TdmKaCopy {
 
 			@Override
 			public ColumnMapper getValue() {
-				return tdmKaEverythingMapper;
+				return new IdColumnsOnlyColumnFilter();
 			}
 		});
 
@@ -141,27 +124,8 @@ public class TdmKaCopy {
 
 			@Override
 			public TableColumnFilter getValue() {
-				return tdmKaEverythingMapper;
+				return new IdColumnsOnlyColumnFilter();
 			}
 		});
-	}
-
-	private static final class NewTablesConnectionInfo extends TdmKaPostgresqlConnectionInfo2 {
-		private static final long serialVersionUID = 1L;
-		private final DatabaseMetaData _databaseMetaData;
-
-		public NewTablesConnectionInfo(final DatabaseMetaData databaseMetaData) {
-			_databaseMetaData = databaseMetaData;
-		}
-
-		@Override
-		public Connector createConnector(final ConnectorRepository connectorRepository, final String connectorId) {
-			return new AbstractURLConnector(connectorRepository, connectorId, this) {
-				@Override
-				public DatabaseMetaData retrieveDatabaseMetaData() throws SQLException {
-					return _databaseMetaData;
-				}
-			};
-		}
 	}
 }
