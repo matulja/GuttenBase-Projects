@@ -1,6 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -21,9 +22,8 @@ import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
 import de.akquinet.jbosscc.guttenbase.utils.DatabaseSchemaScriptCreator;
 
 public class TdmKaCopy {
-
 	private static final String SOURCE = "SOURCE";
-	// private static final String TARGET = "TARGET";
+	private static final String TARGET = "TARGET";
 	private static final String TARGET_NEW_TABLES = "TARGET_NEW_TABLES";
 	private static final Logger LOG = Logger.getLogger(TdmKaCopy.class);
 
@@ -35,9 +35,13 @@ public class TdmKaCopy {
 			final TdmKaTableMapper tdmKaEverythingMapper = new TdmKaTableMapper();
 
 			connectorRepository.addConnectionInfo(SOURCE, sourceInfo);
-			// connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("tdmka.jar"));
+			connectorRepository.addConnectionInfo(TARGET, targetInfo);
 
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
+
+			// Create insert statements needed later
+			final List<String> insertStatements = new TdmKaInsertSelectStatementCreator(connectorRepository, SOURCE, sourceInfo.getSchema(),
+					targetInfo.getSchema()).createInsertStatements();
 
 			// Create new "database", i.e. new tables used for migration
 			final DatabaseMetaData mappingDatabaseMetaData = new TdmKaMappingTablesCreator(connectorRepository, SOURCE, targetInfo.getSchema())
@@ -47,7 +51,7 @@ public class TdmKaCopy {
 			connectorRepository.addConnectionInfo(TARGET_NEW_TABLES, new NewTablesConnectionInfo(mappingDatabaseMetaData));
 
 			// Create new tables (for performance reasons indexes will be created later)
-			// createNewTables(connectorRepository, mappingDatabaseMetaData);
+			createNewTables(connectorRepository, mappingDatabaseMetaData);
 
 			setupTargetConnector(connectorRepository);
 
@@ -55,7 +59,9 @@ public class TdmKaCopy {
 
 			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET_NEW_TABLES);
 
-			// createNewTablesIndexes(connectorRepository, mappingDatabaseMetaData);
+			createNewTablesIndexes(connectorRepository, mappingDatabaseMetaData);
+
+			new ScriptExecutor(connectorRepository).executeScript(TARGET, insertStatements);
 
 		} catch (final Exception e) {
 			LOG.error("main", e);
