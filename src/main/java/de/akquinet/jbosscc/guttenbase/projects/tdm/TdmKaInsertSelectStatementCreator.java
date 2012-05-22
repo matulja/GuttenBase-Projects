@@ -54,10 +54,10 @@ public class TdmKaInsertSelectStatementCreator {
 			builder.append("\nFROM " + _sourceSchema + "." + sourceTableMetaData.getTableName() + " t INNER JOIN " + _targetSchema + "."
 					+ tableMapper.mapTableName(sourceTableMetaData) + " u ON ");
 
-			final List<ColumnMetaData> primaryKeyColumns = sourceTableMetaData.getPrimaryKeyColumns();
-
-			for (final ColumnMetaData primaryKey : primaryKeyColumns) {
-				builder.append("t." + primaryKey.getColumnName() + " = u." + primaryKey.getColumnName() + "\nAND ");
+			for (final ColumnMetaData sourceColumnMetaData : sourceColumns) {
+				if (columnDataMapper.isApplicable(sourceColumnMetaData, sourceColumnMetaData)) {
+					builder.append("t." + sourceColumnMetaData.getColumnName() + " = u." + sourceColumnMetaData.getColumnName() + "\nAND ");
+				}
 			}
 
 			builder.setLength(builder.length() - 5);
