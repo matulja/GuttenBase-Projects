@@ -37,9 +37,10 @@ public class TdmKaCopy {
 
 			connectorRepository.addConnectionInfo(SOURCE, sourceInfo);
 			connectorRepository.addConnectionInfo(TARGET, targetInfo);
-
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
 			connectorRepository.addConnectorHint(TARGET, new TdmKaSourceTableNameFilterHint());
+
+			new ScriptExecutor(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
 
 			// Create insert statements needed later with ALL column
 			final List<String> insertStatements = new TdmKaInsertSelectStatementCreator(connectorRepository, SOURCE, sourceInfo.getSchema(),
