@@ -8,12 +8,10 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.DatabaseTableFilter;
 
 public final class OnlyTablesWithMappingsTableFilter extends DatabaseTableFilterHint {
-	private final TdmKaTableMapper _tdmKaEverythingMapper;
-	private final DatabaseMetaData _mappingDatabaseMetaData;
 	private static final long serialVersionUID = 1L;
+	private final DatabaseMetaData _mappingDatabaseMetaData;
 
-	public OnlyTablesWithMappingsTableFilter(final TdmKaTableMapper tdmKaEverythingMapper, final DatabaseMetaData mappingDatabaseMetaData) {
-		_tdmKaEverythingMapper = tdmKaEverythingMapper;
+	public OnlyTablesWithMappingsTableFilter(final DatabaseMetaData mappingDatabaseMetaData) {
 		_mappingDatabaseMetaData = mappingDatabaseMetaData;
 	}
 
@@ -22,7 +20,7 @@ public final class OnlyTablesWithMappingsTableFilter extends DatabaseTableFilter
 		return new DatabaseTableFilter() {
 			@Override
 			public boolean accept(final TableMetaData table) throws SQLException {
-				final TableMetaData tableMetaData = _tdmKaEverythingMapper.map(table, _mappingDatabaseMetaData);
+				final TableMetaData tableMetaData = new TdmKaTableMapper().map(table, _mappingDatabaseMetaData);
 
 				return tableMetaData != null;
 			}

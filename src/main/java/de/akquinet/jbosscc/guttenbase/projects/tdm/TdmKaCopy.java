@@ -32,7 +32,6 @@ public class TdmKaCopy {
 			final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 			final TdmKaPostgresqlConnectionInfo sourceInfo = new TdmKaPostgresqlConnectionInfo();
 			final TdmKaPostgresqlConnectionInfo2 targetInfo = new TdmKaPostgresqlConnectionInfo2();
-			final TdmKaTableMapper tdmKaEverythingMapper = new TdmKaTableMapper();
 
 			connectorRepository.addConnectionInfo(SOURCE, sourceInfo);
 			connectorRepository.addConnectionInfo(TARGET, targetInfo);
@@ -55,7 +54,7 @@ public class TdmKaCopy {
 
 			setupTargetConnector(connectorRepository);
 
-			setupSourceConnector(connectorRepository, tdmKaEverythingMapper, mappingDatabaseMetaData);
+			setupSourceConnector(connectorRepository, mappingDatabaseMetaData);
 
 			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET_NEW_TABLES);
 
@@ -80,9 +79,8 @@ public class TdmKaCopy {
 		new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createTableStatements(mappingDatabaseMetaData));
 	}
 
-	private static void setupSourceConnector(final ConnectorRepository connectorRepository, final TdmKaTableMapper tdmKaEverythingMapper,
-			final DatabaseMetaData mappingDatabaseMetaData) {
-		connectorRepository.addConnectorHint(SOURCE, new OnlyTablesWithMappingsTableFilter(tdmKaEverythingMapper, mappingDatabaseMetaData));
+	private static void setupSourceConnector(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData) {
+		connectorRepository.addConnectorHint(SOURCE, new OnlyTablesWithMappingsTableFilter(mappingDatabaseMetaData));
 
 		connectorRepository.addConnectorHint(SOURCE, new TableColumnFilterHint() {
 			private static final long serialVersionUID = 1L;
