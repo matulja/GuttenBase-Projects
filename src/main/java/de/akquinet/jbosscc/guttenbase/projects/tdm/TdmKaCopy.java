@@ -114,6 +114,7 @@ public class TdmKaCopy {
 
 			@Override
 			protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
+				super.addMappings(columnDataMapperFactory);
 				columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, columnDataMapper);
 				columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, columnDataMapper);
 			}
