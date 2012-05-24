@@ -6,7 +6,7 @@ CREATE TABLE AnbauTexte
    Anwender varchar(10)
 );
 
-CREATE TABLE Anbautexte vor Umstellung
+CREATE TABLE Anbautexte_vor_Umstellung
 (
    ID integer PRIMARY KEY,
    ANBAU1 varchar(255),
@@ -598,7 +598,7 @@ CREATE TABLE fertig
    FertigDatum timestamp
 );
 
-CREATE TABLE Tragfähigkeitsschilder
+CREATE TABLE Tragfaehigkeitsschilder
 (
  lfdn COUNTER not null,
  lfdnDaten INTEGER,
@@ -616,7 +616,7 @@ CREATE TABLE Tragfähigkeitsschilder
  Zusatzdaten VARCHAR(50)
 );
 
-CREATE TABLE TragfähigkeitsschilderDaten
+CREATE TABLE TragfaehigkeitsschilderDaten
 (
    lfdn integer PRIMARY KEY,
    Fabnr varchar(12),
@@ -635,7 +635,7 @@ CREATE TABLE TragfähigkeitsschilderDaten
    KOBJNR varchar(22)
 );
 
-CREATE TABLE TragfähigkeitsschilderPositionen
+CREATE TABLE TragfaehigkeitsschilderPositionen
 (
    lfdnDaten integer,
    Pos varchar(4),
