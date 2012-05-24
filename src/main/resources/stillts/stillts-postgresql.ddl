@@ -29,22 +29,22 @@ CREATE TABLE FLEXREGELUNG
  MZAEHL VARCHAR(8) ,
  MAXZAEHL VARCHAR(8) ,
  MSERIAL VARCHAR(25) ,
- Druckdatum DATETIME ,
- Druckzeit DATETIME ,
- ExecutionTime DOUBLE
+ Druckdatum timestamp ,
+ Druckzeit timestamp ,
+ ExecutionTime float8
 );
 
 CREATE TABLE Fabrikschilder
 (
- lfdn INTGER PRIMARY KEY,
+ lfdn INTEGER PRIMARY KEY,
  Kont VARCHAR(8),
  Sanr VARCHAR(20),
  Fabnr VARCHAR(12),
- DatumAngelegt DATETIME,
- ZeitAngelegt DATETIME,
- Druckdatum DATETIME,
- Druckzeit DATETIME,
- ExecutionTime DOUBLE,
+ DatumAngelegt timestamp,
+ ZeitAngelegt timestamp,
+ Druckdatum timestamp,
+ Druckzeit timestamp,
+ ExecutionTime float8,
  Typ VARCHAR(12),
  BauJ VARCHAR(4),
  LeerGew VARCHAR(5),
@@ -72,7 +72,7 @@ CREATE TABLE Fabrikschilder
 
 CREATE TABLE Fabrikschildzusatzdaten
 (
-   lfdn PRIMARY KEY integer PRIMARY KEY,
+   lfdn INTEGER PRIMARY KEY,
    Sanr varchar(20),
    Fabnr varchar(12),
    DatumAngelegt timestamp,
@@ -83,6 +83,7 @@ CREATE TABLE Fabrikschildzusatzdaten
    KHMM varchar(20),
    KHIN varchar(20)
 );
+
 CREATE TABLE GEWICHT
 (
    EQUNR varchar(18),
@@ -101,13 +102,13 @@ CREATE TABLE GEWICHTCONF
 (
  lfdn INTEGER PRIMARY KEY,
  EQUNR VARCHAR(18),
- TS DATETIME,
+ TS timestamp,
  ATINN VARCHAR(10),
  ATNAM VARCHAR(30),
  ATWRT VARCHAR(30),
  ATBEZ VARCHAR(30),
  ATWTB VARCHAR(30),
- ZKOMPGEW CURRENCY(13,3),
+ ZKOMPGEW MONEY,
  ZWERKS_BATT_KZ VARCHAR(1)
 );
 
@@ -139,11 +140,11 @@ CREATE TABLE HinweisSchildArmy
  GERAET VARCHAR(50),
  AUFNR VARCHAR(50),
  SanrLayout VARCHAR(20),
- DatumAngelegt DATETIME,
- ZeitAngelegt DATETIME,
- Druckdatum DATETIME,
- Druckzeit DATETIME,
- ExecutionTime DOUBLE
+ DatumAngelegt timestamp,
+ ZeitAngelegt timestamp,
+ Druckdatum timestamp,
+ Druckzeit timestamp,
+ ExecutionTime float8
 );
 
 CREATE TABLE KopieTELE211Upload
@@ -171,11 +172,11 @@ CREATE TABLE Laermschilder
  Kont VARCHAR(8),
  Fabnr VARCHAR(12),
  Sanr VARCHAR(20),
- DatumAngelegt DATETIME,
- ZeitAngelegt DATETIME,
- Druckdatum DATETIME,
- Druckzeit DATETIME,
- ExecutionTime DOUBLE
+ DatumAngelegt timestamp,
+ ZeitAngelegt timestamp,
+ Druckdatum timestamp,
+ Druckzeit timestamp,
+ ExecutionTime float8
 );
 
 CREATE TABLE LaermschilderDaten
@@ -210,9 +211,9 @@ CREATE TABLE STVZOSchild
  ZAchsLH VARCHAR(5),
  GEWIBAT VARCHAR(5),
  GEWIANB VARCHAR(5),
- Druckdatum DATETIME,
- Druckzeit DATETIME,
- ExecutionTime DOUBLE
+ Druckdatum timestamp,
+ Druckzeit timestamp,
+ ExecutionTime float8
 );
 
 CREATE TABLE SonstigeSchilder
@@ -222,11 +223,11 @@ CREATE TABLE SonstigeSchilder
  Fabnr VARCHAR(12),
  Sanr VARCHAR(20),
  SanrLayout VARCHAR(20),
- DatumAngelegt DATETIME,
- ZeitAngelegt DATETIME,
- Druckdatum DATETIME,
- Druckzeit DATETIME,
- ExecutionTime DOUBLE
+ DatumAngelegt timestamp,
+ ZeitAngelegt timestamp,
+ Druckdatum timestamp,
+ Druckzeit timestamp,
+ ExecutionTime float8
 );
 
 CREATE TABLE TELE0207
@@ -551,7 +552,7 @@ CREATE TABLE TragFLayoutsachnummern
    Sprache_Kurz varchar(25)
 );
 
-CREATE TABLE TragFLayoutsachnummern (alt)
+CREATE TABLE TragFLayoutsachnummern__alt_
 (
    lfdn integer PRIMARY KEY,
    Sanr varchar(6),
@@ -606,12 +607,12 @@ CREATE TABLE Tragfaehigkeitsschilder
  Fabnr VARCHAR(12),
  KZKundenbezogen BIT not null,
  Sanr VARCHAR(20),
- DatumAngelegt DATETIME,
- ZeitAngelegt DATETIME,
+ DatumAngelegt timestamp,
+ ZeitAngelegt timestamp,
  DruckKZ VARCHAR(1),
- Druckdatum DATETIME,
- Druckzeit DATETIME,
- ExecutionTime DOUBLE,
+ Druckdatum timestamp,
+ Druckzeit timestamp,
+ ExecutionTime float8,
  SanrLayout VARCHAR(20),
  Zusatzdaten VARCHAR(50)
 );

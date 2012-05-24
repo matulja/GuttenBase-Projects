@@ -30,18 +30,6 @@ public class StillTsMdbCopy {
 			// d=100, e=101, r=114,
 			// 17:59:22,905 INFO [AbstractTableCopier] Copying of `Tragfõhigkeitsschilder`-> Tragfõhigkeitsschilder(36/39) started
 
-			// connectorRepository.addConnectorHint(SOURCE, new DatabaseMetaDataInspectorTableFilterHint() {
-			// @Override
-			// public DatabaseMetaDataInspectorTableFilter getValue() {
-			// return new DatabaseMetaDataInspectorTableFilter() {
-			// @Override
-			// public boolean accept(final TableMetaData table) throws SQLException {
-			// return table.getTableName().compareTo("TragFLayoutsachnummern") >= 0;
-			// }
-			// };
-			// }
-			// });
-
 			connectorRepository.addConnectorHint(SOURCE, new TableNameMapperHint() {
 				@Override
 				public TableNameMapper getValue() {
@@ -50,11 +38,11 @@ public class StillTsMdbCopy {
 						public String mapTableName(final TableMetaData tableMetaData) throws SQLException {
 							final String tableName = tableMetaData.getTableName();
 
-							for (int i = 0; i < tableName.length(); i++) {
-								final char ch = tableName.charAt(i);
-								System.out.print(String.valueOf(ch) + "=" + String.valueOf((int) ch) + ", ");
-							}
-							System.out.println();
+							// for (int i = 0; i < tableName.length(); i++) {
+							// final char ch = tableName.charAt(i);
+							// System.out.print(String.valueOf(ch) + "=" + String.valueOf((int) ch) + ", ");
+							// }
+							// System.out.println();
 
 							return "`" + tableName + "`";
 						}
