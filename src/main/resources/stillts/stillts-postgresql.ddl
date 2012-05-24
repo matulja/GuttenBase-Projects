@@ -23,7 +23,7 @@ CREATE TABLE EQUI_UPDATE
 
 CREATE TABLE FLEXREGELUNG
 (
- lfdn COUNTER PRIMARY KEY,
+ lfdn INTEGER PRIMARY KEY,
  Fabnr VARCHAR(12) ,
  SanrLayout VARCHAR(20) ,
  MZAEHL VARCHAR(8) ,
@@ -36,7 +36,7 @@ CREATE TABLE FLEXREGELUNG
 
 CREATE TABLE Fabrikschilder
 (
- lfdn PRIMARY KEY COUNTER PRIMARY KEY,
+ lfdn INTGER PRIMARY KEY,
  Kont VARCHAR(8),
  Sanr VARCHAR(20),
  Fabnr VARCHAR(12),
@@ -99,7 +99,7 @@ CREATE TABLE GEWICHT
 
 CREATE TABLE GEWICHTCONF
 (
- lfdn COUNTER not null,
+ lfdn INTEGER PRIMARY KEY,
  EQUNR VARCHAR(18),
  TS DATETIME,
  ATINN VARCHAR(10),
@@ -130,7 +130,7 @@ CREATE TABLE Geraete
 
 CREATE TABLE HinweisSchildArmy
 (
- lfdn COUNTER not null,
+ lfdn INTEGER PRIMARY KEY,
  FABNR VARCHAR(12),
  VERNR VARCHAR(50),
  HERST VARCHAR(50),
@@ -166,7 +166,7 @@ CREATE TABLE KopieTELE211Upload
 
 CREATE TABLE Laermschilder
 (
- lfdn COUNTER not null,
+ lfdn INTEGER PRIMARY KEY,
  lfdnDaten INTEGER,
  Kont VARCHAR(8),
  Fabnr VARCHAR(12),
@@ -201,7 +201,7 @@ CREATE TABLE Notfallgeraete
 
 CREATE TABLE STVZOSchild
 (
- lfdn COUNTER not null,
+ lfdn INTEGER PRIMARY KEY,
  Fabnr VARCHAR(12),
  SanrLayout VARCHAR(20),
  LeerGew VARCHAR(5),
@@ -217,7 +217,7 @@ CREATE TABLE STVZOSchild
 
 CREATE TABLE SonstigeSchilder
 (
- lfdn COUNTER not null,
+ lfdn INTEGER PRIMARY KEY,
  Kont VARCHAR(8),
  Fabnr VARCHAR(12),
  Sanr VARCHAR(20),
@@ -600,11 +600,11 @@ CREATE TABLE fertig
 
 CREATE TABLE Tragfaehigkeitsschilder
 (
- lfdn COUNTER not null,
+ lfdn INTEGER PRIMARY KEY,
  lfdnDaten INTEGER,
  Kont VARCHAR(8),
  Fabnr VARCHAR(12),
- KZKundenbezogen BIT not,
+ KZKundenbezogen BIT not null,
  Sanr VARCHAR(20),
  DatumAngelegt DATETIME,
  ZeitAngelegt DATETIME,
@@ -618,7 +618,7 @@ CREATE TABLE Tragfaehigkeitsschilder
 
 CREATE TABLE TragfaehigkeitsschilderDaten
 (
-   lfdn integer PRIMARY KEY,
+   lfdn INTEGER PRIMARY KEY,
    Fabnr varchar(12),
    KdAuftrag varchar(6),
    KZLink varchar(1),

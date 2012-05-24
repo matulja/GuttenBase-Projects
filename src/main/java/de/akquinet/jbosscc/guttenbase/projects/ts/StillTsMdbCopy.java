@@ -24,13 +24,39 @@ public class StillTsMdbCopy {
 			connectorRepository.addConnectionInfo(SOURCE, new StillTsAccessConnectionInfo());
 			connectorRepository.addConnectionInfo(DUMP, new ExportDumpConnectionInfo(SOURCE, "stillts.jar"));
 
+			// 17:59:22,903 INFO [AbstractTableCopier] 26 lines copied, average per batch (2000) = 00:00:00
+			// T=84, r=114, a=97, g=103, f=102, õ=228(245), h=104, i=105, g=103, k=107, e=101, i=105, t=116, s=115, s=115, c=99, h=104, i=105,
+			// l=108,
+			// d=100, e=101, r=114,
+			// 17:59:22,905 INFO [AbstractTableCopier] Copying of `Tragfõhigkeitsschilder`-> Tragfõhigkeitsschilder(36/39) started
+
+			// connectorRepository.addConnectorHint(SOURCE, new DatabaseMetaDataInspectorTableFilterHint() {
+			// @Override
+			// public DatabaseMetaDataInspectorTableFilter getValue() {
+			// return new DatabaseMetaDataInspectorTableFilter() {
+			// @Override
+			// public boolean accept(final TableMetaData table) throws SQLException {
+			// return table.getTableName().compareTo("TragFLayoutsachnummern") >= 0;
+			// }
+			// };
+			// }
+			// });
+
 			connectorRepository.addConnectorHint(SOURCE, new TableNameMapperHint() {
 				@Override
 				public TableNameMapper getValue() {
 					return new TableNameMapper() {
 						@Override
 						public String mapTableName(final TableMetaData tableMetaData) throws SQLException {
-							return "`" + tableMetaData.getTableName() + "`";
+							final String tableName = tableMetaData.getTableName();
+
+							for (int i = 0; i < tableName.length(); i++) {
+								final char ch = tableName.charAt(i);
+								System.out.print(String.valueOf(ch) + "=" + String.valueOf((int) ch) + ", ");
+							}
+							System.out.println();
+
+							return "`" + tableName + "`";
 						}
 					};
 				}
