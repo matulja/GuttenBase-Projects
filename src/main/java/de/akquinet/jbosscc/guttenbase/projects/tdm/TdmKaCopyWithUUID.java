@@ -10,13 +10,16 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
+import de.akquinet.jbosscc.guttenbase.tools.TableConfigurationChecker;
+import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
+import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlReindexTablesTool;
 
 public class TdmKaCopyWithUUID {
+	private static final Logger LOG = Logger.getLogger(TdmKaCopyWithUUID.class);
+
 	private static final String SOURCE = "SOURCE";
 	private static final String TARGET = "TARGET";
-	// private static final String EXPORT = "DUMP";
-	// private static final String IMPORT = "IMPORT";
-	private static final Logger LOG = Logger.getLogger(TdmKaCopyWithUUID.class);
 
 	public static void main(final String[] args) {
 		try {
@@ -24,11 +27,8 @@ public class TdmKaCopyWithUUID {
 
 			connectorRepository.addConnectionInfo(SOURCE, new TdmKaPostgresqlConnectionInfo());
 			connectorRepository.addConnectionInfo(TARGET, new TdmKaPostgresqlConnectionInfo2());
-			// connectorRepository.addConnectionInfo(EXPORT, new ExportDumpConnectionInfo(SOURCE, "tdmka.jar"));
-			// connectorRepository.addConnectionInfo(IMPORT, new ImportDumpConnectionInfo("tdmka.jar"));
 
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
-			// connectorRepository.addConnectorHint(IMPORT, new TdmKaSourceTableNameFilterHint());
 			final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
 
 			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperFactoryHint() {
@@ -42,18 +42,16 @@ public class TdmKaCopyWithUUID {
 				}
 			});
 
-			// new ScriptExecutor(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
+			new ScriptExecutor(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
 
-			// new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(SOURCE);
-			// new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(SOURCE);
+			new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(SOURCE);
 
-			// new TableConfigurationChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
-			// new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(TARGET);
-			// new DefaultTableCopier(connectorRepository).copyTables(SOURCE, DUMP);
+			new TableConfigurationChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET);
-			// new TableDataChecker(connectorRepository).checkTableData(SOURCE, TARGET);
 
-			// new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(TARGET);
+			new TableDataChecker(connectorRepository).checkTableData(SOURCE, TARGET);
+
+			new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(TARGET);
 		} catch (final SQLException e) {
 			LOG.error("main", e);
 		}
