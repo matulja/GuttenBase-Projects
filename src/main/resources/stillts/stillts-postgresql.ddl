@@ -607,11 +607,11 @@ CREATE TABLE fertig
 
 CREATE TABLE Tragfaehigkeitsschilder
 (
- lfdn INTEGER PRIMARY KEY,
+ lfdn INTEGER NOT NULL,
  lfdnDaten INTEGER,
  Kont VARCHAR(8),
  Fabnr VARCHAR(12),
- KZKundenbezogen BIT not null,
+ KZKundenbezogen BOOLEAN NOT NULL,
  Sanr VARCHAR(20),
  DatumAngelegt timestamp,
  ZeitAngelegt timestamp,
@@ -625,7 +625,7 @@ CREATE TABLE Tragfaehigkeitsschilder
 
 CREATE TABLE TragfaehigkeitsschilderDaten
 (
-   lfdn INTEGER PRIMARY KEY,
+   lfdn INTEGER NOT NULL,
    Fabnr varchar(12),
    KdAuftrag varchar(6),
    KZLink varchar(1),
@@ -644,7 +644,7 @@ CREATE TABLE TragfaehigkeitsschilderDaten
 
 CREATE TABLE TragfaehigkeitsschilderPositionen
 (
-   lfdnDaten integer,
+   lfdnDaten integer  NOT NULL,
    Pos varchar(4),
    Wert varchar(5)
 );
