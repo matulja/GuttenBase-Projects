@@ -548,11 +548,11 @@ CREATE TABLE TragFLayoutsachnummern
    Sanr varchar(20),
    Sprache varchar(40),
    Typ varchar(1),
-   Längenmass varchar(10),
+   Laengenmass varchar(10),
    Gewichtsmass varchar(10),
-   Zeilen integer,
-   Spalten integer,
-   SpaltenLayout integer,
+   Zeilen SMALLINT,
+   Spalten SMALLINT,
+   SpaltenLayout SMALLINT,
    DatumAngelegt timestamp,
    ZeitAngelegt timestamp,
    Sprache_Kurz varchar(25)
@@ -564,8 +564,8 @@ CREATE TABLE TragFLayoutsachnummern__alt_
    Sanr varchar(6),
    Sprache varchar(20),
    Typ varchar(1),
-   Zeilen integer,
-   Spalten integer,
+   Zeilen SMALLINT,
+   Spalten SMALLINT,
    DatumAngelegt timestamp,
    ZeitAngelegt timestamp
 );
@@ -576,10 +576,10 @@ CREATE TABLE TragFLayoutsachnummern_alt
    Sanr varchar(6),
    Sprache varchar(20),
    Typ varchar(1),
-   Längenmass varchar(10),
+   Laengenmass varchar(10),
    Gewichtsmass varchar(10),
-   Zeilen integer,
-   Spalten integer,
+   Zeilen SMALLINT,
+   Spalten SMALLINT,
    DatumAngelegt timestamp,
    ZeitAngelegt timestamp
 );
@@ -590,10 +590,10 @@ CREATE TABLE TragFLayoutsachnummernAlt
    Sanr varchar(6),
    Sprache varchar(40),
    Typ varchar(1),
-   Längenmass varchar(10),
+   Laengenmass varchar(10),
    Gewichtsmass varchar(10),
-   Zeilen integer,
-   Spalten integer,
+   Zeilen SMALLINT,
+   Spalten SMALLINT,
    DatumAngelegt timestamp,
    ZeitAngelegt timestamp
 );
