@@ -108,7 +108,7 @@ CREATE TABLE GEWICHTCONF
  ATWRT VARCHAR(30),
  ATBEZ VARCHAR(30),
  ATWTB VARCHAR(30),
- ZKOMPGEW MONEY,
+ ZKOMPGEW NUMERIC,
  ZWERKS_BATT_KZ VARCHAR(1)
 );
 
@@ -534,6 +534,12 @@ CREATE TABLE TELE616Upload
    Fabnr varchar(12),
    Cffs varchar(3),
    Ohau varchar(9)
+);
+
+CREATE TABLE TFSchildMapping
+(
+   Org_Nr varchar(6) PRIMARY KEY,
+   MatNrNeu varchar(18)
 );
 
 CREATE TABLE TragFLayoutsachnummern
