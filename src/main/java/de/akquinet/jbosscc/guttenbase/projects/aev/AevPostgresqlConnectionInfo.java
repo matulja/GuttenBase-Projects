@@ -1,9 +1,9 @@
 package de.akquinet.jbosscc.guttenbase.projects.aev;
 
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
-import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfoImpl;
+import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectorInfoImpl;
 
-public class AevPostgresqlConnectionInfo extends URLConnectionInfoImpl {
+public class AevPostgresqlConnectionInfo extends URLConnectorInfoImpl {
 	private static final long serialVersionUID = 1L;
 
 	public AevPostgresqlConnectionInfo() {

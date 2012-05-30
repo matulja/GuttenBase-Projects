@@ -1,9 +1,9 @@
 package de.akquinet.jbosscc.guttenbase.projects.ts;
 
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
-import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfoImpl;
+import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectorInfoImpl;
 
-public class StillTsAccessConnectionInfo extends URLConnectionInfoImpl {
+public class StillTsAccessConnectionInfo extends URLConnectorInfoImpl {
 	private static final long serialVersionUID = 1L;
 
 	public StillTsAccessConnectionInfo() {

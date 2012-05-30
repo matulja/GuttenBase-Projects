@@ -1,9 +1,9 @@
 package de.akquinet.jbosscc.guttenbase.projects.still;
 
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
-import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectionInfoImpl;
+import de.akquinet.jbosscc.guttenbase.connector.impl.URLConnectorInfoImpl;
 
-public class StillReportPostgresqlConnectionInfo extends URLConnectionInfoImpl {
+public class StillReportPostgresqlConnectionInfo extends URLConnectorInfoImpl {
 	private static final long serialVersionUID = 1L;
 
 	public StillReportPostgresqlConnectionInfo() {
