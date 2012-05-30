@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectionInfo;
+import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.projects.aev.KvbbCopyAev;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
@@ -18,7 +18,7 @@ public class MeyleExportDeva {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
       connectorRepository.addConnectionInfo("meyleMsSql", new MeyleMsSqlConnectionInfo());
-      connectorRepository.addConnectionInfo("meyleExport", new ExportDumpConnectionInfo("meyleMsSql", "deva.jar"));
+      connectorRepository.addConnectionInfo("meyleExport", new ExportDumpConnectorInfo("meyleMsSql", "deva.jar"));
 
       new DefaultTableCopier(connectorRepository).copyTables("meyleMsSql", "meyleExport");
     } catch (final SQLException e) {

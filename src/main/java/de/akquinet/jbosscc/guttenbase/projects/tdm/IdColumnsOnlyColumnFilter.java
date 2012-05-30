@@ -8,9 +8,9 @@ import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
-import de.akquinet.jbosscc.guttenbase.repository.TableColumnFilter;
+import de.akquinet.jbosscc.guttenbase.repository.RepositoryColumnFilter;
 
-public class IdColumnsOnlyColumnFilter implements TableColumnFilter, ColumnNameMapper, ColumnMapper {
+public class IdColumnsOnlyColumnFilter implements RepositoryColumnFilter, ColumnNameMapper, ColumnMapper {
 	public static final String UUID_SUFFIX = "_UUID";
 
 	@Override

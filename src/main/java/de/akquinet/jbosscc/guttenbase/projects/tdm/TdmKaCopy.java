@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.hints.TableColumnFilterHint;
+import de.akquinet.jbosscc.guttenbase.hints.RepositoryColumnFilterHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactory;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnMapperHint;
@@ -15,7 +15,7 @@ import de.akquinet.jbosscc.guttenbase.mapping.TableMapper;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import de.akquinet.jbosscc.guttenbase.repository.TableColumnFilter;
+import de.akquinet.jbosscc.guttenbase.repository.RepositoryColumnFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
@@ -96,11 +96,11 @@ public class TdmKaCopy {
 	private static void setupSourceConnector(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData) {
 		connectorRepository.addConnectorHint(SOURCE, new OnlyTablesWithMappingsTableFilter(mappingDatabaseMetaData));
 
-		connectorRepository.addConnectorHint(SOURCE, new TableColumnFilterHint() {
+		connectorRepository.addConnectorHint(SOURCE, new RepositoryColumnFilterHint() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public TableColumnFilter getValue() {
+			public RepositoryColumnFilter getValue() {
 				return new IdColumnsOnlyColumnFilter();
 			}
 		});
@@ -138,11 +138,11 @@ public class TdmKaCopy {
 			}
 		});
 
-		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new TableColumnFilterHint() {
+		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new RepositoryColumnFilterHint() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public TableColumnFilter getValue() {
+			public RepositoryColumnFilter getValue() {
 				return new IdColumnsOnlyColumnFilter();
 			}
 		});

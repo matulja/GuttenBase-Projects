@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectionInfo;
+import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.hints.TableNameMapperHint;
 import de.akquinet.jbosscc.guttenbase.mapping.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
@@ -22,7 +22,7 @@ public class StillTsMdbCopy {
 		try {
 			final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 			connectorRepository.addConnectionInfo(SOURCE, new StillTsAccessConnectionInfo());
-			connectorRepository.addConnectionInfo(DUMP, new ExportDumpConnectionInfo(SOURCE, "stillts.jar"));
+			connectorRepository.addConnectionInfo(DUMP, new ExportDumpConnectorInfo(SOURCE, "stillts.jar"));
 
 			// 17:59:22,903 INFO [AbstractTableCopier] 26 lines copied, average per batch (2000) = 00:00:00
 			// T=84, r=114, a=97, g=103, f=102, õ=228(245), h=104, i=105, g=103, k=107, e=101, i=105, t=116, s=115, s=115, c=99, h=104, i=105,
