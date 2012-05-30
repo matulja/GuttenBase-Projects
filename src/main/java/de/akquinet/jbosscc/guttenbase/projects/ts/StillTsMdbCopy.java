@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.configuration.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.hints.TableNameMapperHint;
+import de.akquinet.jbosscc.guttenbase.mapping.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;

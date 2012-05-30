@@ -1,7 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
-import de.akquinet.jbosscc.guttenbase.configuration.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.TableMapper;
+import de.akquinet.jbosscc.guttenbase.mapping.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 
