@@ -9,7 +9,7 @@ import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
-import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatiblityChecker;
+import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatibilityChecker;
 
 public class MeyleImportDeva {
 	private static final String TARGET = "meylePostgresql";
@@ -33,7 +33,7 @@ public class MeyleImportDeva {
 
 			new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
-			new SchemaCompatiblityChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
+			new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
 			new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
 
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(false, false));
