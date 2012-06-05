@@ -10,7 +10,7 @@ import de.akquinet.jbosscc.guttenbase.mapping.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 
 public class StillTsMdbCopy {
 	private static final String SOURCE = "SOURCE";
@@ -66,7 +66,7 @@ public class StillTsMdbCopy {
 			// }
 			// });
 
-			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, DUMP);
+			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, DUMP);
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}

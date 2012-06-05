@@ -16,7 +16,7 @@ import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 
 public class StillTsImportDump {
 	private static final String IMPORT = "IMPORT";
@@ -70,7 +70,7 @@ public class StillTsImportDump {
 				}
 			});
 
-			new DefaultTableCopier(connectorRepository).copyTables(IMPORT, TARGET);
+			new DefaultTableCopyTool(connectorRepository).copyTables(IMPORT, TARGET);
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}

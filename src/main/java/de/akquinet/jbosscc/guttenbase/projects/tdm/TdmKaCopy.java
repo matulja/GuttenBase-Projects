@@ -17,7 +17,7 @@ import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.RepositoryColumnFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
 import de.akquinet.jbosscc.guttenbase.utils.DatabaseSchemaScriptCreator;
 
@@ -60,7 +60,7 @@ public class TdmKaCopy {
 
 			setupSourceConnector(connectorRepository, mappingDatabaseMetaData);
 
-			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET_NEW_TABLES);
+			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET_NEW_TABLES);
 
 			removeDuplicates(connectorRepository, targetInfo);
 

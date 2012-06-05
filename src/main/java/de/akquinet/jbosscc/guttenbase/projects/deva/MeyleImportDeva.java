@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
 import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatibilityChecker;
 
@@ -34,7 +34,7 @@ public class MeyleImportDeva {
 			new ScriptExecutor(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
 			new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
-			new DefaultTableCopier(connectorRepository).copyTables("meyleImport", "meylePostgresql");
+			new DefaultTableCopyTool(connectorRepository).copyTables("meyleImport", "meylePostgresql");
 
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(false, false));
 			new MeylePostgresqlSequenceUpdater(connectorRepository).updateSequences(TARGET);

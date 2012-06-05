@@ -8,7 +8,7 @@ import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.projects.aev.KvbbCopyAev;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatibilityChecker;
 
 public class StillReportCopyDb {
@@ -24,7 +24,7 @@ public class StillReportCopyDb {
       connectorRepository.addConnectorHint("target", new StillTableNameFilterHint());
       
       new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration("source", "target");
-      new DefaultTableCopier(connectorRepository).copyTables("source", "target");
+      new DefaultTableCopyTool(connectorRepository).copyTables("source", "target");
     } catch (final SQLException e) {
       LOG.error("main", e);
     }

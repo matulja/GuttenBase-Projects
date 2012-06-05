@@ -9,7 +9,7 @@ import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryH
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopier;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
 import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatibilityChecker;
 import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
@@ -47,7 +47,7 @@ public class TdmKaCopyWithUUID {
 			new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(SOURCE);
 
 			new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
-			new DefaultTableCopier(connectorRepository).copyTables(SOURCE, TARGET);
+			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
 
 			new TableDataChecker(connectorRepository).checkTableData(SOURCE, TARGET);
 
