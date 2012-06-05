@@ -10,7 +10,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
+import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.CheckEqualTableDataTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlReindexTablesTool;
@@ -42,7 +42,7 @@ public class TdmKaCopyWithUUID {
 				}
 			});
 
-			new ScriptExecutor(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
+			new ScriptExecutorTool(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
 
 			new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(SOURCE);
 

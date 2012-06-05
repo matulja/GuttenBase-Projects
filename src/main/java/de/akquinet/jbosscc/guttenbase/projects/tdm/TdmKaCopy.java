@@ -18,7 +18,7 @@ import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.RepositoryColumnFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
+import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 import de.akquinet.jbosscc.guttenbase.utils.DatabaseSchemaScriptCreator;
 
 public class TdmKaCopy {
@@ -40,7 +40,7 @@ public class TdmKaCopy {
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
 			connectorRepository.addConnectorHint(TARGET, new TdmKaSourceTableNameFilterHint());
 
-			new ScriptExecutor(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
+			new ScriptExecutorTool(connectorRepository).executeFileScript(TARGET, "/tdmka/tdmka-uuid-postgresql.ddl");
 
 			// Create insert statements needed later with ALL column
 			final List<String> insertStatements = new TdmKaInsertSelectStatementCreator(connectorRepository, SOURCE, sourceInfo.getSchema(),
@@ -66,7 +66,7 @@ public class TdmKaCopy {
 
 			createNewTablesIndexes(connectorRepository, mappingDatabaseMetaData);
 
-			new ScriptExecutor(connectorRepository).executeScript(TARGET, insertStatements);
+			new ScriptExecutorTool(connectorRepository).executeScript(TARGET, insertStatements);
 
 		} catch (final Exception e) {
 			LOG.error("main", e);
@@ -78,19 +78,19 @@ public class TdmKaCopy {
 		final List<String> removeDuplicates = new TdmKaMappingTablesDuplicateRemover(connectorRepository, TARGET, targetInfo.getSchema())
 				.removeDuplicates("uuid_tdm_crash_brakeactuation", "uuid_tdm_crash_drivingspeed", "uuid_tdm_crash_features",
 						"uuid_tdm_crash_steeringangle");
-		new ScriptExecutor(connectorRepository).executeScript(TARGET, false, true, removeDuplicates);
+		new ScriptExecutorTool(connectorRepository).executeScript(TARGET, false, true, removeDuplicates);
 	}
 
 	private static void createNewTablesIndexes(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData)
 			throws SQLException {
 		final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator();
-		new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createIndexStatements(mappingDatabaseMetaData));
+		new ScriptExecutorTool(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createIndexStatements(mappingDatabaseMetaData));
 	}
 
 	private static void createNewTables(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData)
 			throws SQLException {
 		final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator();
-		new ScriptExecutor(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createTableStatements(mappingDatabaseMetaData));
+		new ScriptExecutorTool(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createTableStatements(mappingDatabaseMetaData));
 	}
 
 	private static void setupSourceConnector(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData) {
