@@ -11,8 +11,8 @@ import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutor;
-import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatibilityChecker;
-import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
+import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
+import de.akquinet.jbosscc.guttenbase.tools.CheckEqualTableDataTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlReindexTablesTool;
 
 public class TdmKaCopyWithUUID {
@@ -46,10 +46,10 @@ public class TdmKaCopyWithUUID {
 
 			new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(SOURCE);
 
-			new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
+			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
 
-			new TableDataChecker(connectorRepository).checkTableData(SOURCE, TARGET);
+			new CheckEqualTableDataTool(connectorRepository).checkTableData(SOURCE, TARGET);
 
 			new PostgresqlReindexTablesTool(connectorRepository).executeOnAllTables(TARGET);
 		} catch (final SQLException e) {

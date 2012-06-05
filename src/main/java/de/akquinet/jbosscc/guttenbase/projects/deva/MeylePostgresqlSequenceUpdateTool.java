@@ -3,10 +3,10 @@ package de.akquinet.jbosscc.guttenbase.projects.deva;
 import java.sql.SQLException;
 
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlSequenceUpdater;
+import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlSequenceUpdateTool;
 
-public class MeylePostgresqlSequenceUpdater extends PostgresqlSequenceUpdater {
-  public MeylePostgresqlSequenceUpdater(final ConnectorRepository connectorRepository) {
+public class MeylePostgresqlSequenceUpdateTool extends PostgresqlSequenceUpdateTool {
+  public MeylePostgresqlSequenceUpdateTool(final ConnectorRepository connectorRepository) {
     super(connectorRepository);
   }
 

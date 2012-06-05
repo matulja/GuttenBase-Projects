@@ -9,8 +9,8 @@ import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.SchemaCompatibilityChecker;
-import de.akquinet.jbosscc.guttenbase.tools.TableDataChecker;
+import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
+import de.akquinet.jbosscc.guttenbase.tools.CheckEqualTableDataTool;
 
 public class KvbbCopyAev {
   private static final Logger LOG = Logger.getLogger(KvbbCopyAev.class);
@@ -31,13 +31,13 @@ public class KvbbCopyAev {
       connectorRepository.addConnectorHint("aevImport", tableNameHint);
       connectorRepository.addConnectorHint("aevPostgresql", tableNameHint);
 
-      new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration("aevMySql", "aevExport");
-      new SchemaCompatibilityChecker(connectorRepository).checkTableConfiguration("aevMySql", "aevPostgresql");
+      new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration("aevMySql", "aevExport");
+      new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration("aevMySql", "aevPostgresql");
       new DefaultTableCopyTool(connectorRepository).copyTables("aevMySql", "aevExport");
       // new SplitByRangeTableCopier(connectorRepository).copyTables("aevMySql", "aevExport");
 
       new DefaultTableCopyTool(connectorRepository).copyTables("aevImport", "aevPostgresql");
-      new TableDataChecker(connectorRepository).checkTableData("aevMySql", "aevPostgresql");
+      new CheckEqualTableDataTool(connectorRepository).checkTableData("aevMySql", "aevPostgresql");
     } catch (final SQLException e) {
       LOG.error("main", e);
     }
