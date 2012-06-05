@@ -4,8 +4,8 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactory;
-import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperFactoryHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProvider;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProviderHint;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
@@ -31,11 +31,11 @@ public class TdmKaCopyWithUUID {
 			connectorRepository.addConnectorHint(SOURCE, new TdmKaSourceTableNameFilterHint());
 			final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
 
-			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperFactoryHint() {
+			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperProviderHint() {
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				protected void addMappings(final DefaultColumnDataMapperFactory columnDataMapperFactory) {
+				protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
 					super.addMappings(columnDataMapperFactory);
 					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, columnDataMapper);
 					columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, columnDataMapper);
