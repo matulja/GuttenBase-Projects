@@ -39,11 +39,13 @@ public class TdmKaMappingTablesCreator {
 		for (final TableMetaData sourceTableMetaData : tableSourceMetaDatas) {
 			final List<ColumnMetaData> sourceColumns = sourceTableMetaData.getColumnMetaData();
 			final List<ColumnMetaDataBuilder> targetColumns = new ArrayList<ColumnMetaDataBuilder>();
+			final TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder(_databaseMetaDataBuilder).setTableName(tableMapper
+					.mapTableName(sourceTableMetaData));
 
 			for (final ColumnMetaData sourceColumnMetaData : sourceColumns) {
 				if (columnDataMapper.isApplicable(sourceColumnMetaData, sourceColumnMetaData)) {
-					final ColumnMetaDataBuilder source = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false);
-					final ColumnMetaDataBuilder target = new ColumnMetaDataBuilder(sourceColumnMetaData).setPrimaryKey(false)
+					final ColumnMetaDataBuilder source = new ColumnMetaDataBuilder(tableMetaDataBuilder, sourceColumnMetaData).setPrimaryKey(false);
+					final ColumnMetaDataBuilder target = new ColumnMetaDataBuilder(tableMetaDataBuilder, sourceColumnMetaData).setPrimaryKey(false)
 							.setColumnClassName(String.class.getName()).setColumnTypeName("VARCHAR(40)")
 							.setColumnName(columnNameMapper.mapColumnName(sourceColumnMetaData));
 
@@ -53,9 +55,6 @@ public class TdmKaMappingTablesCreator {
 			}
 
 			if (!targetColumns.isEmpty()) {
-				final TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder().setTableName(tableMapper
-						.mapTableName(sourceTableMetaData));
-
 				for (final ColumnMetaDataBuilder columnMetaDataBuilder : targetColumns) {
 					tableMetaDataBuilder.addColumn(columnMetaDataBuilder);
 
@@ -63,7 +62,7 @@ public class TdmKaMappingTablesCreator {
 					final boolean unique = sourceColumnMetaData != null && sourceColumnMetaData.isPrimaryKey()
 							&& "id".equalsIgnoreCase(sourceColumnMetaData.getColumnName());
 
-					tableMetaDataBuilder.addIndex(new IndexMetaDataBuilder().addColumn(columnMetaDataBuilder)
+					tableMetaDataBuilder.addIndex(new IndexMetaDataBuilder(tableMetaDataBuilder).addColumn(columnMetaDataBuilder)
 							.setIndexName("IDX_" + columnMetaDataBuilder.getColumnName() + "_" + _indexIndex++).setUnique(unique));
 				}
 
