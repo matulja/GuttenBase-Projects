@@ -4,18 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 
-public class TdmKaMappingTablesDuplicateRemover {
-	private final ConnectorRepository _connectorRepository;
-	private final String _connectorId;
+public class TdmKaMappingTablesDuplicateRemoverTool {
 	private final String _targetSchema;
-	private final int _indexIndex = 1;
 
-	public TdmKaMappingTablesDuplicateRemover(final ConnectorRepository connectorRepository, final String connectorId,
-			final String targetSchema) {
-		_connectorRepository = connectorRepository;
-		_connectorId = connectorId;
+	public TdmKaMappingTablesDuplicateRemoverTool(final String targetSchema) {
 		_targetSchema = targetSchema;
 	}
 

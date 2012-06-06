@@ -8,7 +8,6 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.RepositoryTableFilter;
 
 public final class OnlyTablesWithMappingsTableFilter extends RepositoryTableFilterHint {
-	private static final long serialVersionUID = 1L;
 	private final DatabaseMetaData _mappingDatabaseMetaData;
 
 	public OnlyTablesWithMappingsTableFilter(final DatabaseMetaData mappingDatabaseMetaData) {

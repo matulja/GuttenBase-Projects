@@ -75,7 +75,7 @@ public class TdmKaCopy {
 
 	private static void removeDuplicates(final ConnectorRepository connectorRepository, final TdmKaPostgresqlConnectionInfo2 targetInfo)
 			throws SQLException {
-		final List<String> removeDuplicates = new TdmKaMappingTablesDuplicateRemover(connectorRepository, TARGET, targetInfo.getSchema())
+		final List<String> removeDuplicates = new TdmKaMappingTablesDuplicateRemoverTool(targetInfo.getSchema())
 				.removeDuplicates("uuid_tdm_crash_brakeactuation", "uuid_tdm_crash_drivingspeed", "uuid_tdm_crash_features",
 						"uuid_tdm_crash_steeringangle");
 		new ScriptExecutorTool(connectorRepository).executeScript(TARGET, false, true, removeDuplicates);
@@ -97,8 +97,6 @@ public class TdmKaCopy {
 		connectorRepository.addConnectorHint(SOURCE, new OnlyTablesWithMappingsTableFilter(mappingDatabaseMetaData));
 
 		connectorRepository.addConnectorHint(SOURCE, new RepositoryColumnFilterHint() {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			public RepositoryColumnFilter getValue() {
 				return new IdColumnsOnlyColumnFilter();
@@ -110,8 +108,6 @@ public class TdmKaCopy {
 		final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
 
 		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperProviderHint() {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
 				super.addMappings(columnDataMapperFactory);
@@ -121,8 +117,6 @@ public class TdmKaCopy {
 		});
 
 		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultTableMapperHint() {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			public TableMapper getValue() {
 				return new TdmKaTableMapper();
@@ -130,8 +124,6 @@ public class TdmKaCopy {
 		});
 
 		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnMapperHint() {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			public ColumnMapper getValue() {
 				return new IdColumnsOnlyColumnFilter();
@@ -139,8 +131,6 @@ public class TdmKaCopy {
 		});
 
 		connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new RepositoryColumnFilterHint() {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			public RepositoryColumnFilter getValue() {
 				return new IdColumnsOnlyColumnFilter();

@@ -14,8 +14,6 @@ import de.akquinet.jbosscc.guttenbase.repository.RepositoryTableFilter;
  * @author M. Dahm
  */
 public final class TdmKaSourceTableNameFilterHint extends RepositoryTableFilterHint {
-	private static final long serialVersionUID = 1L;
-
 	@Override
 	public RepositoryTableFilter getValue() {
 		return new RepositoryTableFilter() {

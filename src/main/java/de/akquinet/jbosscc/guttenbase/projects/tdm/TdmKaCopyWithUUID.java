@@ -9,10 +9,10 @@ import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProvider
 import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
+import de.akquinet.jbosscc.guttenbase.tools.CheckEqualTableDataTool;
+import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
-import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
-import de.akquinet.jbosscc.guttenbase.tools.CheckEqualTableDataTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlReindexTablesTool;
 
 public class TdmKaCopyWithUUID {
@@ -32,8 +32,6 @@ public class TdmKaCopyWithUUID {
 			final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
 
 			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperProviderHint() {
-				private static final long serialVersionUID = 1L;
-
 				@Override
 				protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
 					super.addMappings(columnDataMapperFactory);
