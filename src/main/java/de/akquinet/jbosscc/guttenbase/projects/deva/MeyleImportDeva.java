@@ -7,9 +7,9 @@ import org.apache.log4j.Logger;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
+import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
-import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 
 public class MeyleImportDeva {
 	private static final String TARGET = "meylePostgresql";
@@ -33,14 +33,15 @@ public class MeyleImportDeva {
 
 			new ScriptExecutorTool(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql.ddl");
 
-			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration("meyleImport", "meylePostgresql");
-			new DefaultTableCopyTool(connectorRepository).copyTables("meyleImport", "meylePostgresql");
+			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
+			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
 
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(false, false));
 			new MeylePostgresqlSequenceUpdateTool(connectorRepository).updateSequences(TARGET);
 
-			new ScriptExecutorTool(connectorRepository).executeScript(TARGET, false, false, "SELECT setval('public.sessioninfo_id_seq', 351, true);",
-					"SELECT setval('public.workiteminfo_id_seq', 651, true);", "SELECT setval('public.hibernate_sequence', 259, true);");
+			new ScriptExecutorTool(connectorRepository).executeScript(TARGET, false, false,
+					"SELECT setval('public.sessioninfo_id_seq', 351, true);", "SELECT setval('public.workiteminfo_id_seq', 651, true);",
+					"SELECT setval('public.hibernate_sequence', 259, true);");
 		} catch (final SQLException e) {
 			LOG.error("main", e);
 		}
