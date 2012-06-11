@@ -40,8 +40,8 @@ public class MeyleImportDeva {
 			new MeylePostgresqlSequenceUpdateTool(connectorRepository).updateSequences(TARGET);
 
 			new ScriptExecutorTool(connectorRepository).executeScript(TARGET, false, false,
-					"SELECT setval('public.sessioninfo_id_seq', 351, true);", "SELECT setval('public.workiteminfo_id_seq', 701, true);",
-					"SELECT setval('public.hibernate_sequence', 259, true);");
+					"SELECT setval('public.sessioninfo_id_seq', 501, true);", "SELECT setval('public.workiteminfo_id_seq', 1301, true);",
+					"SELECT setval('public.hibernate_sequence', 317, true);");
 		} catch (final SQLException e) {
 			LOG.error("main", e);
 		}
