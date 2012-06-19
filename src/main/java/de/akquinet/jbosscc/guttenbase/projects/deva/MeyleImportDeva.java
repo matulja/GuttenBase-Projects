@@ -53,7 +53,7 @@ public class MeyleImportDeva {
 			// }
 
 			final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
-			// scriptExecutorTool.executeFileScript(TARGET, "deva/deva-postgresql.ddl");
+			scriptExecutorTool.executeFileScript(TARGET, "deva/deva-postgresql.ddl");
 
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
