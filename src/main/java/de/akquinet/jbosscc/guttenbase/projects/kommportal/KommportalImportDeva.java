@@ -30,7 +30,6 @@ import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
-import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 
 public class KommportalImportDeva {
 	private static final String TARGET = "Oracle";
@@ -114,12 +113,12 @@ public class KommportalImportDeva {
 					return new NumberOfRowsPerBatch() {
 						@Override
 						public boolean useMultipleValuesClauses(final TableMetaData targetTableMetaData) {
-							return true;
+							return false;
 						}
 
 						@Override
 						public int getNumberOfRowsPerBatch(final TableMetaData targetTableMetaData) {
-							return 1;
+							return 2000;
 						}
 					};
 				}
@@ -190,8 +189,8 @@ public class KommportalImportDeva {
 			// LOG.error("drop", e);
 			// }
 
-			final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
-			scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle.ddl");
+			// final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
+			// scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle.ddl");
 
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
