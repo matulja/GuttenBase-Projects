@@ -34,7 +34,8 @@ public class KommportalExport {
 					return new RepositoryTableFilter() {
 						@Override
 						public boolean accept(final TableMetaData table) throws SQLException {
-							return table.getTableName().toUpperCase().compareTo("CONTENT") >= 0;
+							final String tableName = table.getTableName().toUpperCase();
+							return /* tableName.compareTo("PLAN_TABLE") >= 0 && */!tableName.contains("$");
 						}
 					};
 				}
