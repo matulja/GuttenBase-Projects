@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
-import de.akquinet.jbosscc.guttenbase.hints.NumberOfRowsPerInsertionHint;
+import de.akquinet.jbosscc.guttenbase.hints.NumberOfRowsPerBatchHint;
 import de.akquinet.jbosscc.guttenbase.hints.RepositoryTableFilterHint;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.projects.aev.KvbbCopyAev;
@@ -13,7 +13,7 @@ import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.RepositoryTableFilter;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerInsertion;
+import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
 
 public class KommportalExport {
 	private static final Logger LOG = Logger.getLogger(KvbbCopyAev.class);
@@ -42,17 +42,17 @@ public class KommportalExport {
 			};
 			connectorRepository.addConnectorHint(SOURCE, filterHint);
 
-			connectorRepository.addConnectorHint(SOURCE, new NumberOfRowsPerInsertionHint() {
+			connectorRepository.addConnectorHint(SOURCE, new NumberOfRowsPerBatchHint() {
 				@Override
-				public NumberOfRowsPerInsertion getValue() {
-					return new NumberOfRowsPerInsertion() {
+				public NumberOfRowsPerBatch getValue() {
+					return new NumberOfRowsPerBatch() {
 						@Override
-						public boolean useValuesClauses(final TableMetaData targetTableMetaData) {
+						public boolean useMultipleValuesClauses(final TableMetaData targetTableMetaData) {
 							return true;
 						}
 
 						@Override
-						public int getNumberOfRowsPerInsertion(final TableMetaData targetTableMetaData) {
+						public int getNumberOfRowsPerBatch(final TableMetaData targetTableMetaData) {
 							if ("ANYBINARY".equalsIgnoreCase(targetTableMetaData.getTableName())) {
 								return 1;
 							} else {

@@ -1,7 +1,6 @@
 package de.akquinet.jbosscc.guttenbase.projects.kommportal;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.ColumnMapperHint;
 import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
+import de.akquinet.jbosscc.guttenbase.hints.NumberOfRowsPerBatchHint;
 import de.akquinet.jbosscc.guttenbase.hints.TableMapperHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProvider;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProviderHint;
@@ -29,6 +29,8 @@ import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
+import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
+import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 
 public class KommportalImportDeva {
 	private static final String TARGET = "Oracle";
@@ -106,6 +108,52 @@ public class KommportalImportDeva {
 				}
 			});
 
+			connectorRepository.addConnectorHint(TARGET, new NumberOfRowsPerBatchHint() {
+				@Override
+				public NumberOfRowsPerBatch getValue() {
+					return new NumberOfRowsPerBatch() {
+						@Override
+						public boolean useMultipleValuesClauses(final TableMetaData targetTableMetaData) {
+							return true;
+						}
+
+						@Override
+						public int getNumberOfRowsPerBatch(final TableMetaData targetTableMetaData) {
+							return 1;
+						}
+					};
+				}
+			});
+
+			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperProviderHint() {
+				@Override
+				protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
+					super.addMappings(columnDataMapperFactory);
+
+					columnDataMapperFactory.addMapping(ColumnType.CLASS_STRING, ColumnType.CLASS_STRING, new ColumnDataMapper() {
+						@Override
+						public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData)
+								throws SQLException {
+							// final String columnName = sourceColumnMetaData.getColumnName().toUpperCase();
+							// return columnName.equals("ORIG_MEYLENUMMER") || columnName.equals("RAW_MEYLENUMMER");
+
+							return true;
+						}
+
+						@Override
+						public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value)
+								throws SQLException {
+							// Workaround Oracle bug
+							if (value != null && "".equals(value.toString())) {
+								return " ";
+							} else {
+								return value;
+							}
+						}
+					});
+				}
+			});
+
 			connectorRepository.addConnectorHint(TARGET, new ColumnMapperHint() {
 				private final Map<String, String> _columnMap = new HashMap<String, String>();
 
@@ -136,48 +184,14 @@ public class KommportalImportDeva {
 				}
 			});
 
-			connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperProviderHint() {
-				@Override
-				protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
-					super.addMappings(columnDataMapperFactory);
-
-					columnDataMapperFactory.addMapping(ColumnType.CLASS_INTEGER, ColumnType.CLASS_BIGDECIMAL, new ColumnDataMapper() {
-						@Override
-						public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value)
-								throws SQLException {
-							return new BigInteger(value.toString());
-						}
-
-						@Override
-						public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData)
-								throws SQLException {
-							return true;
-						}
-					});
-
-					columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_BIGDECIMAL, new ColumnDataMapper() {
-						@Override
-						public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value)
-								throws SQLException {
-							return new BigInteger(value.toString());
-						}
-
-						@Override
-						public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData)
-								throws SQLException {
-							return true;
-						}
-					});
-				}
-			});
 			// try {
 			// new ScriptExecutorTool(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
 			// } catch (final SQLException e) {
 			// LOG.error("drop", e);
 			// }
 
-			// final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
-			// scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle.ddl");
+			final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
+			scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle.ddl");
 
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
