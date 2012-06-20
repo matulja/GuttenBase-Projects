@@ -1,6 +1,5 @@
 package de.akquinet.jbosscc.guttenbase.projects.kommportal;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,9 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
-import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.ColumnMapperHint;
-import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
 import de.akquinet.jbosscc.guttenbase.hints.NumberOfRowsPerBatchHint;
 import de.akquinet.jbosscc.guttenbase.hints.TableMapperHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProvider;
@@ -30,12 +27,14 @@ import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
+import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 
 public class KommportalImportDeva {
 	private static final String TARGET = "Oracle";
 	private static final String SOURCE = "meyleImport";
 	private static final Logger LOG = Logger.getLogger(KommportalImportDeva.class);
-	private static Map<String, Serializable> _extraInformation;
+
+	// private static Map<String, Serializable> _extraInformation;
 
 	public static void main(final String[] args) {
 		try {
@@ -45,18 +44,18 @@ public class KommportalImportDeva {
 			connectorRepository.addConnectionInfo(TARGET, new MeyleOracleConnectionInfo());
 			connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
-			connectorRepository.addConnectorHint(SOURCE, new ImportDumpExtraInformationHint() {
-				@Override
-				public ImportDumpExtraInformation getValue() {
-					return new ImportDumpExtraInformation() {
-
-						@Override
-						public void processExtraInformation(final Map<String, Serializable> extraInformation) throws Exception {
-							_extraInformation = extraInformation;
-						}
-					};
-				}
-			});
+			// connectorRepository.addConnectorHint(SOURCE, new ImportDumpExtraInformationHint() {
+			// @Override
+			// public ImportDumpExtraInformation getValue() {
+			// return new ImportDumpExtraInformation() {
+			//
+			// @Override
+			// public void processExtraInformation(final Map<String, Serializable> extraInformation) throws Exception {
+			// _extraInformation = extraInformation;
+			// }
+			// };
+			// }
+			// });
 
 			connectorRepository.addConnectorHint(TARGET, new TableMapperHint() {
 				private final Map<String, String> _tableMap = new HashMap<String, String>();
@@ -183,14 +182,10 @@ public class KommportalImportDeva {
 				}
 			});
 
-			// try {
-			// new ScriptExecutorTool(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
-			// } catch (final SQLException e) {
-			// LOG.error("drop", e);
-			// }
+			final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
 
-			// final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
-			// scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle.ddl");
+			scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle-drop.sql");
+			scriptExecutorTool.executeFileScript(TARGET, "deva/deva-oracle.ddl");
 
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
