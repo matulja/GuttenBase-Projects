@@ -7,6 +7,6 @@ public class StillReportMysqlConnectionInfo extends URLConnectorInfoImpl {
 	private static final long serialVersionUID = 1L;
 
 	public StillReportMysqlConnectionInfo() {
-		super("jdbc:mysql://localhost:3306/import", "stillreport", "stillreport", "com.mysql.jdbc.Driver", "import", DatabaseType.MYSQL);
+		super("jdbc:mysql://127.0.0.1:3307/import", "stillreport", "stillreport", "com.mysql.jdbc.Driver", "", DatabaseType.MYSQL);
 	}
 }

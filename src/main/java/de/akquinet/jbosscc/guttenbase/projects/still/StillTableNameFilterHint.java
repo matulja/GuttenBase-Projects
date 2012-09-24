@@ -12,7 +12,9 @@ public class StillTableNameFilterHint extends RepositoryTableFilterHint {
 		return new RepositoryTableFilter() {
 			@Override
 			public boolean accept(final TableMetaData table) throws SQLException {
-				return table.getTableName().compareTo("KOPF_DAILY") >= 0;
+				return table.getTableName().equalsIgnoreCase("SAV_TEMP_CH");
+				
+				//return table.getTableName().toUpperCase().compareTo("KOPF_TEMP_DE")>=0;
 			}
 		};
 	}
