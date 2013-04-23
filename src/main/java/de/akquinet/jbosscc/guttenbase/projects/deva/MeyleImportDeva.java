@@ -32,7 +32,7 @@ public class MeyleImportDeva {
 			connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
 			connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
-					connectorRepository, false));
+			    connectorRepository, false));
 			connectorRepository.addConnectorHint(SOURCE, new ImportDumpExtraInformationHint() {
 				@Override
 				public ImportDumpExtraInformation getValue() {
@@ -46,28 +46,29 @@ public class MeyleImportDeva {
 				}
 			});
 
-			// try {
-			// new ScriptExecutorTool(connectorRepository).executeFileScript("meylePostgresql", "deva/deva-postgresql-drop.sql");
-			// } catch (final SQLException e) {
-			// LOG.error("drop", e);
-			// }
-
 			final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
-			scriptExecutorTool.executeFileScript(TARGET, "deva/deva-postgresql.ddl");
+
+			try {
+				scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql-drop.sql");
+			} catch (final Exception e) {
+				LOG.warn("Drop table failed", e);
+			}
+
+			connectorRepository.refreshDatabaseMetaData(TARGET);
+
+			scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql.ddl");
 
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
 
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(false, false));
-			new MeylePostgresqlSequenceUpdateTool(connectorRepository).updateSequences(TARGET);
 
 			for (final Entry<String, Serializable> entry : _extraInformation.entrySet()) {
-				scriptExecutorTool.executeScript(TARGET, false, false,
-						"SELECT setval('public." + entry.getKey().toLowerCase() + "', " + entry.getValue() + ", true);");
+				scriptExecutorTool.executeScript(TARGET, false, false, "SELECT setval('public." + entry.getKey().toLowerCase() + "', "
+				    + entry.getValue() + ", true);");
 			}
 
-			// scriptExecutorTool.executeScript(TARGET, false, false, "SELECT setval('public.sessioninfo_id_seq', 501, true);",
-			// "SELECT setval('public.workiteminfo_id_seq', 1301, true);", "SELECT setval('public.hibernate_sequence', 317, true);");
+			new MeylePostgresqlSequenceUpdateTool(connectorRepository).updateSequences(TARGET);
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}
