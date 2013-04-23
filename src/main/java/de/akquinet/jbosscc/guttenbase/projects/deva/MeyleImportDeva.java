@@ -50,7 +50,7 @@ public class MeyleImportDeva {
 
 			// Step 1: Drop old schema
 			try {
-				scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql-drop.sql");
+				scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.POSTGRESQL_DROP);
 			} catch (final Exception e) {
 				// May fail, if the schema does not exist yet
 				LOG.warn("Drop table failed", e);
@@ -58,7 +58,7 @@ public class MeyleImportDeva {
 
 			// Step 2: Recreate schema
 			connectorRepository.refreshDatabaseMetaData(TARGET);
-			scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql-1.1.0.ddl");
+			scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DEVA_DDL);
 
 			// Step 3: Check schema compatibility
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
@@ -77,9 +77,9 @@ public class MeyleImportDeva {
 			}
 
 			// Step 6: Execute delta scripts
-			scriptExecutorTool.executeFileScript(TARGET, "sql/deltascript-1.1.3.sql");
-			scriptExecutorTool.executeFileScript(TARGET, "sql/deltascript-1.1.4.sql");
-			scriptExecutorTool.executeFileScript(TARGET, "sql/deltascript-1.1.5.sql");
+			scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA1);
+			scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA2);
+			scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA3);
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}
