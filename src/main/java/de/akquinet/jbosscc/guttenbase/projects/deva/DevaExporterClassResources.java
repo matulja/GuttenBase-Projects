@@ -8,7 +8,7 @@ import java.util.Map;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultZipExporterClassResources;
 
 public class DevaExporterClassResources extends DefaultZipExporterClassResources {
-	public static final String DEVA_DDL = "sql/deva-postgresql.ddl";
+	public static final String DEVA_DDL = "sql/deva-postgresql-1.1.0.ddl";
 	public static final String POSTGRESQL_DROP = "sql/deva-postgresql-drop.sql";
 
 	@Override
@@ -28,7 +28,10 @@ public class DevaExporterClassResources extends DefaultZipExporterClassResources
 		final Map<String, URL> result = new HashMap<String, URL>();
 
 		result.put(POSTGRESQL_DROP, this.getClass().getResource("/deva/deva-postgresql-drop.sql"));
-		result.put(DEVA_DDL, this.getClass().getResource("/deva/deva-postgresql.ddl"));
+		result.put(DEVA_DDL, this.getClass().getResource("/deva/deva-postgresql-1-1.0.ddl"));
+		result.put("sql/deltascript-1.1.3.sql", this.getClass().getResource("/deva/deltascript-1.1.3.sql"));
+		result.put("sql/deltascript-1.1.4.sql", this.getClass().getResource("/deva/deltascript-1.1.4.sql"));
+		result.put("sql/deltascript-1.1.5.sql", this.getClass().getResource("/deva/deltascript-1.1.5.sql"));
 
 		return result;
 	}

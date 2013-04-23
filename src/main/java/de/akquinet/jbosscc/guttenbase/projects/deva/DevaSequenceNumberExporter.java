@@ -10,9 +10,7 @@ import java.util.Map;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
-import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import de.akquinet.jbosscc.guttenbase.tools.MinMaxIdSelectorTool;
 import de.akquinet.jbosscc.guttenbase.tools.ReadTableDataTool;
 
 public class DevaSequenceNumberExporter implements ExportDumpExtraInformation {
@@ -34,20 +32,6 @@ public class DevaSequenceNumberExporter implements ExportDumpExtraInformation {
 
 			MeyleExportDeva.LOG.info("Sequence number for " + tableName + " is " + data);
 			result.put(tableName, data);
-		}
-
-		final MinMaxIdSelectorTool maxIdSelectorTool = new MinMaxIdSelectorTool(connectorRepository);
-		final List<TableMetaData> tableMetaData = databaseMetaData.getTableMetaData();
-
-		for (final TableMetaData table : tableMetaData) {
-			final String tableName = table.getTableName();
-
-			if (tableName.toUpperCase().startsWith("DEVA_")) {
-				maxIdSelectorTool.computeMinMax(MeyleExportDeva.MEYLE_MS_SQL, table);
-				final Long data = maxIdSelectorTool.getMaxValue() + 1;
-				MeyleExportDeva.LOG.info("Sequence number for " + tableName + " is " + data);
-				result.put(tableName.toLowerCase() + "_id_seq", data);
-			}
 		}
 
 		return result;

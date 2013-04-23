@@ -48,27 +48,38 @@ public class MeyleImportDeva {
 
 			final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(connectorRepository);
 
+			// Step 1: Drop old schema
 			try {
 				scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql-drop.sql");
 			} catch (final Exception e) {
+				// May fail, if the schema does not exist yet
 				LOG.warn("Drop table failed", e);
 			}
 
+			// Step 2: Recreate schema
 			connectorRepository.refreshDatabaseMetaData(TARGET);
+			scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql-1.1.0.ddl");
 
-			scriptExecutorTool.executeFileScript(TARGET, "sql/deva-postgresql.ddl");
-
+			// Step 3: Check schema compatibility
 			new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(SOURCE, TARGET);
+
+			// Step 4: Copy data
 			new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, TARGET);
 
+			// Step 5: Update max sequence number
 			connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(false, false));
+
+			new MeylePostgresqlSequenceUpdateTool(connectorRepository).updateSequences(TARGET);
 
 			for (final Entry<String, Serializable> entry : _extraInformation.entrySet()) {
 				scriptExecutorTool.executeScript(TARGET, false, false, "SELECT setval('public." + entry.getKey().toLowerCase() + "', "
 				    + entry.getValue() + ", true);");
 			}
 
-			new MeylePostgresqlSequenceUpdateTool(connectorRepository).updateSequences(TARGET);
+			// Step 6: Execute delta scripts
+			scriptExecutorTool.executeFileScript(TARGET, "sql/deltascript-1.1.3.sql");
+			scriptExecutorTool.executeFileScript(TARGET, "sql/deltascript-1.1.4.sql");
+			scriptExecutorTool.executeFileScript(TARGET, "sql/deltascript-1.1.5.sql");
 		} catch (final Exception e) {
 			LOG.error("main", e);
 		}
