@@ -81,13 +81,17 @@ public class MeyleImportDeva {
       scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA2);
       scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA3);
 
-      // Step 7: Create Admin user
-      scriptExecutorTool
-          .executeScript(
-              TARGET,
-              "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
-                  + "  VALUES (85, 0,'Lars.Kuettner@akquinet.de','Lars.Kuettner@akquinet.de','Kuettner, Lars','W9tA6KeRIqXFVT4jxp/h/wKy8juMP4o3DUXHehQjQ00=',1);",
-              "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (85,1);");
+      // Step 7: Create Admin user (may already exist)
+      try {
+        scriptExecutorTool
+            .executeScript(
+                TARGET,
+                "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
+                    + "  VALUES (85, 0,'Lars.Kuettner@akquinet.de','Lars.Kuettner@akquinet.de','Kuettner, Lars','W9tA6KeRIqXFVT4jxp/h/wKy8juMP4o3DUXHehQjQ00=',1);",
+                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (85,1);");
+      } catch (final Exception e) {
+        LOG.warn("Creating admin user failed", e);
+      }
     } catch (final Exception e) {
       LOG.error("main", e);
     }
