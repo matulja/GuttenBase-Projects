@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.2.0
 -- Dumped by pg_dump version 9.2.0
--- Started on 2013-04-23 11:06:20 CEST
+-- Started on 2013-05-28 17:34:19 CEST
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -14,12 +14,100 @@ SET client_min_messages = warning;
 
 SET search_path = public, pg_catalog;
 
+--
+-- TOC entry 324 (class 1255 OID 42145)
+-- Name: drop_all_constraints(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION drop_all_constraints() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+r record;
+BEGIN
+FOR r IN SELECT table_name, constraint_name FROM information_schema.constraint_table_usage
+LOOP
+EXECUTE 'ALTER TABLE ' || quote_ident(r.table_name) || ' DROP CONSTRAINT ' || quote_ident(r.constraint_name) || ' CASCADE';
+END LOOP;
+RETURN 1;
+END;
+$$;
+
+
+ALTER FUNCTION public.drop_all_constraints() OWNER TO postgres;
+
+--
+-- TOC entry 323 (class 1255 OID 42144)
+-- Name: drop_all_sequences(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION drop_all_sequences() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+rec record;
+BEGIN
+FOR rec IN SELECT relname as seqname FROM pg_class WHERE relkind='S'
+LOOP
+EXECUTE 'DROP SEQUENCE ' || rec.seqname || ' CASCADE';
+END LOOP;
+RETURN 1;
+END;
+$$;
+
+
+ALTER FUNCTION public.drop_all_sequences() OWNER TO postgres;
+
+--
+-- TOC entry 321 (class 1255 OID 42146)
+-- Name: drop_all_tables(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION drop_all_tables() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+r record;
+BEGIN
+FOR r IN SELECT schemaname, tablename FROM pg_tables WHERE schemaname ='public'
+LOOP
+EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.schemaname) || '.' || quote_ident(r.tablename) || ' CASCADE';
+END LOOP;
+RETURN 1;
+END;
+$$;
+
+
+ALTER FUNCTION public.drop_all_tables() OWNER TO postgres;
+
+--
+-- TOC entry 322 (class 1255 OID 42147)
+-- Name: truncate_all_tables(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION truncate_all_tables() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+r record;
+BEGIN
+FOR r IN SELECT schemaname, tablename FROM pg_tables WHERE schemaname ='public'
+LOOP
+EXECUTE 'TRUNCATE TABLE ' || quote_ident(r.schemaname) || '.' || quote_ident(r.tablename) || ' CASCADE';
+END LOOP;
+RETURN 1;
+END;
+$$;
+
+
+ALTER FUNCTION public.truncate_all_tables() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- TOC entry 208 (class 1259 OID 30006)
+-- TOC entry 170 (class 1259 OID 60445)
 -- Name: deva_angemeldeter_benutzer; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -37,7 +125,7 @@ CREATE TABLE deva_angemeldeter_benutzer (
 ALTER TABLE public.deva_angemeldeter_benutzer OWNER TO meyle;
 
 --
--- TOC entry 207 (class 1259 OID 30004)
+-- TOC entry 171 (class 1259 OID 60448)
 -- Name: deva_angemeldeter_benutzer_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -53,7 +141,7 @@ ALTER TABLE public.deva_angemeldeter_benutzer_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3035 (class 0 OID 0)
--- Dependencies: 207
+-- Dependencies: 171
 -- Name: deva_angemeldeter_benutzer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -61,7 +149,7 @@ ALTER SEQUENCE deva_angemeldeter_benutzer_id_seq OWNED BY deva_angemeldeter_benu
 
 
 --
--- TOC entry 210 (class 1259 OID 30014)
+-- TOC entry 172 (class 1259 OID 60450)
 -- Name: deva_artikel; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -101,7 +189,7 @@ CREATE TABLE deva_artikel (
 ALTER TABLE public.deva_artikel OWNER TO meyle;
 
 --
--- TOC entry 212 (class 1259 OID 30025)
+-- TOC entry 173 (class 1259 OID 60456)
 -- Name: deva_artikel_bestandteil; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -119,7 +207,7 @@ CREATE TABLE deva_artikel_bestandteil (
 ALTER TABLE public.deva_artikel_bestandteil OWNER TO meyle;
 
 --
--- TOC entry 211 (class 1259 OID 30023)
+-- TOC entry 174 (class 1259 OID 60460)
 -- Name: deva_artikel_bestandteil_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -135,7 +223,7 @@ ALTER TABLE public.deva_artikel_bestandteil_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3036 (class 0 OID 0)
--- Dependencies: 211
+-- Dependencies: 174
 -- Name: deva_artikel_bestandteil_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -143,7 +231,7 @@ ALTER SEQUENCE deva_artikel_bestandteil_id_seq OWNED BY deva_artikel_bestandteil
 
 
 --
--- TOC entry 213 (class 1259 OID 30032)
+-- TOC entry 175 (class 1259 OID 60462)
 -- Name: deva_artikel_dokumente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -156,7 +244,7 @@ CREATE TABLE deva_artikel_dokumente (
 ALTER TABLE public.deva_artikel_dokumente OWNER TO meyle;
 
 --
--- TOC entry 214 (class 1259 OID 30037)
+-- TOC entry 176 (class 1259 OID 60465)
 -- Name: deva_artikel_fahrzeuge; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -170,7 +258,7 @@ CREATE TABLE deva_artikel_fahrzeuge (
 ALTER TABLE public.deva_artikel_fahrzeuge OWNER TO meyle;
 
 --
--- TOC entry 209 (class 1259 OID 30012)
+-- TOC entry 177 (class 1259 OID 60468)
 -- Name: deva_artikel_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -186,7 +274,7 @@ ALTER TABLE public.deva_artikel_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3037 (class 0 OID 0)
--- Dependencies: 209
+-- Dependencies: 177
 -- Name: deva_artikel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -194,7 +282,7 @@ ALTER SEQUENCE deva_artikel_id_seq OWNED BY deva_artikel.id;
 
 
 --
--- TOC entry 216 (class 1259 OID 30044)
+-- TOC entry 178 (class 1259 OID 60470)
 -- Name: deva_artikel_kommentar; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -211,7 +299,7 @@ CREATE TABLE deva_artikel_kommentar (
 ALTER TABLE public.deva_artikel_kommentar OWNER TO meyle;
 
 --
--- TOC entry 215 (class 1259 OID 30042)
+-- TOC entry 179 (class 1259 OID 60476)
 -- Name: deva_artikel_kommentar_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -227,7 +315,7 @@ ALTER TABLE public.deva_artikel_kommentar_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3038 (class 0 OID 0)
--- Dependencies: 215
+-- Dependencies: 179
 -- Name: deva_artikel_kommentar_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -235,7 +323,7 @@ ALTER SEQUENCE deva_artikel_kommentar_id_seq OWNED BY deva_artikel_kommentar.id;
 
 
 --
--- TOC entry 218 (class 1259 OID 30055)
+-- TOC entry 180 (class 1259 OID 60478)
 -- Name: deva_artikel_komponente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -253,7 +341,7 @@ CREATE TABLE deva_artikel_komponente (
 ALTER TABLE public.deva_artikel_komponente OWNER TO meyle;
 
 --
--- TOC entry 217 (class 1259 OID 30053)
+-- TOC entry 181 (class 1259 OID 60482)
 -- Name: deva_artikel_komponente_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -269,7 +357,7 @@ ALTER TABLE public.deva_artikel_komponente_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3039 (class 0 OID 0)
--- Dependencies: 217
+-- Dependencies: 181
 -- Name: deva_artikel_komponente_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -277,7 +365,7 @@ ALTER SEQUENCE deva_artikel_komponente_id_seq OWNED BY deva_artikel_komponente.i
 
 
 --
--- TOC entry 220 (class 1259 OID 30064)
+-- TOC entry 182 (class 1259 OID 60484)
 -- Name: deva_artikel_logbuch; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -295,7 +383,7 @@ CREATE TABLE deva_artikel_logbuch (
 ALTER TABLE public.deva_artikel_logbuch OWNER TO meyle;
 
 --
--- TOC entry 219 (class 1259 OID 30062)
+-- TOC entry 183 (class 1259 OID 60487)
 -- Name: deva_artikel_logbuch_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -311,17 +399,14 @@ ALTER TABLE public.deva_artikel_logbuch_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3040 (class 0 OID 0)
--- Dependencies: 219
+-- Dependencies: 183
 -- Name: deva_artikel_logbuch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
 ALTER SEQUENCE deva_artikel_logbuch_id_seq OWNED BY deva_artikel_logbuch.id;
 
-
 --
-
---
--- TOC entry 222 (class 1259 OID 30075)
+-- TOC entry 184 (class 1259 OID 60489)
 -- Name: deva_artikel_verantwortliche; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -334,7 +419,7 @@ CREATE TABLE deva_artikel_verantwortliche (
 ALTER TABLE public.deva_artikel_verantwortliche OWNER TO meyle;
 
 --
--- TOC entry 224 (class 1259 OID 30080)
+-- TOC entry 185 (class 1259 OID 60492)
 -- Name: deva_artikel_zubehoer; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -352,7 +437,7 @@ CREATE TABLE deva_artikel_zubehoer (
 ALTER TABLE public.deva_artikel_zubehoer OWNER TO meyle;
 
 --
--- TOC entry 223 (class 1259 OID 30078)
+-- TOC entry 186 (class 1259 OID 60496)
 -- Name: deva_artikel_zubehoer_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -368,7 +453,7 @@ ALTER TABLE public.deva_artikel_zubehoer_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3041 (class 0 OID 0)
--- Dependencies: 223
+-- Dependencies: 186
 -- Name: deva_artikel_zubehoer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -376,7 +461,7 @@ ALTER SEQUENCE deva_artikel_zubehoer_id_seq OWNED BY deva_artikel_zubehoer.id;
 
 
 --
--- TOC entry 225 (class 1259 OID 30087)
+-- TOC entry 187 (class 1259 OID 60498)
 -- Name: deva_artikel_zusatzinformationen; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -389,7 +474,7 @@ CREATE TABLE deva_artikel_zusatzinformationen (
 ALTER TABLE public.deva_artikel_zusatzinformationen OWNER TO meyle;
 
 --
--- TOC entry 227 (class 1259 OID 30092)
+-- TOC entry 188 (class 1259 OID 60501)
 -- Name: deva_benutzer; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -407,7 +492,7 @@ CREATE TABLE deva_benutzer (
 ALTER TABLE public.deva_benutzer OWNER TO meyle;
 
 --
--- TOC entry 228 (class 1259 OID 30105)
+-- TOC entry 189 (class 1259 OID 60507)
 -- Name: deva_benutzer_firma; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -420,7 +505,7 @@ CREATE TABLE deva_benutzer_firma (
 ALTER TABLE public.deva_benutzer_firma OWNER TO meyle;
 
 --
--- TOC entry 226 (class 1259 OID 30090)
+-- TOC entry 190 (class 1259 OID 60510)
 -- Name: deva_benutzer_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -436,7 +521,7 @@ ALTER TABLE public.deva_benutzer_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3042 (class 0 OID 0)
--- Dependencies: 226
+-- Dependencies: 190
 -- Name: deva_benutzer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -444,7 +529,7 @@ ALTER SEQUENCE deva_benutzer_id_seq OWNED BY deva_benutzer.id;
 
 
 --
--- TOC entry 230 (class 1259 OID 30112)
+-- TOC entry 191 (class 1259 OID 60512)
 -- Name: deva_benutzer_liste; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -458,7 +543,7 @@ CREATE TABLE deva_benutzer_liste (
 ALTER TABLE public.deva_benutzer_liste OWNER TO meyle;
 
 --
--- TOC entry 229 (class 1259 OID 30110)
+-- TOC entry 192 (class 1259 OID 60515)
 -- Name: deva_benutzer_liste_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -474,7 +559,7 @@ ALTER TABLE public.deva_benutzer_liste_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3043 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 192
 -- Name: deva_benutzer_liste_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -482,7 +567,7 @@ ALTER SEQUENCE deva_benutzer_liste_id_seq OWNED BY deva_benutzer_liste.id;
 
 
 --
--- TOC entry 231 (class 1259 OID 30120)
+-- TOC entry 193 (class 1259 OID 60517)
 -- Name: deva_benutzer_produktgruppe; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -495,7 +580,7 @@ CREATE TABLE deva_benutzer_produktgruppe (
 ALTER TABLE public.deva_benutzer_produktgruppe OWNER TO meyle;
 
 --
--- TOC entry 232 (class 1259 OID 30125)
+-- TOC entry 194 (class 1259 OID 60520)
 -- Name: deva_benutzer_rollen; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -508,7 +593,7 @@ CREATE TABLE deva_benutzer_rollen (
 ALTER TABLE public.deva_benutzer_rollen OWNER TO meyle;
 
 --
--- TOC entry 234 (class 1259 OID 30132)
+-- TOC entry 195 (class 1259 OID 60523)
 -- Name: deva_bezeichnung_artikel; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -523,7 +608,7 @@ CREATE TABLE deva_bezeichnung_artikel (
 ALTER TABLE public.deva_bezeichnung_artikel OWNER TO meyle;
 
 --
--- TOC entry 233 (class 1259 OID 30130)
+-- TOC entry 196 (class 1259 OID 60526)
 -- Name: deva_bezeichnung_artikel_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -539,7 +624,7 @@ ALTER TABLE public.deva_bezeichnung_artikel_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3044 (class 0 OID 0)
--- Dependencies: 233
+-- Dependencies: 196
 -- Name: deva_bezeichnung_artikel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -547,7 +632,7 @@ ALTER SEQUENCE deva_bezeichnung_artikel_id_seq OWNED BY deva_bezeichnung_artikel
 
 
 --
--- TOC entry 236 (class 1259 OID 30140)
+-- TOC entry 197 (class 1259 OID 60528)
 -- Name: deva_bezeichnung_komponente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -561,7 +646,7 @@ CREATE TABLE deva_bezeichnung_komponente (
 ALTER TABLE public.deva_bezeichnung_komponente OWNER TO meyle;
 
 --
--- TOC entry 235 (class 1259 OID 30138)
+-- TOC entry 198 (class 1259 OID 60531)
 -- Name: deva_bezeichnung_komponente_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -577,7 +662,7 @@ ALTER TABLE public.deva_bezeichnung_komponente_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3045 (class 0 OID 0)
--- Dependencies: 235
+-- Dependencies: 198
 -- Name: deva_bezeichnung_komponente_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -585,7 +670,7 @@ ALTER SEQUENCE deva_bezeichnung_komponente_id_seq OWNED BY deva_bezeichnung_komp
 
 
 --
--- TOC entry 238 (class 1259 OID 30148)
+-- TOC entry 199 (class 1259 OID 60533)
 -- Name: deva_bezeichnung_produktgruppe; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -598,7 +683,7 @@ CREATE TABLE deva_bezeichnung_produktgruppe (
 ALTER TABLE public.deva_bezeichnung_produktgruppe OWNER TO meyle;
 
 --
--- TOC entry 237 (class 1259 OID 30146)
+-- TOC entry 200 (class 1259 OID 60536)
 -- Name: deva_bezeichnung_produktgruppe_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -614,7 +699,7 @@ ALTER TABLE public.deva_bezeichnung_produktgruppe_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3046 (class 0 OID 0)
--- Dependencies: 237
+-- Dependencies: 200
 -- Name: deva_bezeichnung_produktgruppe_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -622,7 +707,7 @@ ALTER SEQUENCE deva_bezeichnung_produktgruppe_id_seq OWNED BY deva_bezeichnung_p
 
 
 --
--- TOC entry 240 (class 1259 OID 30156)
+-- TOC entry 201 (class 1259 OID 60538)
 -- Name: deva_bezeichnung_zubehoer; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -636,7 +721,7 @@ CREATE TABLE deva_bezeichnung_zubehoer (
 ALTER TABLE public.deva_bezeichnung_zubehoer OWNER TO meyle;
 
 --
--- TOC entry 239 (class 1259 OID 30154)
+-- TOC entry 202 (class 1259 OID 60541)
 -- Name: deva_bezeichnung_zubehoer_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -652,7 +737,7 @@ ALTER TABLE public.deva_bezeichnung_zubehoer_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3047 (class 0 OID 0)
--- Dependencies: 239
+-- Dependencies: 202
 -- Name: deva_bezeichnung_zubehoer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -660,7 +745,7 @@ ALTER SEQUENCE deva_bezeichnung_zubehoer_id_seq OWNED BY deva_bezeichnung_zubeho
 
 
 --
--- TOC entry 242 (class 1259 OID 30164)
+-- TOC entry 203 (class 1259 OID 60543)
 -- Name: deva_bezeichnung_zusatzinformation; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -674,7 +759,7 @@ CREATE TABLE deva_bezeichnung_zusatzinformation (
 ALTER TABLE public.deva_bezeichnung_zusatzinformation OWNER TO meyle;
 
 --
--- TOC entry 241 (class 1259 OID 30162)
+-- TOC entry 204 (class 1259 OID 60546)
 -- Name: deva_bezeichnung_zusatzinformation_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -690,7 +775,7 @@ ALTER TABLE public.deva_bezeichnung_zusatzinformation_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3048 (class 0 OID 0)
--- Dependencies: 241
+-- Dependencies: 204
 -- Name: deva_bezeichnung_zusatzinformation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -698,7 +783,7 @@ ALTER SEQUENCE deva_bezeichnung_zusatzinformation_id_seq OWNED BY deva_bezeichnu
 
 
 --
--- TOC entry 244 (class 1259 OID 30172)
+-- TOC entry 205 (class 1259 OID 60548)
 -- Name: deva_bezeichung_prozess_schritt; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -718,7 +803,7 @@ CREATE TABLE deva_bezeichung_prozess_schritt (
 ALTER TABLE public.deva_bezeichung_prozess_schritt OWNER TO meyle;
 
 --
--- TOC entry 243 (class 1259 OID 30170)
+-- TOC entry 206 (class 1259 OID 60554)
 -- Name: deva_bezeichung_prozess_schritt_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -734,7 +819,7 @@ ALTER TABLE public.deva_bezeichung_prozess_schritt_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3049 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 206
 -- Name: deva_bezeichung_prozess_schritt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -742,7 +827,7 @@ ALTER SEQUENCE deva_bezeichung_prozess_schritt_id_seq OWNED BY deva_bezeichung_p
 
 
 --
--- TOC entry 246 (class 1259 OID 30185)
+-- TOC entry 207 (class 1259 OID 60556)
 -- Name: deva_bonuszeit; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -761,7 +846,7 @@ CREATE TABLE deva_bonuszeit (
 ALTER TABLE public.deva_bonuszeit OWNER TO meyle;
 
 --
--- TOC entry 245 (class 1259 OID 30183)
+-- TOC entry 208 (class 1259 OID 60563)
 -- Name: deva_bonuszeit_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -777,7 +862,7 @@ ALTER TABLE public.deva_bonuszeit_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3050 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 208
 -- Name: deva_bonuszeit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -785,7 +870,7 @@ ALTER SEQUENCE deva_bonuszeit_id_seq OWNED BY deva_bonuszeit.id;
 
 
 --
--- TOC entry 249 (class 1259 OID 30203)
+-- TOC entry 209 (class 1259 OID 60565)
 -- Name: deva_bpmn_definition_task_handler_names; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -798,7 +883,7 @@ CREATE TABLE deva_bpmn_definition_task_handler_names (
 ALTER TABLE public.deva_bpmn_definition_task_handler_names OWNER TO meyle;
 
 --
--- TOC entry 248 (class 1259 OID 30197)
+-- TOC entry 210 (class 1259 OID 60568)
 -- Name: deva_bpmndefinition; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -817,7 +902,7 @@ CREATE TABLE deva_bpmndefinition (
 ALTER TABLE public.deva_bpmndefinition OWNER TO meyle;
 
 --
--- TOC entry 247 (class 1259 OID 30195)
+-- TOC entry 211 (class 1259 OID 60571)
 -- Name: deva_bpmndefinition_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -833,7 +918,7 @@ ALTER TABLE public.deva_bpmndefinition_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3051 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 211
 -- Name: deva_bpmndefinition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -841,7 +926,7 @@ ALTER SEQUENCE deva_bpmndefinition_id_seq OWNED BY deva_bpmndefinition.id;
 
 
 --
--- TOC entry 251 (class 1259 OID 30208)
+-- TOC entry 212 (class 1259 OID 60573)
 -- Name: deva_dokument; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -862,7 +947,7 @@ CREATE TABLE deva_dokument (
 ALTER TABLE public.deva_dokument OWNER TO meyle;
 
 --
--- TOC entry 253 (class 1259 OID 30218)
+-- TOC entry 213 (class 1259 OID 60578)
 -- Name: deva_dokument_binaerdaten; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -876,7 +961,7 @@ CREATE TABLE deva_dokument_binaerdaten (
 ALTER TABLE public.deva_dokument_binaerdaten OWNER TO meyle;
 
 --
--- TOC entry 252 (class 1259 OID 30216)
+-- TOC entry 214 (class 1259 OID 60581)
 -- Name: deva_dokument_binaerdaten_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -892,7 +977,7 @@ ALTER TABLE public.deva_dokument_binaerdaten_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3052 (class 0 OID 0)
--- Dependencies: 252
+-- Dependencies: 214
 -- Name: deva_dokument_binaerdaten_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -900,7 +985,7 @@ ALTER SEQUENCE deva_dokument_binaerdaten_id_seq OWNED BY deva_dokument_binaerdat
 
 
 --
--- TOC entry 250 (class 1259 OID 30206)
+-- TOC entry 215 (class 1259 OID 60583)
 -- Name: deva_dokument_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -916,7 +1001,7 @@ ALTER TABLE public.deva_dokument_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3053 (class 0 OID 0)
--- Dependencies: 250
+-- Dependencies: 215
 -- Name: deva_dokument_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -924,7 +1009,7 @@ ALTER SEQUENCE deva_dokument_id_seq OWNED BY deva_dokument.id;
 
 
 --
--- TOC entry 255 (class 1259 OID 30226)
+-- TOC entry 216 (class 1259 OID 60585)
 -- Name: deva_faelligkeiten; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -942,7 +1027,7 @@ CREATE TABLE deva_faelligkeiten (
 ALTER TABLE public.deva_faelligkeiten OWNER TO meyle;
 
 --
--- TOC entry 254 (class 1259 OID 30224)
+-- TOC entry 217 (class 1259 OID 60590)
 -- Name: deva_faelligkeiten_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -958,7 +1043,7 @@ ALTER TABLE public.deva_faelligkeiten_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3054 (class 0 OID 0)
--- Dependencies: 254
+-- Dependencies: 217
 -- Name: deva_faelligkeiten_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -966,7 +1051,7 @@ ALTER SEQUENCE deva_faelligkeiten_id_seq OWNED BY deva_faelligkeiten.id;
 
 
 --
--- TOC entry 257 (class 1259 OID 30238)
+-- TOC entry 218 (class 1259 OID 60592)
 -- Name: deva_fahrzeug_bezeichnung; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -982,7 +1067,7 @@ CREATE TABLE deva_fahrzeug_bezeichnung (
 ALTER TABLE public.deva_fahrzeug_bezeichnung OWNER TO meyle;
 
 --
--- TOC entry 256 (class 1259 OID 30236)
+-- TOC entry 219 (class 1259 OID 60595)
 -- Name: deva_fahrzeug_bezeichnung_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -998,7 +1083,7 @@ ALTER TABLE public.deva_fahrzeug_bezeichnung_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3055 (class 0 OID 0)
--- Dependencies: 256
+-- Dependencies: 219
 -- Name: deva_fahrzeug_bezeichnung_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1006,7 +1091,7 @@ ALTER SEQUENCE deva_fahrzeug_bezeichnung_id_seq OWNED BY deva_fahrzeug_bezeichnu
 
 
 --
--- TOC entry 259 (class 1259 OID 30250)
+-- TOC entry 220 (class 1259 OID 60597)
 -- Name: deva_firma; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1022,7 +1107,7 @@ CREATE TABLE deva_firma (
 ALTER TABLE public.deva_firma OWNER TO meyle;
 
 --
--- TOC entry 260 (class 1259 OID 30258)
+-- TOC entry 221 (class 1259 OID 60600)
 -- Name: deva_firma_ansprechpartner; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1035,7 +1120,7 @@ CREATE TABLE deva_firma_ansprechpartner (
 ALTER TABLE public.deva_firma_ansprechpartner OWNER TO meyle;
 
 --
--- TOC entry 258 (class 1259 OID 30248)
+-- TOC entry 222 (class 1259 OID 60603)
 -- Name: deva_firma_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1051,7 +1136,7 @@ ALTER TABLE public.deva_firma_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3056 (class 0 OID 0)
--- Dependencies: 258
+-- Dependencies: 222
 -- Name: deva_firma_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1059,7 +1144,7 @@ ALTER SEQUENCE deva_firma_id_seq OWNED BY deva_firma.id;
 
 
 --
--- TOC entry 261 (class 1259 OID 30263)
+-- TOC entry 223 (class 1259 OID 60605)
 -- Name: deva_firma_lieferanten; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1072,7 +1157,7 @@ CREATE TABLE deva_firma_lieferanten (
 ALTER TABLE public.deva_firma_lieferanten OWNER TO meyle;
 
 --
--- TOC entry 262 (class 1259 OID 30266)
+-- TOC entry 224 (class 1259 OID 60608)
 -- Name: deva_firma_sollzeiten_artikel; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1085,7 +1170,7 @@ CREATE TABLE deva_firma_sollzeiten_artikel (
 ALTER TABLE public.deva_firma_sollzeiten_artikel OWNER TO meyle;
 
 --
--- TOC entry 263 (class 1259 OID 30271)
+-- TOC entry 225 (class 1259 OID 60611)
 -- Name: deva_firma_sollzeiten_komponente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1098,14 +1183,13 @@ CREATE TABLE deva_firma_sollzeiten_komponente (
 ALTER TABLE public.deva_firma_sollzeiten_komponente OWNER TO meyle;
 
 --
--- TOC entry 265 (class 1259 OID 30278)
+-- TOC entry 226 (class 1259 OID 60614)
 -- Name: deva_komponente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
 CREATE TABLE deva_komponente (
     id bigint NOT NULL,
     version bigint,
-    ampel_status character varying(255) NOT NULL,
     beim_lieferanten_vorhanden character(1),
     klassifikation character varying(255) NOT NULL,
     komponente_prozess_status character varying(255) NOT NULL,
@@ -1116,14 +1200,15 @@ CREATE TABLE deva_komponente (
     komponente_prozess bigint,
     komponentenbezeichnung bigint NOT NULL,
     kunde bigint NOT NULL,
-    lieferant bigint
+    lieferant bigint,
+    ampel_status character varying(255) DEFAULT 'GRAU'::character varying NOT NULL
 );
 
 
 ALTER TABLE public.deva_komponente OWNER TO meyle;
 
 --
--- TOC entry 267 (class 1259 OID 30289)
+-- TOC entry 307 (class 1259 OID 65438)
 -- Name: deva_komponente_bestandteil; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1133,15 +1218,14 @@ CREATE TABLE deva_komponente_bestandteil (
     anzahl bigint NOT NULL,
     hinweis character varying(100) NOT NULL,
     komponente bigint NOT NULL,
-    komponente_bestandteil bigint NOT NULL,
-    CONSTRAINT deva_komponente_bestandteil_anzahl_check CHECK ((anzahl >= 1))
+    komponente_bestandteil bigint NOT NULL
 );
 
 
 ALTER TABLE public.deva_komponente_bestandteil OWNER TO meyle;
 
 --
--- TOC entry 266 (class 1259 OID 30287)
+-- TOC entry 306 (class 1259 OID 65436)
 -- Name: deva_komponente_bestandteil_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1157,7 +1241,7 @@ ALTER TABLE public.deva_komponente_bestandteil_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3057 (class 0 OID 0)
--- Dependencies: 266
+-- Dependencies: 306
 -- Name: deva_komponente_bestandteil_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1165,7 +1249,7 @@ ALTER SEQUENCE deva_komponente_bestandteil_id_seq OWNED BY deva_komponente_besta
 
 
 --
--- TOC entry 268 (class 1259 OID 30296)
+-- TOC entry 227 (class 1259 OID 60620)
 -- Name: deva_komponente_dokumente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1178,7 +1262,7 @@ CREATE TABLE deva_komponente_dokumente (
 ALTER TABLE public.deva_komponente_dokumente OWNER TO meyle;
 
 --
--- TOC entry 264 (class 1259 OID 30276)
+-- TOC entry 228 (class 1259 OID 60623)
 -- Name: deva_komponente_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1194,7 +1278,7 @@ ALTER TABLE public.deva_komponente_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3058 (class 0 OID 0)
--- Dependencies: 264
+-- Dependencies: 228
 -- Name: deva_komponente_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1202,7 +1286,7 @@ ALTER SEQUENCE deva_komponente_id_seq OWNED BY deva_komponente.id;
 
 
 --
--- TOC entry 270 (class 1259 OID 30303)
+-- TOC entry 229 (class 1259 OID 60625)
 -- Name: deva_komponente_kommentar; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1219,7 +1303,7 @@ CREATE TABLE deva_komponente_kommentar (
 ALTER TABLE public.deva_komponente_kommentar OWNER TO meyle;
 
 --
--- TOC entry 269 (class 1259 OID 30301)
+-- TOC entry 230 (class 1259 OID 60631)
 -- Name: deva_komponente_kommentar_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1235,7 +1319,7 @@ ALTER TABLE public.deva_komponente_kommentar_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3059 (class 0 OID 0)
--- Dependencies: 269
+-- Dependencies: 230
 -- Name: deva_komponente_kommentar_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1243,7 +1327,7 @@ ALTER SEQUENCE deva_komponente_kommentar_id_seq OWNED BY deva_komponente_komment
 
 
 --
--- TOC entry 272 (class 1259 OID 30314)
+-- TOC entry 231 (class 1259 OID 60633)
 -- Name: deva_komponente_logbuch; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1261,7 +1345,7 @@ CREATE TABLE deva_komponente_logbuch (
 ALTER TABLE public.deva_komponente_logbuch OWNER TO meyle;
 
 --
--- TOC entry 271 (class 1259 OID 30312)
+-- TOC entry 232 (class 1259 OID 60636)
 -- Name: deva_komponente_logbuch_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1277,15 +1361,14 @@ ALTER TABLE public.deva_komponente_logbuch_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3060 (class 0 OID 0)
--- Dependencies: 271
+-- Dependencies: 232
 -- Name: deva_komponente_logbuch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
 ALTER SEQUENCE deva_komponente_logbuch_id_seq OWNED BY deva_komponente_logbuch.id;
 
-
 --
--- TOC entry 274 (class 1259 OID 30325)
+-- TOC entry 233 (class 1259 OID 60638)
 -- Name: deva_komponente_verantwortliche; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1298,7 +1381,7 @@ CREATE TABLE deva_komponente_verantwortliche (
 ALTER TABLE public.deva_komponente_verantwortliche OWNER TO meyle;
 
 --
--- TOC entry 275 (class 1259 OID 30328)
+-- TOC entry 234 (class 1259 OID 60641)
 -- Name: deva_komponente_zusatzinformationen; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1311,7 +1394,7 @@ CREATE TABLE deva_komponente_zusatzinformationen (
 ALTER TABLE public.deva_komponente_zusatzinformationen OWNER TO meyle;
 
 --
--- TOC entry 277 (class 1259 OID 30335)
+-- TOC entry 235 (class 1259 OID 60644)
 -- Name: deva_produktgruppe; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1326,7 +1409,7 @@ CREATE TABLE deva_produktgruppe (
 ALTER TABLE public.deva_produktgruppe OWNER TO meyle;
 
 --
--- TOC entry 276 (class 1259 OID 30333)
+-- TOC entry 236 (class 1259 OID 60647)
 -- Name: deva_produktgruppe_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1342,7 +1425,7 @@ ALTER TABLE public.deva_produktgruppe_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3061 (class 0 OID 0)
--- Dependencies: 276
+-- Dependencies: 236
 -- Name: deva_produktgruppe_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1350,7 +1433,7 @@ ALTER SEQUENCE deva_produktgruppe_id_seq OWNED BY deva_produktgruppe.id;
 
 
 --
--- TOC entry 279 (class 1259 OID 30343)
+-- TOC entry 237 (class 1259 OID 60649)
 -- Name: deva_prozess; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1371,7 +1454,7 @@ CREATE TABLE deva_prozess (
 ALTER TABLE public.deva_prozess OWNER TO meyle;
 
 --
--- TOC entry 278 (class 1259 OID 30341)
+-- TOC entry 238 (class 1259 OID 60652)
 -- Name: deva_prozess_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1387,7 +1470,7 @@ ALTER TABLE public.deva_prozess_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3062 (class 0 OID 0)
--- Dependencies: 278
+-- Dependencies: 238
 -- Name: deva_prozess_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1395,7 +1478,7 @@ ALTER SEQUENCE deva_prozess_id_seq OWNED BY deva_prozess.id;
 
 
 --
--- TOC entry 283 (class 1259 OID 30361)
+-- TOC entry 239 (class 1259 OID 60654)
 -- Name: deva_prozess_schritt; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1419,7 +1502,7 @@ CREATE TABLE deva_prozess_schritt (
 ALTER TABLE public.deva_prozess_schritt OWNER TO meyle;
 
 --
--- TOC entry 282 (class 1259 OID 30359)
+-- TOC entry 240 (class 1259 OID 60657)
 -- Name: deva_prozess_schritt_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1435,7 +1518,7 @@ ALTER TABLE public.deva_prozess_schritt_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3063 (class 0 OID 0)
--- Dependencies: 282
+-- Dependencies: 240
 -- Name: deva_prozess_schritt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1443,7 +1526,7 @@ ALTER SEQUENCE deva_prozess_schritt_id_seq OWNED BY deva_prozess_schritt.id;
 
 
 --
--- TOC entry 281 (class 1259 OID 30353)
+-- TOC entry 241 (class 1259 OID 60659)
 -- Name: deva_prozessdefinition; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1459,7 +1542,7 @@ CREATE TABLE deva_prozessdefinition (
 ALTER TABLE public.deva_prozessdefinition OWNER TO meyle;
 
 --
--- TOC entry 280 (class 1259 OID 30351)
+-- TOC entry 242 (class 1259 OID 60662)
 -- Name: deva_prozessdefinition_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1475,7 +1558,7 @@ ALTER TABLE public.deva_prozessdefinition_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3064 (class 0 OID 0)
--- Dependencies: 280
+-- Dependencies: 242
 -- Name: deva_prozessdefinition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1483,7 +1566,7 @@ ALTER SEQUENCE deva_prozessdefinition_id_seq OWNED BY deva_prozessdefinition.id;
 
 
 --
--- TOC entry 285 (class 1259 OID 30369)
+-- TOC entry 243 (class 1259 OID 60664)
 -- Name: deva_rolle; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1498,7 +1581,7 @@ CREATE TABLE deva_rolle (
 ALTER TABLE public.deva_rolle OWNER TO meyle;
 
 --
--- TOC entry 286 (class 1259 OID 30377)
+-- TOC entry 244 (class 1259 OID 60667)
 -- Name: deva_rolle_aktions_berechtigungen; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1511,7 +1594,7 @@ CREATE TABLE deva_rolle_aktions_berechtigungen (
 ALTER TABLE public.deva_rolle_aktions_berechtigungen OWNER TO meyle;
 
 --
--- TOC entry 287 (class 1259 OID 30380)
+-- TOC entry 245 (class 1259 OID 60670)
 -- Name: deva_rolle_ampelstatus; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1524,7 +1607,7 @@ CREATE TABLE deva_rolle_ampelstatus (
 ALTER TABLE public.deva_rolle_ampelstatus OWNER TO meyle;
 
 --
--- TOC entry 284 (class 1259 OID 30367)
+-- TOC entry 246 (class 1259 OID 60673)
 -- Name: deva_rolle_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1540,7 +1623,7 @@ ALTER TABLE public.deva_rolle_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3065 (class 0 OID 0)
--- Dependencies: 284
+-- Dependencies: 246
 -- Name: deva_rolle_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1548,7 +1631,7 @@ ALTER SEQUENCE deva_rolle_id_seq OWNED BY deva_rolle.id;
 
 
 --
--- TOC entry 288 (class 1259 OID 30383)
+-- TOC entry 247 (class 1259 OID 60675)
 -- Name: deva_rolle_prozess_schritt; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1561,7 +1644,7 @@ CREATE TABLE deva_rolle_prozess_schritt (
 ALTER TABLE public.deva_rolle_prozess_schritt OWNER TO meyle;
 
 --
--- TOC entry 289 (class 1259 OID 30388)
+-- TOC entry 248 (class 1259 OID 60678)
 -- Name: deva_rolle_sicht_berechtigungen; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1574,7 +1657,7 @@ CREATE TABLE deva_rolle_sicht_berechtigungen (
 ALTER TABLE public.deva_rolle_sicht_berechtigungen OWNER TO meyle;
 
 --
--- TOC entry 293 (class 1259 OID 30406)
+-- TOC entry 249 (class 1259 OID 60681)
 -- Name: deva_sollzeit_wdh_klassifikation; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1588,7 +1671,7 @@ CREATE TABLE deva_sollzeit_wdh_klassifikation (
 ALTER TABLE public.deva_sollzeit_wdh_klassifikation OWNER TO meyle;
 
 --
--- TOC entry 291 (class 1259 OID 30393)
+-- TOC entry 250 (class 1259 OID 60684)
 -- Name: deva_sollzeiten; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1606,7 +1689,7 @@ CREATE TABLE deva_sollzeiten (
 ALTER TABLE public.deva_sollzeiten OWNER TO meyle;
 
 --
--- TOC entry 290 (class 1259 OID 30391)
+-- TOC entry 251 (class 1259 OID 60689)
 -- Name: deva_sollzeiten_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1622,7 +1705,7 @@ ALTER TABLE public.deva_sollzeiten_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3066 (class 0 OID 0)
--- Dependencies: 290
+-- Dependencies: 251
 -- Name: deva_sollzeiten_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1630,7 +1713,7 @@ ALTER SEQUENCE deva_sollzeiten_id_seq OWNED BY deva_sollzeiten.id;
 
 
 --
--- TOC entry 292 (class 1259 OID 30401)
+-- TOC entry 252 (class 1259 OID 60691)
 -- Name: deva_sollzeiten_klassifikation; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1644,7 +1727,7 @@ CREATE TABLE deva_sollzeiten_klassifikation (
 ALTER TABLE public.deva_sollzeiten_klassifikation OWNER TO meyle;
 
 --
--- TOC entry 295 (class 1259 OID 30413)
+-- TOC entry 253 (class 1259 OID 60694)
 -- Name: deva_uebersetzung_artikel; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1660,7 +1743,7 @@ CREATE TABLE deva_uebersetzung_artikel (
 ALTER TABLE public.deva_uebersetzung_artikel OWNER TO meyle;
 
 --
--- TOC entry 294 (class 1259 OID 30411)
+-- TOC entry 254 (class 1259 OID 60697)
 -- Name: deva_uebersetzung_artikel_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1676,7 +1759,7 @@ ALTER TABLE public.deva_uebersetzung_artikel_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3067 (class 0 OID 0)
--- Dependencies: 294
+-- Dependencies: 254
 -- Name: deva_uebersetzung_artikel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1684,7 +1767,7 @@ ALTER SEQUENCE deva_uebersetzung_artikel_id_seq OWNED BY deva_uebersetzung_artik
 
 
 --
--- TOC entry 297 (class 1259 OID 30421)
+-- TOC entry 255 (class 1259 OID 60699)
 -- Name: deva_uebersetzung_komponente; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1700,7 +1783,7 @@ CREATE TABLE deva_uebersetzung_komponente (
 ALTER TABLE public.deva_uebersetzung_komponente OWNER TO meyle;
 
 --
--- TOC entry 296 (class 1259 OID 30419)
+-- TOC entry 256 (class 1259 OID 60702)
 -- Name: deva_uebersetzung_komponente_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1716,7 +1799,7 @@ ALTER TABLE public.deva_uebersetzung_komponente_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3068 (class 0 OID 0)
--- Dependencies: 296
+-- Dependencies: 256
 -- Name: deva_uebersetzung_komponente_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1724,7 +1807,7 @@ ALTER SEQUENCE deva_uebersetzung_komponente_id_seq OWNED BY deva_uebersetzung_ko
 
 
 --
--- TOC entry 299 (class 1259 OID 30429)
+-- TOC entry 257 (class 1259 OID 60704)
 -- Name: deva_uebersetzung_produktgruppe; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1740,7 +1823,7 @@ CREATE TABLE deva_uebersetzung_produktgruppe (
 ALTER TABLE public.deva_uebersetzung_produktgruppe OWNER TO meyle;
 
 --
--- TOC entry 298 (class 1259 OID 30427)
+-- TOC entry 258 (class 1259 OID 60707)
 -- Name: deva_uebersetzung_produktgruppe_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1756,7 +1839,7 @@ ALTER TABLE public.deva_uebersetzung_produktgruppe_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3069 (class 0 OID 0)
--- Dependencies: 298
+-- Dependencies: 258
 -- Name: deva_uebersetzung_produktgruppe_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1764,7 +1847,7 @@ ALTER SEQUENCE deva_uebersetzung_produktgruppe_id_seq OWNED BY deva_uebersetzung
 
 
 --
--- TOC entry 301 (class 1259 OID 30437)
+-- TOC entry 259 (class 1259 OID 60709)
 -- Name: deva_uebersetzung_prozess_schritt; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1780,7 +1863,7 @@ CREATE TABLE deva_uebersetzung_prozess_schritt (
 ALTER TABLE public.deva_uebersetzung_prozess_schritt OWNER TO meyle;
 
 --
--- TOC entry 300 (class 1259 OID 30435)
+-- TOC entry 260 (class 1259 OID 60712)
 -- Name: deva_uebersetzung_prozess_schritt_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1796,7 +1879,7 @@ ALTER TABLE public.deva_uebersetzung_prozess_schritt_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3070 (class 0 OID 0)
--- Dependencies: 300
+-- Dependencies: 260
 -- Name: deva_uebersetzung_prozess_schritt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1804,7 +1887,7 @@ ALTER SEQUENCE deva_uebersetzung_prozess_schritt_id_seq OWNED BY deva_uebersetzu
 
 
 --
--- TOC entry 303 (class 1259 OID 30445)
+-- TOC entry 261 (class 1259 OID 60714)
 -- Name: deva_uebersetzung_zubehoer; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1820,7 +1903,7 @@ CREATE TABLE deva_uebersetzung_zubehoer (
 ALTER TABLE public.deva_uebersetzung_zubehoer OWNER TO meyle;
 
 --
--- TOC entry 302 (class 1259 OID 30443)
+-- TOC entry 262 (class 1259 OID 60717)
 -- Name: deva_uebersetzung_zubehoer_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1836,7 +1919,7 @@ ALTER TABLE public.deva_uebersetzung_zubehoer_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3071 (class 0 OID 0)
--- Dependencies: 302
+-- Dependencies: 262
 -- Name: deva_uebersetzung_zubehoer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1844,7 +1927,7 @@ ALTER SEQUENCE deva_uebersetzung_zubehoer_id_seq OWNED BY deva_uebersetzung_zube
 
 
 --
--- TOC entry 305 (class 1259 OID 30453)
+-- TOC entry 263 (class 1259 OID 60719)
 -- Name: deva_uebersetzung_zusatzinformation; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1860,7 +1943,7 @@ CREATE TABLE deva_uebersetzung_zusatzinformation (
 ALTER TABLE public.deva_uebersetzung_zusatzinformation OWNER TO meyle;
 
 --
--- TOC entry 304 (class 1259 OID 30451)
+-- TOC entry 264 (class 1259 OID 60722)
 -- Name: deva_uebersetzung_zusatzinformation_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1876,7 +1959,7 @@ ALTER TABLE public.deva_uebersetzung_zusatzinformation_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3072 (class 0 OID 0)
--- Dependencies: 304
+-- Dependencies: 264
 -- Name: deva_uebersetzung_zusatzinformation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1884,7 +1967,7 @@ ALTER SEQUENCE deva_uebersetzung_zusatzinformation_id_seq OWNED BY deva_ueberset
 
 
 --
--- TOC entry 307 (class 1259 OID 30461)
+-- TOC entry 265 (class 1259 OID 60724)
 -- Name: deva_zubehoer; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1901,7 +1984,7 @@ CREATE TABLE deva_zubehoer (
 ALTER TABLE public.deva_zubehoer OWNER TO meyle;
 
 --
--- TOC entry 306 (class 1259 OID 30459)
+-- TOC entry 266 (class 1259 OID 60730)
 -- Name: deva_zubehoer_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1917,7 +2000,7 @@ ALTER TABLE public.deva_zubehoer_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3073 (class 0 OID 0)
--- Dependencies: 306
+-- Dependencies: 266
 -- Name: deva_zubehoer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1925,7 +2008,7 @@ ALTER SEQUENCE deva_zubehoer_id_seq OWNED BY deva_zubehoer.id;
 
 
 --
--- TOC entry 309 (class 1259 OID 30472)
+-- TOC entry 267 (class 1259 OID 60732)
 -- Name: deva_zusatzinformation; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1940,7 +2023,7 @@ CREATE TABLE deva_zusatzinformation (
 ALTER TABLE public.deva_zusatzinformation OWNER TO meyle;
 
 --
--- TOC entry 308 (class 1259 OID 30470)
+-- TOC entry 268 (class 1259 OID 60738)
 -- Name: deva_zusatzinformation_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -1956,7 +2039,7 @@ ALTER TABLE public.deva_zusatzinformation_id_seq OWNER TO meyle;
 
 --
 -- TOC entry 3074 (class 0 OID 0)
--- Dependencies: 308
+-- Dependencies: 268
 -- Name: deva_zusatzinformation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: meyle
 --
 
@@ -1964,7 +2047,7 @@ ALTER SEQUENCE deva_zusatzinformation_id_seq OWNED BY deva_zusatzinformation.id;
 
 
 --
--- TOC entry 172 (class 1259 OID 29690)
+-- TOC entry 269 (class 1259 OID 60740)
 -- Name: drools_sessioninfo; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1980,7 +2063,7 @@ CREATE TABLE drools_sessioninfo (
 ALTER TABLE public.drools_sessioninfo OWNER TO meyle;
 
 --
--- TOC entry 173 (class 1259 OID 29695)
+-- TOC entry 270 (class 1259 OID 60743)
 -- Name: drools_workiteminfo; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -1998,7 +2081,7 @@ CREATE TABLE drools_workiteminfo (
 ALTER TABLE public.drools_workiteminfo OWNER TO meyle;
 
 --
--- TOC entry 204 (class 1259 OID 29994)
+-- TOC entry 271 (class 1259 OID 60746)
 -- Name: hibernate_sequence; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -2013,7 +2096,7 @@ CREATE SEQUENCE hibernate_sequence
 ALTER TABLE public.hibernate_sequence OWNER TO meyle;
 
 --
--- TOC entry 174 (class 1259 OID 29700)
+-- TOC entry 272 (class 1259 OID 60748)
 -- Name: jbpm_attachment; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2033,7 +2116,7 @@ CREATE TABLE jbpm_attachment (
 ALTER TABLE public.jbpm_attachment OWNER TO meyle;
 
 --
--- TOC entry 175 (class 1259 OID 29708)
+-- TOC entry 273 (class 1259 OID 60754)
 -- Name: jbpm_boolean_expression; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2048,7 +2131,7 @@ CREATE TABLE jbpm_boolean_expression (
 ALTER TABLE public.jbpm_boolean_expression OWNER TO meyle;
 
 --
--- TOC entry 176 (class 1259 OID 29716)
+-- TOC entry 274 (class 1259 OID 60760)
 -- Name: jbpm_content; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2061,7 +2144,7 @@ CREATE TABLE jbpm_content (
 ALTER TABLE public.jbpm_content OWNER TO meyle;
 
 --
--- TOC entry 177 (class 1259 OID 29721)
+-- TOC entry 275 (class 1259 OID 60763)
 -- Name: jbpm_deadline; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2077,7 +2160,7 @@ CREATE TABLE jbpm_deadline (
 ALTER TABLE public.jbpm_deadline OWNER TO meyle;
 
 --
--- TOC entry 178 (class 1259 OID 29726)
+-- TOC entry 276 (class 1259 OID 60766)
 -- Name: jbpm_delegation_delegates; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2090,7 +2173,7 @@ CREATE TABLE jbpm_delegation_delegates (
 ALTER TABLE public.jbpm_delegation_delegates OWNER TO meyle;
 
 --
--- TOC entry 179 (class 1259 OID 29729)
+-- TOC entry 277 (class 1259 OID 60769)
 -- Name: jbpm_email_header; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2107,7 +2190,7 @@ CREATE TABLE jbpm_email_header (
 ALTER TABLE public.jbpm_email_header OWNER TO meyle;
 
 --
--- TOC entry 180 (class 1259 OID 29737)
+-- TOC entry 278 (class 1259 OID 60775)
 -- Name: jbpm_email_notification; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2121,7 +2204,7 @@ CREATE TABLE jbpm_email_notification (
 ALTER TABLE public.jbpm_email_notification OWNER TO meyle;
 
 --
--- TOC entry 181 (class 1259 OID 29742)
+-- TOC entry 279 (class 1259 OID 60778)
 -- Name: jbpm_email_notification_jbpm_email_header; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2135,7 +2218,7 @@ CREATE TABLE jbpm_email_notification_jbpm_email_header (
 ALTER TABLE public.jbpm_email_notification_jbpm_email_header OWNER TO meyle;
 
 --
--- TOC entry 182 (class 1259 OID 29749)
+-- TOC entry 280 (class 1259 OID 60781)
 -- Name: jbpm_escalation; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2149,7 +2232,7 @@ CREATE TABLE jbpm_escalation (
 ALTER TABLE public.jbpm_escalation OWNER TO meyle;
 
 --
--- TOC entry 183 (class 1259 OID 29754)
+-- TOC entry 281 (class 1259 OID 60784)
 -- Name: jbpm_group; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2161,7 +2244,7 @@ CREATE TABLE jbpm_group (
 ALTER TABLE public.jbpm_group OWNER TO meyle;
 
 --
--- TOC entry 184 (class 1259 OID 29759)
+-- TOC entry 282 (class 1259 OID 60787)
 -- Name: jbpm_i18ntext; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2184,7 +2267,7 @@ CREATE TABLE jbpm_i18ntext (
 ALTER TABLE public.jbpm_i18ntext OWNER TO meyle;
 
 --
--- TOC entry 185 (class 1259 OID 29767)
+-- TOC entry 283 (class 1259 OID 60793)
 -- Name: jbpm_notification; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2198,7 +2281,7 @@ CREATE TABLE jbpm_notification (
 ALTER TABLE public.jbpm_notification OWNER TO meyle;
 
 --
--- TOC entry 186 (class 1259 OID 29772)
+-- TOC entry 284 (class 1259 OID 60796)
 -- Name: jbpm_notification_bas; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2211,7 +2294,7 @@ CREATE TABLE jbpm_notification_bas (
 ALTER TABLE public.jbpm_notification_bas OWNER TO meyle;
 
 --
--- TOC entry 187 (class 1259 OID 29775)
+-- TOC entry 285 (class 1259 OID 60799)
 -- Name: jbpm_notification_recipients; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2224,7 +2307,7 @@ CREATE TABLE jbpm_notification_recipients (
 ALTER TABLE public.jbpm_notification_recipients OWNER TO meyle;
 
 --
--- TOC entry 188 (class 1259 OID 29778)
+-- TOC entry 286 (class 1259 OID 60802)
 -- Name: jbpm_peopleassignments_bas; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2237,7 +2320,7 @@ CREATE TABLE jbpm_peopleassignments_bas (
 ALTER TABLE public.jbpm_peopleassignments_bas OWNER TO meyle;
 
 --
--- TOC entry 189 (class 1259 OID 29781)
+-- TOC entry 287 (class 1259 OID 60805)
 -- Name: jbpm_peopleassignments_exclowners; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2250,7 +2333,7 @@ CREATE TABLE jbpm_peopleassignments_exclowners (
 ALTER TABLE public.jbpm_peopleassignments_exclowners OWNER TO meyle;
 
 --
--- TOC entry 190 (class 1259 OID 29784)
+-- TOC entry 288 (class 1259 OID 60808)
 -- Name: jbpm_peopleassignments_potowners; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2263,7 +2346,7 @@ CREATE TABLE jbpm_peopleassignments_potowners (
 ALTER TABLE public.jbpm_peopleassignments_potowners OWNER TO meyle;
 
 --
--- TOC entry 191 (class 1259 OID 29787)
+-- TOC entry 289 (class 1259 OID 60811)
 -- Name: jbpm_peopleassignments_recipients; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2276,7 +2359,7 @@ CREATE TABLE jbpm_peopleassignments_recipients (
 ALTER TABLE public.jbpm_peopleassignments_recipients OWNER TO meyle;
 
 --
--- TOC entry 192 (class 1259 OID 29790)
+-- TOC entry 290 (class 1259 OID 60814)
 -- Name: jbpm_peopleassignments_stakeholders; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2289,7 +2372,7 @@ CREATE TABLE jbpm_peopleassignments_stakeholders (
 ALTER TABLE public.jbpm_peopleassignments_stakeholders OWNER TO meyle;
 
 --
--- TOC entry 193 (class 1259 OID 29793)
+-- TOC entry 291 (class 1259 OID 60817)
 -- Name: jbpm_processinstance_eventinfo; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2304,7 +2387,7 @@ CREATE TABLE jbpm_processinstance_eventinfo (
 ALTER TABLE public.jbpm_processinstance_eventinfo OWNER TO meyle;
 
 --
--- TOC entry 194 (class 1259 OID 29798)
+-- TOC entry 292 (class 1259 OID 60820)
 -- Name: jbpm_processinstance_info; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2323,7 +2406,7 @@ CREATE TABLE jbpm_processinstance_info (
 ALTER TABLE public.jbpm_processinstance_info OWNER TO meyle;
 
 --
--- TOC entry 195 (class 1259 OID 29803)
+-- TOC entry 293 (class 1259 OID 60823)
 -- Name: jbpm_processinstance_info_eventtypes; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2336,7 +2419,7 @@ CREATE TABLE jbpm_processinstance_info_eventtypes (
 ALTER TABLE public.jbpm_processinstance_info_eventtypes OWNER TO meyle;
 
 --
--- TOC entry 196 (class 1259 OID 29806)
+-- TOC entry 294 (class 1259 OID 60826)
 -- Name: jbpm_reassignment; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2349,7 +2432,7 @@ CREATE TABLE jbpm_reassignment (
 ALTER TABLE public.jbpm_reassignment OWNER TO meyle;
 
 --
--- TOC entry 197 (class 1259 OID 29811)
+-- TOC entry 295 (class 1259 OID 60829)
 -- Name: jbpm_reassignment_potentialowners; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2362,7 +2445,7 @@ CREATE TABLE jbpm_reassignment_potentialowners (
 ALTER TABLE public.jbpm_reassignment_potentialowners OWNER TO meyle;
 
 --
--- TOC entry 198 (class 1259 OID 29814)
+-- TOC entry 296 (class 1259 OID 60832)
 -- Name: jbpm_subtasksstrategy; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2377,7 +2460,7 @@ CREATE TABLE jbpm_subtasksstrategy (
 ALTER TABLE public.jbpm_subtasksstrategy OWNER TO meyle;
 
 --
--- TOC entry 199 (class 1259 OID 29819)
+-- TOC entry 297 (class 1259 OID 60835)
 -- Name: jbpm_task; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2413,7 +2496,7 @@ CREATE TABLE jbpm_task (
 ALTER TABLE public.jbpm_task OWNER TO meyle;
 
 --
--- TOC entry 200 (class 1259 OID 29827)
+-- TOC entry 298 (class 1259 OID 60841)
 -- Name: jbpm_task_comment; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2429,7 +2512,7 @@ CREATE TABLE jbpm_task_comment (
 ALTER TABLE public.jbpm_task_comment OWNER TO meyle;
 
 --
--- TOC entry 201 (class 1259 OID 29835)
+-- TOC entry 299 (class 1259 OID 60847)
 -- Name: jbpm_user; Type: TABLE; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2441,7 +2524,7 @@ CREATE TABLE jbpm_user (
 ALTER TABLE public.jbpm_user OWNER TO meyle;
 
 --
--- TOC entry 202 (class 1259 OID 29990)
+-- TOC entry 300 (class 1259 OID 60850)
 -- Name: sessioninfo_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -2456,7 +2539,7 @@ CREATE SEQUENCE sessioninfo_id_seq
 ALTER TABLE public.sessioninfo_id_seq OWNER TO meyle;
 
 --
--- TOC entry 203 (class 1259 OID 29992)
+-- TOC entry 301 (class 1259 OID 60852)
 -- Name: workiteminfo_id_seq; Type: SEQUENCE; Schema: public; Owner: meyle
 --
 
@@ -2470,9 +2553,8 @@ CREATE SEQUENCE workiteminfo_id_seq
 
 ALTER TABLE public.workiteminfo_id_seq OWNER TO meyle;
 
-
 --
--- TOC entry 2664 (class 2604 OID 30009)
+-- TOC entry 2663 (class 2604 OID 60854)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2480,7 +2562,7 @@ ALTER TABLE ONLY deva_angemeldeter_benutzer ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
--- TOC entry 2665 (class 2604 OID 30017)
+-- TOC entry 2664 (class 2604 OID 60855)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2488,7 +2570,7 @@ ALTER TABLE ONLY deva_artikel ALTER COLUMN id SET DEFAULT nextval('deva_artikel_
 
 
 --
--- TOC entry 2666 (class 2604 OID 30028)
+-- TOC entry 2665 (class 2604 OID 60856)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2496,7 +2578,7 @@ ALTER TABLE ONLY deva_artikel_bestandteil ALTER COLUMN id SET DEFAULT nextval('d
 
 
 --
--- TOC entry 2668 (class 2604 OID 30047)
+-- TOC entry 2667 (class 2604 OID 60857)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2504,7 +2586,7 @@ ALTER TABLE ONLY deva_artikel_kommentar ALTER COLUMN id SET DEFAULT nextval('dev
 
 
 --
--- TOC entry 2669 (class 2604 OID 30058)
+-- TOC entry 2668 (class 2604 OID 60858)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2512,7 +2594,7 @@ ALTER TABLE ONLY deva_artikel_komponente ALTER COLUMN id SET DEFAULT nextval('de
 
 
 --
--- TOC entry 2671 (class 2604 OID 30067)
+-- TOC entry 2670 (class 2604 OID 60859)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2520,7 +2602,7 @@ ALTER TABLE ONLY deva_artikel_logbuch ALTER COLUMN id SET DEFAULT nextval('deva_
 
 
 --
--- TOC entry 2672 (class 2604 OID 30083)
+-- TOC entry 2671 (class 2604 OID 60860)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2528,7 +2610,7 @@ ALTER TABLE ONLY deva_artikel_zubehoer ALTER COLUMN id SET DEFAULT nextval('deva
 
 
 --
--- TOC entry 2674 (class 2604 OID 30095)
+-- TOC entry 2673 (class 2604 OID 60861)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2536,7 +2618,7 @@ ALTER TABLE ONLY deva_benutzer ALTER COLUMN id SET DEFAULT nextval('deva_benutze
 
 
 --
--- TOC entry 2675 (class 2604 OID 30115)
+-- TOC entry 2674 (class 2604 OID 60862)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2544,7 +2626,7 @@ ALTER TABLE ONLY deva_benutzer_liste ALTER COLUMN id SET DEFAULT nextval('deva_b
 
 
 --
--- TOC entry 2676 (class 2604 OID 30135)
+-- TOC entry 2675 (class 2604 OID 60863)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2552,7 +2634,7 @@ ALTER TABLE ONLY deva_bezeichnung_artikel ALTER COLUMN id SET DEFAULT nextval('d
 
 
 --
--- TOC entry 2677 (class 2604 OID 30143)
+-- TOC entry 2676 (class 2604 OID 60864)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2560,7 +2642,7 @@ ALTER TABLE ONLY deva_bezeichnung_komponente ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 2678 (class 2604 OID 30151)
+-- TOC entry 2677 (class 2604 OID 60865)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2568,7 +2650,7 @@ ALTER TABLE ONLY deva_bezeichnung_produktgruppe ALTER COLUMN id SET DEFAULT next
 
 
 --
--- TOC entry 2679 (class 2604 OID 30159)
+-- TOC entry 2678 (class 2604 OID 60866)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2576,7 +2658,7 @@ ALTER TABLE ONLY deva_bezeichnung_zubehoer ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2680 (class 2604 OID 30167)
+-- TOC entry 2679 (class 2604 OID 60867)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2584,7 +2666,7 @@ ALTER TABLE ONLY deva_bezeichnung_zusatzinformation ALTER COLUMN id SET DEFAULT 
 
 
 --
--- TOC entry 2681 (class 2604 OID 30175)
+-- TOC entry 2680 (class 2604 OID 60868)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2592,7 +2674,7 @@ ALTER TABLE ONLY deva_bezeichung_prozess_schritt ALTER COLUMN id SET DEFAULT nex
 
 
 --
--- TOC entry 2682 (class 2604 OID 30188)
+-- TOC entry 2681 (class 2604 OID 60869)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2600,7 +2682,7 @@ ALTER TABLE ONLY deva_bonuszeit ALTER COLUMN id SET DEFAULT nextval('deva_bonusz
 
 
 --
--- TOC entry 2684 (class 2604 OID 30200)
+-- TOC entry 2683 (class 2604 OID 60870)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2608,7 +2690,7 @@ ALTER TABLE ONLY deva_bpmndefinition ALTER COLUMN id SET DEFAULT nextval('deva_b
 
 
 --
--- TOC entry 2685 (class 2604 OID 30211)
+-- TOC entry 2684 (class 2604 OID 60871)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2616,7 +2698,7 @@ ALTER TABLE ONLY deva_dokument ALTER COLUMN id SET DEFAULT nextval('deva_dokumen
 
 
 --
--- TOC entry 2688 (class 2604 OID 30221)
+-- TOC entry 2687 (class 2604 OID 60872)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2624,7 +2706,7 @@ ALTER TABLE ONLY deva_dokument_binaerdaten ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2689 (class 2604 OID 30229)
+-- TOC entry 2688 (class 2604 OID 60873)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2632,7 +2714,7 @@ ALTER TABLE ONLY deva_faelligkeiten ALTER COLUMN id SET DEFAULT nextval('deva_fa
 
 
 --
--- TOC entry 2692 (class 2604 OID 30241)
+-- TOC entry 2691 (class 2604 OID 60874)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2640,7 +2722,7 @@ ALTER TABLE ONLY deva_fahrzeug_bezeichnung ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2693 (class 2604 OID 30253)
+-- TOC entry 2692 (class 2604 OID 60875)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2648,7 +2730,7 @@ ALTER TABLE ONLY deva_firma ALTER COLUMN id SET DEFAULT nextval('deva_firma_id_s
 
 
 --
--- TOC entry 2694 (class 2604 OID 30281)
+-- TOC entry 2693 (class 2604 OID 60876)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2656,7 +2738,7 @@ ALTER TABLE ONLY deva_komponente ALTER COLUMN id SET DEFAULT nextval('deva_kompo
 
 
 --
--- TOC entry 2695 (class 2604 OID 30292)
+-- TOC entry 2714 (class 2604 OID 65441)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2664,7 +2746,7 @@ ALTER TABLE ONLY deva_komponente_bestandteil ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 2697 (class 2604 OID 30306)
+-- TOC entry 2695 (class 2604 OID 60877)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2672,7 +2754,7 @@ ALTER TABLE ONLY deva_komponente_kommentar ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2698 (class 2604 OID 30317)
+-- TOC entry 2696 (class 2604 OID 60878)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2680,7 +2762,7 @@ ALTER TABLE ONLY deva_komponente_logbuch ALTER COLUMN id SET DEFAULT nextval('de
 
 
 --
--- TOC entry 2699 (class 2604 OID 30338)
+-- TOC entry 2697 (class 2604 OID 60879)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2688,7 +2770,7 @@ ALTER TABLE ONLY deva_produktgruppe ALTER COLUMN id SET DEFAULT nextval('deva_pr
 
 
 --
--- TOC entry 2700 (class 2604 OID 30346)
+-- TOC entry 2698 (class 2604 OID 60880)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2696,7 +2778,7 @@ ALTER TABLE ONLY deva_prozess ALTER COLUMN id SET DEFAULT nextval('deva_prozess_
 
 
 --
--- TOC entry 2702 (class 2604 OID 30364)
+-- TOC entry 2699 (class 2604 OID 60881)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2704,7 +2786,7 @@ ALTER TABLE ONLY deva_prozess_schritt ALTER COLUMN id SET DEFAULT nextval('deva_
 
 
 --
--- TOC entry 2701 (class 2604 OID 30356)
+-- TOC entry 2700 (class 2604 OID 60882)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2712,7 +2794,7 @@ ALTER TABLE ONLY deva_prozessdefinition ALTER COLUMN id SET DEFAULT nextval('dev
 
 
 --
--- TOC entry 2703 (class 2604 OID 30372)
+-- TOC entry 2701 (class 2604 OID 60883)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2720,7 +2802,7 @@ ALTER TABLE ONLY deva_rolle ALTER COLUMN id SET DEFAULT nextval('deva_rolle_id_s
 
 
 --
--- TOC entry 2704 (class 2604 OID 30396)
+-- TOC entry 2702 (class 2604 OID 60884)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2728,7 +2810,7 @@ ALTER TABLE ONLY deva_sollzeiten ALTER COLUMN id SET DEFAULT nextval('deva_sollz
 
 
 --
--- TOC entry 2707 (class 2604 OID 30416)
+-- TOC entry 2705 (class 2604 OID 60885)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2736,7 +2818,7 @@ ALTER TABLE ONLY deva_uebersetzung_artikel ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2708 (class 2604 OID 30424)
+-- TOC entry 2706 (class 2604 OID 60886)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2744,7 +2826,7 @@ ALTER TABLE ONLY deva_uebersetzung_komponente ALTER COLUMN id SET DEFAULT nextva
 
 
 --
--- TOC entry 2709 (class 2604 OID 30432)
+-- TOC entry 2707 (class 2604 OID 60887)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2752,7 +2834,7 @@ ALTER TABLE ONLY deva_uebersetzung_produktgruppe ALTER COLUMN id SET DEFAULT nex
 
 
 --
--- TOC entry 2710 (class 2604 OID 30440)
+-- TOC entry 2708 (class 2604 OID 60888)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2760,7 +2842,7 @@ ALTER TABLE ONLY deva_uebersetzung_prozess_schritt ALTER COLUMN id SET DEFAULT n
 
 
 --
--- TOC entry 2711 (class 2604 OID 30448)
+-- TOC entry 2709 (class 2604 OID 60889)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2768,7 +2850,7 @@ ALTER TABLE ONLY deva_uebersetzung_zubehoer ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
--- TOC entry 2712 (class 2604 OID 30456)
+-- TOC entry 2710 (class 2604 OID 60890)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2776,7 +2858,7 @@ ALTER TABLE ONLY deva_uebersetzung_zusatzinformation ALTER COLUMN id SET DEFAULT
 
 
 --
--- TOC entry 2713 (class 2604 OID 30464)
+-- TOC entry 2711 (class 2604 OID 60891)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
@@ -2784,16 +2866,15 @@ ALTER TABLE ONLY deva_zubehoer ALTER COLUMN id SET DEFAULT nextval('deva_zubehoe
 
 
 --
--- TOC entry 2714 (class 2604 OID 30475)
+-- TOC entry 2712 (class 2604 OID 60892)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: meyle
 --
 
 ALTER TABLE ONLY deva_zusatzinformation ALTER COLUMN id SET DEFAULT nextval('deva_zusatzinformation_id_seq'::regclass);
 
 
-
 --
--- TOC entry 2760 (class 2606 OID 30011)
+-- TOC entry 2716 (class 2606 OID 60894)
 -- Name: deva_angemeldeter_benutzer_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2802,7 +2883,7 @@ ALTER TABLE ONLY deva_angemeldeter_benutzer
 
 
 --
--- TOC entry 2772 (class 2606 OID 30031)
+-- TOC entry 2728 (class 2606 OID 60896)
 -- Name: deva_artikel_bestandteil_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2811,7 +2892,7 @@ ALTER TABLE ONLY deva_artikel_bestandteil
 
 
 --
--- TOC entry 2774 (class 2606 OID 30036)
+-- TOC entry 2730 (class 2606 OID 60898)
 -- Name: deva_artikel_dokumente_dokument_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2820,7 +2901,7 @@ ALTER TABLE ONLY deva_artikel_dokumente
 
 
 --
--- TOC entry 2776 (class 2606 OID 30041)
+-- TOC entry 2732 (class 2606 OID 60900)
 -- Name: deva_artikel_fahrzeuge_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2829,7 +2910,7 @@ ALTER TABLE ONLY deva_artikel_fahrzeuge
 
 
 --
--- TOC entry 2778 (class 2606 OID 30052)
+-- TOC entry 2734 (class 2606 OID 60902)
 -- Name: deva_artikel_kommentar_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2838,7 +2919,7 @@ ALTER TABLE ONLY deva_artikel_kommentar
 
 
 --
--- TOC entry 2780 (class 2606 OID 30061)
+-- TOC entry 2736 (class 2606 OID 60904)
 -- Name: deva_artikel_komponente_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2847,7 +2928,7 @@ ALTER TABLE ONLY deva_artikel_komponente
 
 
 --
--- TOC entry 2782 (class 2606 OID 30069)
+-- TOC entry 2738 (class 2606 OID 60906)
 -- Name: deva_artikel_logbuch_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2856,7 +2937,7 @@ ALTER TABLE ONLY deva_artikel_logbuch
 
 
 --
--- TOC entry 2765 (class 2606 OID 30022)
+-- TOC entry 2721 (class 2606 OID 60908)
 -- Name: deva_artikel_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2864,8 +2945,9 @@ ALTER TABLE ONLY deva_artikel
     ADD CONSTRAINT deva_artikel_pkey PRIMARY KEY (id);
 
 
+
 --
--- TOC entry 2786 (class 2606 OID 30086)
+-- TOC entry 2740 (class 2606 OID 60910)
 -- Name: deva_artikel_zubehoer_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2874,7 +2956,7 @@ ALTER TABLE ONLY deva_artikel_zubehoer
 
 
 --
--- TOC entry 2795 (class 2606 OID 30109)
+-- TOC entry 2749 (class 2606 OID 60912)
 -- Name: deva_benutzer_firma_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2883,7 +2965,7 @@ ALTER TABLE ONLY deva_benutzer_firma
 
 
 --
--- TOC entry 2797 (class 2606 OID 30117)
+-- TOC entry 2751 (class 2606 OID 60914)
 -- Name: deva_benutzer_liste_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2892,7 +2974,7 @@ ALTER TABLE ONLY deva_benutzer_liste
 
 
 --
--- TOC entry 2799 (class 2606 OID 30119)
+-- TOC entry 2753 (class 2606 OID 60916)
 -- Name: deva_benutzer_liste_singleton_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2901,7 +2983,7 @@ ALTER TABLE ONLY deva_benutzer_liste
 
 
 --
--- TOC entry 2788 (class 2606 OID 30104)
+-- TOC entry 2742 (class 2606 OID 60918)
 -- Name: deva_benutzer_name_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2910,7 +2992,7 @@ ALTER TABLE ONLY deva_benutzer
 
 
 --
--- TOC entry 2790 (class 2606 OID 30100)
+-- TOC entry 2744 (class 2606 OID 60920)
 -- Name: deva_benutzer_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2919,7 +3001,7 @@ ALTER TABLE ONLY deva_benutzer
 
 
 --
--- TOC entry 2801 (class 2606 OID 30124)
+-- TOC entry 2755 (class 2606 OID 60922)
 -- Name: deva_benutzer_produktgruppe_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2928,7 +3010,7 @@ ALTER TABLE ONLY deva_benutzer_produktgruppe
 
 
 --
--- TOC entry 2803 (class 2606 OID 30129)
+-- TOC entry 2757 (class 2606 OID 60924)
 -- Name: deva_benutzer_rollen_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2937,7 +3019,7 @@ ALTER TABLE ONLY deva_benutzer_rollen
 
 
 --
--- TOC entry 2792 (class 2606 OID 30102)
+-- TOC entry 2746 (class 2606 OID 60926)
 -- Name: deva_benutzer_username_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2946,7 +3028,7 @@ ALTER TABLE ONLY deva_benutzer
 
 
 --
--- TOC entry 2805 (class 2606 OID 30137)
+-- TOC entry 2759 (class 2606 OID 60928)
 -- Name: deva_bezeichnung_artikel_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2955,7 +3037,7 @@ ALTER TABLE ONLY deva_bezeichnung_artikel
 
 
 --
--- TOC entry 2808 (class 2606 OID 30145)
+-- TOC entry 2762 (class 2606 OID 60930)
 -- Name: deva_bezeichnung_komponente_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2964,7 +3046,7 @@ ALTER TABLE ONLY deva_bezeichnung_komponente
 
 
 --
--- TOC entry 2810 (class 2606 OID 30153)
+-- TOC entry 2764 (class 2606 OID 60932)
 -- Name: deva_bezeichnung_produktgruppe_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2973,7 +3055,7 @@ ALTER TABLE ONLY deva_bezeichnung_produktgruppe
 
 
 --
--- TOC entry 2812 (class 2606 OID 30161)
+-- TOC entry 2766 (class 2606 OID 60934)
 -- Name: deva_bezeichnung_zubehoer_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2982,7 +3064,7 @@ ALTER TABLE ONLY deva_bezeichnung_zubehoer
 
 
 --
--- TOC entry 2814 (class 2606 OID 30169)
+-- TOC entry 2768 (class 2606 OID 60936)
 -- Name: deva_bezeichnung_zusatzinformation_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -2991,7 +3073,7 @@ ALTER TABLE ONLY deva_bezeichnung_zusatzinformation
 
 
 --
--- TOC entry 2816 (class 2606 OID 30182)
+-- TOC entry 2770 (class 2606 OID 60938)
 -- Name: deva_bezeichung_prozess_schritt_identifier_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3000,7 +3082,7 @@ ALTER TABLE ONLY deva_bezeichung_prozess_schritt
 
 
 --
--- TOC entry 2818 (class 2606 OID 30180)
+-- TOC entry 2772 (class 2606 OID 60940)
 -- Name: deva_bezeichung_prozess_schritt_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3009,7 +3091,7 @@ ALTER TABLE ONLY deva_bezeichung_prozess_schritt
 
 
 --
--- TOC entry 2820 (class 2606 OID 30194)
+-- TOC entry 2774 (class 2606 OID 60942)
 -- Name: deva_bonuszeit_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3018,7 +3100,7 @@ ALTER TABLE ONLY deva_bonuszeit
 
 
 --
--- TOC entry 2822 (class 2606 OID 30202)
+-- TOC entry 2776 (class 2606 OID 60944)
 -- Name: deva_bpmndefinition_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3027,7 +3109,7 @@ ALTER TABLE ONLY deva_bpmndefinition
 
 
 --
--- TOC entry 2826 (class 2606 OID 30223)
+-- TOC entry 2780 (class 2606 OID 60946)
 -- Name: deva_dokument_binaerdaten_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3036,7 +3118,7 @@ ALTER TABLE ONLY deva_dokument_binaerdaten
 
 
 --
--- TOC entry 2824 (class 2606 OID 30215)
+-- TOC entry 2778 (class 2606 OID 60948)
 -- Name: deva_dokument_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3045,7 +3127,7 @@ ALTER TABLE ONLY deva_dokument
 
 
 --
--- TOC entry 2828 (class 2606 OID 30233)
+-- TOC entry 2782 (class 2606 OID 60950)
 -- Name: deva_faelligkeiten_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3054,7 +3136,7 @@ ALTER TABLE ONLY deva_faelligkeiten
 
 
 --
--- TOC entry 2830 (class 2606 OID 30235)
+-- TOC entry 2784 (class 2606 OID 60952)
 -- Name: deva_faelligkeiten_singleton_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3063,7 +3145,7 @@ ALTER TABLE ONLY deva_faelligkeiten
 
 
 --
--- TOC entry 2833 (class 2606 OID 30245)
+-- TOC entry 2787 (class 2606 OID 60954)
 -- Name: deva_fahrzeug_bezeichnung_bezeichnung_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3072,7 +3154,7 @@ ALTER TABLE ONLY deva_fahrzeug_bezeichnung
 
 
 --
--- TOC entry 2835 (class 2606 OID 30247)
+-- TOC entry 2789 (class 2606 OID 60956)
 -- Name: deva_fahrzeug_bezeichnung_fahrzeug_typ_hersteller_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3081,7 +3163,7 @@ ALTER TABLE ONLY deva_fahrzeug_bezeichnung
 
 
 --
--- TOC entry 2837 (class 2606 OID 30243)
+-- TOC entry 2791 (class 2606 OID 60958)
 -- Name: deva_fahrzeug_bezeichnung_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3090,7 +3172,7 @@ ALTER TABLE ONLY deva_fahrzeug_bezeichnung
 
 
 --
--- TOC entry 2843 (class 2606 OID 30262)
+-- TOC entry 2797 (class 2606 OID 60960)
 -- Name: deva_firma_ansprechpartner_benutzer_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3099,7 +3181,7 @@ ALTER TABLE ONLY deva_firma_ansprechpartner
 
 
 --
--- TOC entry 2839 (class 2606 OID 30257)
+-- TOC entry 2793 (class 2606 OID 60962)
 -- Name: deva_firma_name_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3108,7 +3190,7 @@ ALTER TABLE ONLY deva_firma
 
 
 --
--- TOC entry 2841 (class 2606 OID 30255)
+-- TOC entry 2795 (class 2606 OID 60964)
 -- Name: deva_firma_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3117,7 +3199,7 @@ ALTER TABLE ONLY deva_firma
 
 
 --
--- TOC entry 2845 (class 2606 OID 30270)
+-- TOC entry 2799 (class 2606 OID 60966)
 -- Name: deva_firma_sollzeiten_artikel_sollzeiten_artikel_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3126,7 +3208,7 @@ ALTER TABLE ONLY deva_firma_sollzeiten_artikel
 
 
 --
--- TOC entry 2847 (class 2606 OID 30275)
+-- TOC entry 2801 (class 2606 OID 60968)
 -- Name: deva_firma_sollzeiten_komponente_sollzeiten_komponente_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3135,7 +3217,7 @@ ALTER TABLE ONLY deva_firma_sollzeiten_komponente
 
 
 --
--- TOC entry 2852 (class 2606 OID 30295)
+-- TOC entry 2900 (class 2606 OID 65443)
 -- Name: deva_komponente_bestandteil_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3144,7 +3226,7 @@ ALTER TABLE ONLY deva_komponente_bestandteil
 
 
 --
--- TOC entry 2854 (class 2606 OID 30300)
+-- TOC entry 2806 (class 2606 OID 60970)
 -- Name: deva_komponente_dokumente_dokument_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3153,7 +3235,7 @@ ALTER TABLE ONLY deva_komponente_dokumente
 
 
 --
--- TOC entry 2856 (class 2606 OID 30311)
+-- TOC entry 2808 (class 2606 OID 60972)
 -- Name: deva_komponente_kommentar_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3162,7 +3244,7 @@ ALTER TABLE ONLY deva_komponente_kommentar
 
 
 --
--- TOC entry 2858 (class 2606 OID 30319)
+-- TOC entry 2810 (class 2606 OID 60974)
 -- Name: deva_komponente_logbuch_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3171,7 +3253,7 @@ ALTER TABLE ONLY deva_komponente_logbuch
 
 
 --
--- TOC entry 2849 (class 2606 OID 30286)
+-- TOC entry 2803 (class 2606 OID 60976)
 -- Name: deva_komponente_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3180,7 +3262,7 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 2862 (class 2606 OID 30332)
+-- TOC entry 2812 (class 2606 OID 60978)
 -- Name: deva_komponente_zusatzinformationen_zusatzinfo_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3189,7 +3271,7 @@ ALTER TABLE ONLY deva_komponente_zusatzinformationen
 
 
 --
--- TOC entry 2864 (class 2606 OID 30340)
+-- TOC entry 2814 (class 2606 OID 60980)
 -- Name: deva_produktgruppe_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3198,7 +3280,7 @@ ALTER TABLE ONLY deva_produktgruppe
 
 
 --
--- TOC entry 2866 (class 2606 OID 30348)
+-- TOC entry 2816 (class 2606 OID 60982)
 -- Name: deva_prozess_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3207,7 +3289,7 @@ ALTER TABLE ONLY deva_prozess
 
 
 --
--- TOC entry 2868 (class 2606 OID 30350)
+-- TOC entry 2818 (class 2606 OID 60984)
 -- Name: deva_prozess_process_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3216,7 +3298,7 @@ ALTER TABLE ONLY deva_prozess
 
 
 --
--- TOC entry 2872 (class 2606 OID 30366)
+-- TOC entry 2820 (class 2606 OID 60986)
 -- Name: deva_prozess_schritt_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3225,7 +3307,7 @@ ALTER TABLE ONLY deva_prozess_schritt
 
 
 --
--- TOC entry 2870 (class 2606 OID 30358)
+-- TOC entry 2822 (class 2606 OID 60988)
 -- Name: deva_prozessdefinition_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3234,7 +3316,7 @@ ALTER TABLE ONLY deva_prozessdefinition
 
 
 --
--- TOC entry 2874 (class 2606 OID 30374)
+-- TOC entry 2824 (class 2606 OID 60990)
 -- Name: deva_rolle_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3243,7 +3325,7 @@ ALTER TABLE ONLY deva_rolle
 
 
 --
--- TOC entry 2878 (class 2606 OID 30387)
+-- TOC entry 2828 (class 2606 OID 60992)
 -- Name: deva_rolle_prozess_schritt_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3252,7 +3334,7 @@ ALTER TABLE ONLY deva_rolle_prozess_schritt
 
 
 --
--- TOC entry 2876 (class 2606 OID 30376)
+-- TOC entry 2826 (class 2606 OID 60994)
 -- Name: deva_rolle_rolle_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3261,7 +3343,7 @@ ALTER TABLE ONLY deva_rolle
 
 
 --
--- TOC entry 2884 (class 2606 OID 30410)
+-- TOC entry 2830 (class 2606 OID 60996)
 -- Name: deva_sollzeit_wdh_klassifikation_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3270,7 +3352,7 @@ ALTER TABLE ONLY deva_sollzeit_wdh_klassifikation
 
 
 --
--- TOC entry 2882 (class 2606 OID 30405)
+-- TOC entry 2834 (class 2606 OID 60998)
 -- Name: deva_sollzeiten_klassifikation_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3279,7 +3361,7 @@ ALTER TABLE ONLY deva_sollzeiten_klassifikation
 
 
 --
--- TOC entry 2880 (class 2606 OID 30400)
+-- TOC entry 2832 (class 2606 OID 61000)
 -- Name: deva_sollzeiten_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3288,7 +3370,7 @@ ALTER TABLE ONLY deva_sollzeiten
 
 
 --
--- TOC entry 2886 (class 2606 OID 30418)
+-- TOC entry 2836 (class 2606 OID 61002)
 -- Name: deva_uebersetzung_artikel_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3297,7 +3379,7 @@ ALTER TABLE ONLY deva_uebersetzung_artikel
 
 
 --
--- TOC entry 2888 (class 2606 OID 30426)
+-- TOC entry 2838 (class 2606 OID 61004)
 -- Name: deva_uebersetzung_komponente_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3306,7 +3388,7 @@ ALTER TABLE ONLY deva_uebersetzung_komponente
 
 
 --
--- TOC entry 2890 (class 2606 OID 30434)
+-- TOC entry 2840 (class 2606 OID 61006)
 -- Name: deva_uebersetzung_produktgruppe_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3315,7 +3397,7 @@ ALTER TABLE ONLY deva_uebersetzung_produktgruppe
 
 
 --
--- TOC entry 2892 (class 2606 OID 30442)
+-- TOC entry 2842 (class 2606 OID 61008)
 -- Name: deva_uebersetzung_prozess_schritt_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3324,7 +3406,7 @@ ALTER TABLE ONLY deva_uebersetzung_prozess_schritt
 
 
 --
--- TOC entry 2894 (class 2606 OID 30450)
+-- TOC entry 2844 (class 2606 OID 61010)
 -- Name: deva_uebersetzung_zubehoer_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3333,7 +3415,7 @@ ALTER TABLE ONLY deva_uebersetzung_zubehoer
 
 
 --
--- TOC entry 2896 (class 2606 OID 30458)
+-- TOC entry 2846 (class 2606 OID 61012)
 -- Name: deva_uebersetzung_zusatzinformation_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3342,7 +3424,7 @@ ALTER TABLE ONLY deva_uebersetzung_zusatzinformation
 
 
 --
--- TOC entry 2898 (class 2606 OID 30469)
+-- TOC entry 2848 (class 2606 OID 61014)
 -- Name: deva_zubehoer_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3351,7 +3433,7 @@ ALTER TABLE ONLY deva_zubehoer
 
 
 --
--- TOC entry 2900 (class 2606 OID 30480)
+-- TOC entry 2850 (class 2606 OID 61016)
 -- Name: deva_zusatzinformation_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3360,7 +3442,7 @@ ALTER TABLE ONLY deva_zusatzinformation
 
 
 --
--- TOC entry 2716 (class 2606 OID 29694)
+-- TOC entry 2852 (class 2606 OID 61018)
 -- Name: drools_sessioninfo_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3369,7 +3451,7 @@ ALTER TABLE ONLY drools_sessioninfo
 
 
 --
--- TOC entry 2718 (class 2606 OID 29699)
+-- TOC entry 2854 (class 2606 OID 61020)
 -- Name: drools_workiteminfo_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3378,7 +3460,7 @@ ALTER TABLE ONLY drools_workiteminfo
 
 
 --
--- TOC entry 2720 (class 2606 OID 29707)
+-- TOC entry 2856 (class 2606 OID 61022)
 -- Name: jbpm_attachment_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3387,7 +3469,7 @@ ALTER TABLE ONLY jbpm_attachment
 
 
 --
--- TOC entry 2722 (class 2606 OID 29715)
+-- TOC entry 2858 (class 2606 OID 61024)
 -- Name: jbpm_boolean_expression_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3396,7 +3478,7 @@ ALTER TABLE ONLY jbpm_boolean_expression
 
 
 --
--- TOC entry 2724 (class 2606 OID 29720)
+-- TOC entry 2860 (class 2606 OID 61026)
 -- Name: jbpm_content_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3405,7 +3487,7 @@ ALTER TABLE ONLY jbpm_content
 
 
 --
--- TOC entry 2726 (class 2606 OID 29725)
+-- TOC entry 2862 (class 2606 OID 61028)
 -- Name: jbpm_deadline_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3414,7 +3496,7 @@ ALTER TABLE ONLY jbpm_deadline
 
 
 --
--- TOC entry 2728 (class 2606 OID 29736)
+-- TOC entry 2864 (class 2606 OID 61030)
 -- Name: jbpm_email_header_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3423,7 +3505,7 @@ ALTER TABLE ONLY jbpm_email_header
 
 
 --
--- TOC entry 2732 (class 2606 OID 29748)
+-- TOC entry 2868 (class 2606 OID 61032)
 -- Name: jbpm_email_notification_jbpm_email_header_emailheaders_id_key; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3432,7 +3514,7 @@ ALTER TABLE ONLY jbpm_email_notification_jbpm_email_header
 
 
 --
--- TOC entry 2734 (class 2606 OID 29746)
+-- TOC entry 2870 (class 2606 OID 61034)
 -- Name: jbpm_email_notification_jbpm_email_header_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3441,7 +3523,7 @@ ALTER TABLE ONLY jbpm_email_notification_jbpm_email_header
 
 
 --
--- TOC entry 2730 (class 2606 OID 29741)
+-- TOC entry 2866 (class 2606 OID 61036)
 -- Name: jbpm_email_notification_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3450,7 +3532,7 @@ ALTER TABLE ONLY jbpm_email_notification
 
 
 --
--- TOC entry 2736 (class 2606 OID 29753)
+-- TOC entry 2872 (class 2606 OID 61038)
 -- Name: jbpm_escalation_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3459,7 +3541,7 @@ ALTER TABLE ONLY jbpm_escalation
 
 
 --
--- TOC entry 2738 (class 2606 OID 29758)
+-- TOC entry 2874 (class 2606 OID 61040)
 -- Name: jbpm_group_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3468,7 +3550,7 @@ ALTER TABLE ONLY jbpm_group
 
 
 --
--- TOC entry 2740 (class 2606 OID 29766)
+-- TOC entry 2876 (class 2606 OID 61042)
 -- Name: jbpm_i18ntext_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3477,7 +3559,7 @@ ALTER TABLE ONLY jbpm_i18ntext
 
 
 --
--- TOC entry 2742 (class 2606 OID 29771)
+-- TOC entry 2878 (class 2606 OID 61044)
 -- Name: jbpm_notification_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3486,7 +3568,7 @@ ALTER TABLE ONLY jbpm_notification
 
 
 --
--- TOC entry 2744 (class 2606 OID 29797)
+-- TOC entry 2880 (class 2606 OID 61046)
 -- Name: jbpm_processinstance_eventinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3495,7 +3577,7 @@ ALTER TABLE ONLY jbpm_processinstance_eventinfo
 
 
 --
--- TOC entry 2746 (class 2606 OID 29802)
+-- TOC entry 2882 (class 2606 OID 61048)
 -- Name: jbpm_processinstance_info_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3504,7 +3586,7 @@ ALTER TABLE ONLY jbpm_processinstance_info
 
 
 --
--- TOC entry 2748 (class 2606 OID 29810)
+-- TOC entry 2884 (class 2606 OID 61050)
 -- Name: jbpm_reassignment_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3513,7 +3595,7 @@ ALTER TABLE ONLY jbpm_reassignment
 
 
 --
--- TOC entry 2750 (class 2606 OID 29818)
+-- TOC entry 2886 (class 2606 OID 61052)
 -- Name: jbpm_subtasksstrategy_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3522,7 +3604,7 @@ ALTER TABLE ONLY jbpm_subtasksstrategy
 
 
 --
--- TOC entry 2754 (class 2606 OID 29834)
+-- TOC entry 2890 (class 2606 OID 61054)
 -- Name: jbpm_task_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3531,7 +3613,7 @@ ALTER TABLE ONLY jbpm_task_comment
 
 
 --
--- TOC entry 2752 (class 2606 OID 29826)
+-- TOC entry 2888 (class 2606 OID 61056)
 -- Name: jbpm_task_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3540,7 +3622,7 @@ ALTER TABLE ONLY jbpm_task
 
 
 --
--- TOC entry 2756 (class 2606 OID 29839)
+-- TOC entry 2892 (class 2606 OID 61058)
 -- Name: jbpm_user_pkey; Type: CONSTRAINT; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3549,7 +3631,7 @@ ALTER TABLE ONLY jbpm_user
 
 
 --
--- TOC entry 2761 (class 1259 OID 30491)
+-- TOC entry 2717 (class 1259 OID 61059)
 -- Name: ampel_status_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3557,7 +3639,7 @@ CREATE INDEX ampel_status_idx ON deva_artikel USING btree (ampel_status);
 
 
 --
--- TOC entry 2762 (class 1259 OID 30492)
+-- TOC entry 2718 (class 1259 OID 61060)
 -- Name: artikel_filter_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3565,7 +3647,7 @@ CREATE INDEX artikel_filter_idx ON deva_artikel USING btree (lieferant, kunde, a
 
 
 --
--- TOC entry 2763 (class 1259 OID 30494)
+-- TOC entry 2719 (class 1259 OID 61061)
 -- Name: artikelprozess_status_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3573,7 +3655,7 @@ CREATE INDEX artikelprozess_status_idx ON deva_artikel USING btree (artikelproze
 
 
 --
--- TOC entry 2831 (class 1259 OID 30706)
+-- TOC entry 2785 (class 1259 OID 61062)
 -- Name: bezeichnung_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3581,7 +3663,7 @@ CREATE INDEX bezeichnung_idx ON deva_fahrzeug_bezeichnung USING btree (bezeichnu
 
 
 --
--- TOC entry 2793 (class 1259 OID 30634)
+-- TOC entry 2747 (class 1259 OID 61063)
 -- Name: firma_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3589,7 +3671,7 @@ CREATE INDEX firma_idx ON deva_benutzer USING btree (firma);
 
 
 --
--- TOC entry 2850 (class 1259 OID 30747)
+-- TOC entry 2804 (class 1259 OID 61064)
 -- Name: komponente_filter_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3597,7 +3679,7 @@ CREATE INDEX komponente_filter_idx ON deva_komponente USING btree (lieferant, ku
 
 
 --
--- TOC entry 2766 (class 1259 OID 30493)
+-- TOC entry 2722 (class 1259 OID 61065)
 -- Name: kunde_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3605,7 +3687,7 @@ CREATE INDEX kunde_idx ON deva_artikel USING btree (kunde);
 
 
 --
--- TOC entry 2767 (class 1259 OID 30495)
+-- TOC entry 2723 (class 1259 OID 61066)
 -- Name: lieferant_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3613,7 +3695,7 @@ CREATE INDEX lieferant_idx ON deva_artikel USING btree (lieferant);
 
 
 --
--- TOC entry 2806 (class 1259 OID 30670)
+-- TOC entry 2760 (class 1259 OID 61067)
 -- Name: produktgruppe_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3621,7 +3703,7 @@ CREATE INDEX produktgruppe_idx ON deva_bezeichnung_artikel USING btree (produktg
 
 
 --
--- TOC entry 2768 (class 1259 OID 30498)
+-- TOC entry 2724 (class 1259 OID 61068)
 -- Name: raw_lieferantennummer_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3629,7 +3711,7 @@ CREATE INDEX raw_lieferantennummer_idx ON deva_artikel USING btree (raw_lieferan
 
 
 --
--- TOC entry 2769 (class 1259 OID 30496)
+-- TOC entry 2725 (class 1259 OID 61069)
 -- Name: raw_meylenummer_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3637,7 +3719,7 @@ CREATE INDEX raw_meylenummer_idx ON deva_artikel USING btree (raw_meylenummer);
 
 
 --
--- TOC entry 2770 (class 1259 OID 30497)
+-- TOC entry 2726 (class 1259 OID 61070)
 -- Name: raw_oenummer_idx; Type: INDEX; Schema: public; Owner: meyle; Tablespace: 
 --
 
@@ -3645,7 +3727,7 @@ CREATE INDEX raw_oenummer_idx ON deva_artikel USING btree (raw_oenummer);
 
 
 --
--- TOC entry 3019 (class 2606 OID 30933)
+-- TOC entry 2981 (class 2606 OID 61071)
 -- Name: fk12895194c589307f; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3654,7 +3736,7 @@ ALTER TABLE ONLY deva_sollzeit_wdh_klassifikation
 
 
 --
--- TOC entry 2960 (class 2606 OID 30635)
+-- TOC entry 2928 (class 2606 OID 61076)
 -- Name: fk129925f083e97000; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3663,7 +3745,7 @@ ALTER TABLE ONLY deva_benutzer
 
 
 --
--- TOC entry 2950 (class 2606 OID 30589)
+-- TOC entry 2920 (class 2606 OID 61081)
 -- Name: fk147182967ffed7f4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3672,7 +3754,7 @@ ALTER TABLE ONLY deva_artikel_logbuch
 
 
 --
--- TOC entry 2951 (class 2606 OID 30584)
+-- TOC entry 2921 (class 2606 OID 61086)
 -- Name: fk14718296dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3681,7 +3763,7 @@ ALTER TABLE ONLY deva_artikel_logbuch
 
 
 --
--- TOC entry 2914 (class 2606 OID 29895)
+-- TOC entry 3002 (class 2606 OID 61091)
 -- Name: fk17e984153330f6d9; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3690,7 +3772,7 @@ ALTER TABLE ONLY jbpm_i18ntext
 
 
 --
--- TOC entry 2915 (class 2606 OID 29890)
+-- TOC entry 3003 (class 2606 OID 61096)
 -- Name: fk17e984155eebb6d9; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3699,7 +3781,7 @@ ALTER TABLE ONLY jbpm_i18ntext
 
 
 --
--- TOC entry 2913 (class 2606 OID 29900)
+-- TOC entry 3004 (class 2606 OID 61101)
 -- Name: fk17e9841569b21ee8; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3708,7 +3790,7 @@ ALTER TABLE ONLY jbpm_i18ntext
 
 
 --
--- TOC entry 2911 (class 2606 OID 29910)
+-- TOC entry 3005 (class 2606 OID 61106)
 -- Name: fk17e9841598b62b; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3717,7 +3799,7 @@ ALTER TABLE ONLY jbpm_i18ntext
 
 
 --
--- TOC entry 2912 (class 2606 OID 29905)
+-- TOC entry 3006 (class 2606 OID 61111)
 -- Name: fk17e98415b2fa6b18; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3726,7 +3808,7 @@ ALTER TABLE ONLY jbpm_i18ntext
 
 
 --
--- TOC entry 2974 (class 2606 OID 30712)
+-- TOC entry 2942 (class 2606 OID 61116)
 -- Name: fk21484eb75cf6cf14; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3735,7 +3817,7 @@ ALTER TABLE ONLY deva_firma_ansprechpartner
 
 
 --
--- TOC entry 2975 (class 2606 OID 30707)
+-- TOC entry 2943 (class 2606 OID 61121)
 -- Name: fk21484eb7d52de102; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3744,7 +3826,7 @@ ALTER TABLE ONLY deva_firma_ansprechpartner
 
 
 --
--- TOC entry 2967 (class 2606 OID 30671)
+-- TOC entry 2935 (class 2606 OID 61126)
 -- Name: fk2477d5ba2525ea1e; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3753,7 +3835,7 @@ ALTER TABLE ONLY deva_bezeichnung_artikel
 
 
 --
--- TOC entry 2918 (class 2606 OID 29925)
+-- TOC entry 3009 (class 2606 OID 61131)
 -- Name: fk2c7efe4e36b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3762,7 +3844,7 @@ ALTER TABLE ONLY jbpm_peopleassignments_exclowners
 
 
 --
--- TOC entry 2963 (class 2606 OID 30655)
+-- TOC entry 2931 (class 2606 OID 61136)
 -- Name: fk3133f1b32525ea1e; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3771,7 +3853,7 @@ ALTER TABLE ONLY deva_benutzer_produktgruppe
 
 
 --
--- TOC entry 2964 (class 2606 OID 30650)
+-- TOC entry 2932 (class 2606 OID 61141)
 -- Name: fk3133f1b3dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3780,7 +3862,7 @@ ALTER TABLE ONLY deva_benutzer_produktgruppe
 
 
 --
--- TOC entry 2924 (class 2606 OID 29955)
+-- TOC entry 3015 (class 2606 OID 61146)
 -- Name: fk3178ef69e17e130f; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3789,7 +3871,7 @@ ALTER TABLE ONLY jbpm_reassignment_potentialowners
 
 
 --
--- TOC entry 3017 (class 2606 OID 30923)
+-- TOC entry 2982 (class 2606 OID 61151)
 -- Name: fk31b0dbce38fe1d3c; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3798,7 +3880,7 @@ ALTER TABLE ONLY deva_sollzeiten
 
 
 --
--- TOC entry 2917 (class 2606 OID 29920)
+-- TOC entry 3008 (class 2606 OID 61156)
 -- Name: fk32b3fd6236b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3807,7 +3889,7 @@ ALTER TABLE ONLY jbpm_peopleassignments_bas
 
 
 --
--- TOC entry 3015 (class 2606 OID 30908)
+-- TOC entry 2978 (class 2606 OID 61161)
 -- Name: fk3804709e6273aba8; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3816,7 +3898,7 @@ ALTER TABLE ONLY deva_rolle_prozess_schritt
 
 
 --
--- TOC entry 3014 (class 2606 OID 30913)
+-- TOC entry 2979 (class 2606 OID 61166)
 -- Name: fk3804709e75b486b9; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3827,7 +3909,7 @@ ALTER TABLE ONLY deva_rolle_prozess_schritt
 --
 
 --
--- TOC entry 2993 (class 2606 OID 30798)
+-- TOC entry 2958 (class 2606 OID 61171)
 -- Name: fk3b7548acdc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3836,7 +3918,7 @@ ALTER TABLE ONLY deva_komponente_kommentar
 
 
 --
--- TOC entry 2992 (class 2606 OID 30803)
+-- TOC entry 2959 (class 2606 OID 61176)
 -- Name: fk3b7548acdfa2b9c0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3845,7 +3927,7 @@ ALTER TABLE ONLY deva_komponente_kommentar
 
 
 --
--- TOC entry 2904 (class 2606 OID 29860)
+-- TOC entry 2995 (class 2606 OID 61181)
 -- Name: fk414b622227abeb8a; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3854,7 +3936,7 @@ ALTER TABLE ONLY jbpm_deadline
 
 
 --
--- TOC entry 2905 (class 2606 OID 29855)
+-- TOC entry 2996 (class 2606 OID 61186)
 -- Name: fk414b6222684baca3; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3863,7 +3945,7 @@ ALTER TABLE ONLY jbpm_deadline
 
 
 --
--- TOC entry 2922 (class 2606 OID 29945)
+-- TOC entry 3013 (class 2606 OID 61191)
 -- Name: fk42e004eb2143f831; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3872,7 +3954,7 @@ ALTER TABLE ONLY jbpm_processinstance_info_eventtypes
 
 
 --
--- TOC entry 2906 (class 2606 OID 29865)
+-- TOC entry 2997 (class 2606 OID 61196)
 -- Name: fk4e75de136b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3881,7 +3963,7 @@ ALTER TABLE ONLY jbpm_delegation_delegates
 
 
 --
--- TOC entry 2979 (class 2606 OID 30727)
+-- TOC entry 2946 (class 2606 OID 61201)
 -- Name: fk4f2030575cf6cf14; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3890,7 +3972,7 @@ ALTER TABLE ONLY deva_firma_sollzeiten_artikel
 
 
 --
--- TOC entry 2978 (class 2606 OID 30732)
+-- TOC entry 2947 (class 2606 OID 61206)
 -- Name: fk4f20305774e70772; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3899,7 +3981,7 @@ ALTER TABLE ONLY deva_firma_sollzeiten_artikel
 
 
 --
--- TOC entry 2969 (class 2606 OID 30676)
+-- TOC entry 2936 (class 2606 OID 61211)
 -- Name: fk4f4940821123a3e4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3908,7 +3990,7 @@ ALTER TABLE ONLY deva_bonuszeit
 
 
 --
--- TOC entry 2968 (class 2606 OID 30681)
+-- TOC entry 2937 (class 2606 OID 61216)
 -- Name: fk4f4940824c4c8e48; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3917,7 +3999,7 @@ ALTER TABLE ONLY deva_bonuszeit
 
 
 --
--- TOC entry 3013 (class 2606 OID 30903)
+-- TOC entry 2977 (class 2606 OID 61221)
 -- Name: fk511f24132e56239d; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3926,7 +4008,7 @@ ALTER TABLE ONLY deva_rolle_ampelstatus
 
 
 --
--- TOC entry 3020 (class 2606 OID 30938)
+-- TOC entry 2984 (class 2606 OID 61226)
 -- Name: fk51c371f7eacc69fa; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3935,7 +4017,7 @@ ALTER TABLE ONLY deva_uebersetzung_artikel
 
 
 --
--- TOC entry 3023 (class 2606 OID 30953)
+-- TOC entry 2987 (class 2606 OID 61231)
 -- Name: fk560f3573153e746f; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3944,7 +4026,7 @@ ALTER TABLE ONLY deva_uebersetzung_prozess_schritt
 
 
 --
--- TOC entry 3021 (class 2606 OID 30943)
+-- TOC entry 2985 (class 2606 OID 61236)
 -- Name: fk57aff0351dc451da; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3953,7 +4035,7 @@ ALTER TABLE ONLY deva_uebersetzung_komponente
 
 
 --
--- TOC entry 2948 (class 2606 OID 30579)
+-- TOC entry 2918 (class 2606 OID 61241)
 -- Name: fk5b3e08463d3b7a12; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3962,7 +4044,7 @@ ALTER TABLE ONLY deva_artikel_komponente
 
 
 --
--- TOC entry 2949 (class 2606 OID 30574)
+-- TOC entry 2919 (class 2606 OID 61246)
 -- Name: fk5b3e08468d6ce006; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3971,7 +4053,7 @@ ALTER TABLE ONLY deva_artikel_komponente
 
 
 --
--- TOC entry 3012 (class 2606 OID 30898)
+-- TOC entry 2976 (class 2606 OID 61251)
 -- Name: fk5b9f4d34d1137703; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3980,7 +4062,7 @@ ALTER TABLE ONLY deva_rolle_aktions_berechtigungen
 
 
 --
--- TOC entry 2910 (class 2606 OID 29885)
+-- TOC entry 3001 (class 2606 OID 61256)
 -- Name: fk5ca4a3dfc7a04c70; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3989,7 +4071,7 @@ ALTER TABLE ONLY jbpm_escalation
 
 
 --
--- TOC entry 2956 (class 2606 OID 30619)
+-- TOC entry 2924 (class 2606 OID 61261)
 -- Name: fk5d10f7783d3b7a12; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -3998,7 +4080,7 @@ ALTER TABLE ONLY deva_artikel_zubehoer
 
 
 --
--- TOC entry 2957 (class 2606 OID 30614)
+-- TOC entry 2925 (class 2606 OID 61266)
 -- Name: fk5d10f778b3b24cea; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4007,7 +4089,7 @@ ALTER TABLE ONLY deva_artikel_zubehoer
 
 
 --
--- TOC entry 2980 (class 2606 OID 30742)
+-- TOC entry 2948 (class 2606 OID 61271)
 -- Name: fk635e15d55cf6cf14; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4016,7 +4098,7 @@ ALTER TABLE ONLY deva_firma_sollzeiten_komponente
 
 
 --
--- TOC entry 2981 (class 2606 OID 30737)
+-- TOC entry 2949 (class 2606 OID 61276)
 -- Name: fk635e15d5b3de8e56; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4025,7 +4107,7 @@ ALTER TABLE ONLY deva_firma_sollzeiten_komponente
 
 
 --
--- TOC entry 2955 (class 2606 OID 30604)
+-- TOC entry 2922 (class 2606 OID 61281)
 -- Name: fk646ab9f7ffed7f4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4034,7 +4116,7 @@ ALTER TABLE ONLY deva_artikel_verantwortliche
 
 
 --
--- TOC entry 2954 (class 2606 OID 30609)
+-- TOC entry 2923 (class 2606 OID 61286)
 -- Name: fk646ab9fb2657c32; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4043,7 +4125,7 @@ ALTER TABLE ONLY deva_artikel_verantwortliche
 
 
 --
--- TOC entry 2939 (class 2606 OID 30529)
+-- TOC entry 2903 (class 2606 OID 61291)
 -- Name: fk6e9467b92325ac4e; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4052,7 +4134,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2936 (class 2606 OID 30514)
+-- TOC entry 2904 (class 2606 OID 61296)
 -- Name: fk6e9467b938fd1c19; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4061,7 +4143,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2933 (class 2606 OID 30499)
+-- TOC entry 2905 (class 2606 OID 61301)
 -- Name: fk6e9467b96b6c33bf; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4070,7 +4152,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2934 (class 2606 OID 30504)
+-- TOC entry 2906 (class 2606 OID 61306)
 -- Name: fk6e9467b9843549e2; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4079,7 +4161,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2937 (class 2606 OID 30519)
+-- TOC entry 2907 (class 2606 OID 61311)
 -- Name: fk6e9467b98c57da6c; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4088,7 +4170,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2935 (class 2606 OID 30509)
+-- TOC entry 2908 (class 2606 OID 61316)
 -- Name: fk6e9467b98c8fc63d; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4097,7 +4179,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2938 (class 2606 OID 30524)
+-- TOC entry 2909 (class 2606 OID 61321)
 -- Name: fk6e9467b9a1cbfc4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4106,7 +4188,7 @@ ALTER TABLE ONLY deva_artikel
 
 
 --
--- TOC entry 2971 (class 2606 OID 30691)
+-- TOC entry 2938 (class 2606 OID 61326)
 -- Name: fk70d1bb683ebdb8fe; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4115,7 +4197,7 @@ ALTER TABLE ONLY deva_bpmn_definition_task_handler_names
 
 
 --
--- TOC entry 2919 (class 2606 OID 29930)
+-- TOC entry 3010 (class 2606 OID 61331)
 -- Name: fk73d7058336b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4124,7 +4206,7 @@ ALTER TABLE ONLY jbpm_peopleassignments_potowners
 
 
 --
--- TOC entry 2995 (class 2606 OID 30808)
+-- TOC entry 2960 (class 2606 OID 61336)
 -- Name: fk77be0c10dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4133,7 +4215,7 @@ ALTER TABLE ONLY deva_komponente_logbuch
 
 
 --
--- TOC entry 2994 (class 2606 OID 30813)
+-- TOC entry 2961 (class 2606 OID 61341)
 -- Name: fk77be0c10dfa2b9c0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4142,7 +4224,7 @@ ALTER TABLE ONLY deva_komponente_logbuch
 
 
 --
--- TOC entry 2946 (class 2606 OID 30569)
+-- TOC entry 2916 (class 2606 OID 61346)
 -- Name: fk792535b27ffed7f4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4151,7 +4233,7 @@ ALTER TABLE ONLY deva_artikel_kommentar
 
 
 --
--- TOC entry 2947 (class 2606 OID 30564)
+-- TOC entry 2917 (class 2606 OID 61351)
 -- Name: fk792535b2dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4160,7 +4242,7 @@ ALTER TABLE ONLY deva_artikel_kommentar
 
 
 --
--- TOC entry 2940 (class 2606 OID 30539)
+-- TOC entry 2910 (class 2606 OID 61356)
 -- Name: fk7a16c7a13d3b7a12; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4169,7 +4251,7 @@ ALTER TABLE ONLY deva_artikel_bestandteil
 
 
 --
--- TOC entry 2941 (class 2606 OID 30534)
+-- TOC entry 2911 (class 2606 OID 61361)
 -- Name: fk7a16c7a1f093319a; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4178,7 +4260,7 @@ ALTER TABLE ONLY deva_artikel_bestandteil
 
 
 --
--- TOC entry 3009 (class 2606 OID 30893)
+-- TOC entry 2971 (class 2606 OID 61366)
 -- Name: fk7cf7493511000a0a; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4187,7 +4269,7 @@ ALTER TABLE ONLY deva_prozess_schritt
 
 
 --
--- TOC entry 3011 (class 2606 OID 30883)
+-- TOC entry 2972 (class 2606 OID 61371)
 -- Name: fk7cf74935199fc6f5; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4196,7 +4278,7 @@ ALTER TABLE ONLY deva_prozess_schritt
 
 
 --
--- TOC entry 3010 (class 2606 OID 30888)
+-- TOC entry 2973 (class 2606 OID 61376)
 -- Name: fk7cf7493575b486b9; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4205,7 +4287,7 @@ ALTER TABLE ONLY deva_prozess_schritt
 
 
 --
--- TOC entry 2921 (class 2606 OID 29940)
+-- TOC entry 3012 (class 2606 OID 61381)
 -- Name: fk7dcd4ddf36b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4214,7 +4296,7 @@ ALTER TABLE ONLY jbpm_peopleassignments_stakeholders
 
 
 --
--- TOC entry 2961 (class 2606 OID 30645)
+-- TOC entry 2929 (class 2606 OID 61386)
 -- Name: fk805a2eb45b19b851; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4223,7 +4305,7 @@ ALTER TABLE ONLY deva_benutzer_firma
 
 
 --
--- TOC entry 2962 (class 2606 OID 30640)
+-- TOC entry 2930 (class 2606 OID 61391)
 -- Name: fk805a2eb4dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4232,7 +4314,7 @@ ALTER TABLE ONLY deva_benutzer_firma
 
 
 --
--- TOC entry 3005 (class 2606 OID 30863)
+-- TOC entry 2968 (class 2606 OID 61396)
 -- Name: fk87d3108562008c47; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4241,7 +4323,7 @@ ALTER TABLE ONLY deva_prozess
 
 
 --
--- TOC entry 3006 (class 2606 OID 30858)
+-- TOC entry 2969 (class 2606 OID 61401)
 -- Name: fk87d31085975a806a; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4250,7 +4332,7 @@ ALTER TABLE ONLY deva_prozess
 
 
 --
--- TOC entry 3004 (class 2606 OID 30868)
+-- TOC entry 2970 (class 2606 OID 61406)
 -- Name: fk87d31085eb1c5f20; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4259,7 +4341,7 @@ ALTER TABLE ONLY deva_prozess
 
 
 --
--- TOC entry 3022 (class 2606 OID 30948)
+-- TOC entry 2986 (class 2606 OID 61411)
 -- Name: fk88d3d6d9315e404; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4268,7 +4350,7 @@ ALTER TABLE ONLY deva_uebersetzung_produktgruppe
 
 
 --
--- TOC entry 3024 (class 2606 OID 30958)
+-- TOC entry 2988 (class 2606 OID 61416)
 -- Name: fk8b6a0f27adede368; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4277,7 +4359,7 @@ ALTER TABLE ONLY deva_uebersetzung_zubehoer
 
 
 --
--- TOC entry 3026 (class 2606 OID 30968)
+-- TOC entry 2990 (class 2606 OID 61421)
 -- Name: fk8b7d1a55e7b2276; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4286,7 +4368,7 @@ ALTER TABLE ONLY deva_zubehoer
 
 
 --
--- TOC entry 3018 (class 2606 OID 30928)
+-- TOC entry 2983 (class 2606 OID 61426)
 -- Name: fk8e4ee667c589307f; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4295,7 +4377,7 @@ ALTER TABLE ONLY deva_sollzeiten_klassifikation
 
 
 --
--- TOC entry 2908 (class 2606 OID 29880)
+-- TOC entry 2999 (class 2606 OID 61431)
 -- Name: fk9c2287131f7b912a; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4304,7 +4386,7 @@ ALTER TABLE ONLY jbpm_email_notification_jbpm_email_header
 
 
 --
--- TOC entry 2909 (class 2606 OID 29875)
+-- TOC entry 3000 (class 2606 OID 61436)
 -- Name: fk9c228713351621ef; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4313,7 +4395,7 @@ ALTER TABLE ONLY jbpm_email_notification_jbpm_email_header
 
 
 --
--- TOC entry 2925 (class 2606 OID 29960)
+-- TOC entry 3016 (class 2606 OID 61441)
 -- Name: fk9d95288b36b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4322,7 +4404,7 @@ ALTER TABLE ONLY jbpm_subtasksstrategy
 
 
 --
--- TOC entry 2965 (class 2606 OID 30665)
+-- TOC entry 2933 (class 2606 OID 61446)
 -- Name: fk9fb79f156273aba8; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4331,7 +4413,7 @@ ALTER TABLE ONLY deva_benutzer_rollen
 
 
 --
--- TOC entry 2966 (class 2606 OID 30660)
+-- TOC entry 2934 (class 2606 OID 61451)
 -- Name: fk9fb79f15dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4340,7 +4422,7 @@ ALTER TABLE ONLY deva_benutzer_rollen
 
 
 --
--- TOC entry 3007 (class 2606 OID 30878)
+-- TOC entry 2974 (class 2606 OID 61456)
 -- Name: fka2830f9838fd1c19; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4349,7 +4431,7 @@ ALTER TABLE ONLY deva_prozessdefinition
 
 
 --
--- TOC entry 3008 (class 2606 OID 30873)
+-- TOC entry 2975 (class 2606 OID 61461)
 -- Name: fka2830f98843549e2; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4358,7 +4440,7 @@ ALTER TABLE ONLY deva_prozessdefinition
 
 
 --
--- TOC entry 2903 (class 2606 OID 29850)
+-- TOC entry 2994 (class 2606 OID 61466)
 -- Name: fka4a3ea79afb75f7d; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4367,7 +4449,7 @@ ALTER TABLE ONLY jbpm_boolean_expression
 
 
 --
--- TOC entry 2998 (class 2606 OID 30833)
+-- TOC entry 2962 (class 2606 OID 61471)
 -- Name: fka5971b19b2657c32; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4376,7 +4458,7 @@ ALTER TABLE ONLY deva_komponente_verantwortliche
 
 
 --
--- TOC entry 2999 (class 2606 OID 30828)
+-- TOC entry 2963 (class 2606 OID 61476)
 -- Name: fka5971b19dfa2b9c0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4385,7 +4467,7 @@ ALTER TABLE ONLY deva_komponente_verantwortliche
 
 
 --
--- TOC entry 2970 (class 2606 OID 30686)
+-- TOC entry 2939 (class 2606 OID 61481)
 -- Name: fka6ca9ab5cbfa49b5; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4394,7 +4476,7 @@ ALTER TABLE ONLY deva_bpmndefinition
 
 
 --
--- TOC entry 3000 (class 2606 OID 30843)
+-- TOC entry 2964 (class 2606 OID 61486)
 -- Name: fka7e180fa46b7fc54; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4403,7 +4485,7 @@ ALTER TABLE ONLY deva_komponente_zusatzinformationen
 
 
 --
--- TOC entry 3001 (class 2606 OID 30838)
+-- TOC entry 2965 (class 2606 OID 61491)
 -- Name: fka7e180fadfa2b9c0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4412,7 +4494,7 @@ ALTER TABLE ONLY deva_komponente_zusatzinformationen
 
 
 --
--- TOC entry 2976 (class 2606 OID 30722)
+-- TOC entry 2944 (class 2606 OID 61496)
 -- Name: fkab4bb876793f005b; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4421,7 +4503,7 @@ ALTER TABLE ONLY deva_firma_lieferanten
 
 
 --
--- TOC entry 2977 (class 2606 OID 30717)
+-- TOC entry 2945 (class 2606 OID 61501)
 -- Name: fkab4bb876e53e3934; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4430,7 +4512,7 @@ ALTER TABLE ONLY deva_firma_lieferanten
 
 
 --
--- TOC entry 2916 (class 2606 OID 29915)
+-- TOC entry 3007 (class 2606 OID 61506)
 -- Name: fkad3513b53e0890b; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4439,7 +4521,7 @@ ALTER TABLE ONLY jbpm_notification
 
 
 --
--- TOC entry 2907 (class 2606 OID 29870)
+-- TOC entry 2998 (class 2606 OID 61511)
 -- Name: fkad3513b53e0890b7099f418; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4448,7 +4530,7 @@ ALTER TABLE ONLY jbpm_email_notification
 
 
 --
--- TOC entry 2927 (class 2606 OID 29970)
+-- TOC entry 3017 (class 2606 OID 61516)
 -- Name: fkb48f3a4f6ce1ef3a; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4457,7 +4539,7 @@ ALTER TABLE ONLY jbpm_task
 
 
 --
--- TOC entry 2928 (class 2606 OID 29965)
+-- TOC entry 3018 (class 2606 OID 61521)
 -- Name: fkb48f3a4f9e619a0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4466,7 +4548,7 @@ ALTER TABLE ONLY jbpm_task
 
 
 --
--- TOC entry 2926 (class 2606 OID 29975)
+-- TOC entry 3019 (class 2606 OID 61526)
 -- Name: fkb48f3a4ff213f8b5; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4475,7 +4557,7 @@ ALTER TABLE ONLY jbpm_task
 
 
 --
--- TOC entry 3003 (class 2606 OID 30848)
+-- TOC entry 2966 (class 2606 OID 61531)
 -- Name: fkb68b59af748e0737; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4484,7 +4566,7 @@ ALTER TABLE ONLY deva_produktgruppe
 
 
 --
--- TOC entry 3002 (class 2606 OID 30853)
+-- TOC entry 2967 (class 2606 OID 61536)
 -- Name: fkb68b59af9315e404; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4493,7 +4575,7 @@ ALTER TABLE ONLY deva_produktgruppe
 
 
 --
--- TOC entry 3025 (class 2606 OID 30963)
+-- TOC entry 2989 (class 2606 OID 61541)
 -- Name: fkb807fcc8d2732549; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4502,7 +4584,7 @@ ALTER TABLE ONLY deva_uebersetzung_zusatzinformation
 
 
 --
--- TOC entry 2984 (class 2606 OID 30763)
+-- TOC entry 2950 (class 2606 OID 61546)
 -- Name: fkb8970b3338fd1c19; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4511,7 +4593,7 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 2986 (class 2606 OID 30753)
+-- TOC entry 2951 (class 2606 OID 61551)
 -- Name: fkb8970b334e705a2c; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4520,7 +4602,7 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 2985 (class 2606 OID 30758)
+-- TOC entry 2952 (class 2606 OID 61556)
 -- Name: fkb8970b33843549e2; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4529,7 +4611,7 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 2983 (class 2606 OID 30768)
+-- TOC entry 2953 (class 2606 OID 61561)
 -- Name: fkb8970b338c57da6c; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4538,7 +4620,7 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 2982 (class 2606 OID 30773)
+-- TOC entry 2954 (class 2606 OID 61566)
 -- Name: fkb8970b33a1cbfc4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4547,7 +4629,7 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 2987 (class 2606 OID 30748)
+-- TOC entry 2955 (class 2606 OID 61571)
 -- Name: fkb8970b33a8076cac; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4556,17 +4638,15 @@ ALTER TABLE ONLY deva_komponente
 
 
 --
--- TOC entry 3027 (class 2606 OID 30973)
+-- TOC entry 2991 (class 2606 OID 61576)
 -- Name: fkc53a280abb69726c; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
 ALTER TABLE ONLY deva_zusatzinformation
     ADD CONSTRAINT fkc53a280abb69726c FOREIGN KEY (zusatzinformationbezeichnung) REFERENCES deva_bezeichnung_zusatzinformation(id);
 
-
-
 --
--- TOC entry 2991 (class 2606 OID 30788)
+-- TOC entry 2956 (class 2606 OID 61581)
 -- Name: fkd1dd1e86dfa2b9c0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4575,7 +4655,7 @@ ALTER TABLE ONLY deva_komponente_dokumente
 
 
 --
--- TOC entry 2990 (class 2606 OID 30793)
+-- TOC entry 2957 (class 2606 OID 61586)
 -- Name: fkd1dd1e86fe056660; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4584,7 +4664,7 @@ ALTER TABLE ONLY deva_komponente_dokumente
 
 
 --
--- TOC entry 3016 (class 2606 OID 30918)
+-- TOC entry 2980 (class 2606 OID 61591)
 -- Name: fkd632fa90d1137703; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4593,7 +4673,7 @@ ALTER TABLE ONLY deva_rolle_sicht_berechtigungen
 
 
 --
--- TOC entry 2958 (class 2606 OID 30629)
+-- TOC entry 2926 (class 2606 OID 61596)
 -- Name: fkda95e8046b7fc54; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4602,7 +4682,7 @@ ALTER TABLE ONLY deva_artikel_zusatzinformationen
 
 
 --
--- TOC entry 2959 (class 2606 OID 30624)
+-- TOC entry 2927 (class 2606 OID 61601)
 -- Name: fkda95e807ffed7f4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4611,7 +4691,7 @@ ALTER TABLE ONLY deva_artikel_zusatzinformationen
 
 
 --
--- TOC entry 2931 (class 2606 OID 30486)
+-- TOC entry 2901 (class 2606 OID 61606)
 -- Name: fkdae0e2b231ed32e7; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4620,7 +4700,7 @@ ALTER TABLE ONLY deva_angemeldeter_benutzer
 
 
 --
--- TOC entry 2932 (class 2606 OID 30481)
+-- TOC entry 2902 (class 2606 OID 61611)
 -- Name: fkdae0e2b2dc74f062; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4629,7 +4709,7 @@ ALTER TABLE ONLY deva_angemeldeter_benutzer
 
 
 --
--- TOC entry 2944 (class 2606 OID 30559)
+-- TOC entry 2914 (class 2606 OID 61616)
 -- Name: fke6ab83fd2bf81bd0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4638,7 +4718,7 @@ ALTER TABLE ONLY deva_artikel_fahrzeuge
 
 
 --
--- TOC entry 2945 (class 2606 OID 30554)
+-- TOC entry 2915 (class 2606 OID 61621)
 -- Name: fke6ab83fd7ffed7f4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4647,7 +4727,7 @@ ALTER TABLE ONLY deva_artikel_fahrzeuge
 
 
 --
--- TOC entry 2929 (class 2606 OID 29985)
+-- TOC entry 3020 (class 2606 OID 61626)
 -- Name: fke7d49c4f2ff04688; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4656,7 +4736,7 @@ ALTER TABLE ONLY jbpm_task_comment
 
 
 --
--- TOC entry 2930 (class 2606 OID 29980)
+-- TOC entry 3021 (class 2606 OID 61631)
 -- Name: fke7d49c4fb35e68f5; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4665,7 +4745,7 @@ ALTER TABLE ONLY jbpm_task_comment
 
 
 --
--- TOC entry 2989 (class 2606 OID 30778)
+-- TOC entry 3026 (class 2606 OID 65444)
 -- Name: fke8ae041b8d6ce006; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4674,7 +4754,7 @@ ALTER TABLE ONLY deva_komponente_bestandteil
 
 
 --
--- TOC entry 2988 (class 2606 OID 30783)
+-- TOC entry 3027 (class 2606 OID 65449)
 -- Name: fke8ae041bf69c798e; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4683,7 +4763,7 @@ ALTER TABLE ONLY deva_komponente_bestandteil
 
 
 --
--- TOC entry 2972 (class 2606 OID 30701)
+-- TOC entry 2940 (class 2606 OID 61636)
 -- Name: fkee37ca061ad81661; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4692,7 +4772,7 @@ ALTER TABLE ONLY deva_dokument
 
 
 --
--- TOC entry 2973 (class 2606 OID 30696)
+-- TOC entry 2941 (class 2606 OID 61641)
 -- Name: fkee37ca06862116e3; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4701,7 +4781,7 @@ ALTER TABLE ONLY deva_dokument
 
 
 --
--- TOC entry 2923 (class 2606 OID 29950)
+-- TOC entry 3014 (class 2606 OID 61646)
 -- Name: fkf23c3c0aa5c17ee0; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4710,7 +4790,7 @@ ALTER TABLE ONLY jbpm_reassignment
 
 
 --
--- TOC entry 2920 (class 2606 OID 29935)
+-- TOC entry 3011 (class 2606 OID 61651)
 -- Name: fkf55e684c36b2f154; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4719,7 +4799,7 @@ ALTER TABLE ONLY jbpm_peopleassignments_recipients
 
 
 --
--- TOC entry 2902 (class 2606 OID 29840)
+-- TOC entry 2992 (class 2606 OID 61656)
 -- Name: fkf6bb126d8ef5f064; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4728,7 +4808,7 @@ ALTER TABLE ONLY jbpm_attachment
 
 
 --
--- TOC entry 2901 (class 2606 OID 29845)
+-- TOC entry 2993 (class 2606 OID 61661)
 -- Name: fkf6bb126df21826d9; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4737,7 +4817,7 @@ ALTER TABLE ONLY jbpm_attachment
 
 
 --
--- TOC entry 2943 (class 2606 OID 30544)
+-- TOC entry 2912 (class 2606 OID 61666)
 -- Name: fkf8d0b8c7ffed7f4; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4746,7 +4826,7 @@ ALTER TABLE ONLY deva_artikel_dokumente
 
 
 --
--- TOC entry 2942 (class 2606 OID 30549)
+-- TOC entry 2913 (class 2606 OID 61671)
 -- Name: fkf8d0b8cfe056660; Type: FK CONSTRAINT; Schema: public; Owner: meyle
 --
 
@@ -4756,7 +4836,7 @@ ALTER TABLE ONLY deva_artikel_dokumente
 
 --
 -- TOC entry 3033 (class 0 OID 0)
--- Dependencies: 6
+-- Dependencies: 7
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -4766,7 +4846,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2013-04-23 11:06:20 CEST
+-- Completed on 2013-05-28 17:34:20 CEST
 
 --
 -- PostgreSQL database dump complete
