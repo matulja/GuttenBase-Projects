@@ -16,6 +16,7 @@ import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
+import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 
 public class MeyleImportDeva {
   private static final String TARGET = "meylePostgresql";
@@ -92,6 +93,8 @@ public class MeyleImportDeva {
       } catch (final Exception e) {
         LOG.warn("Creating admin user failed", e);
       }
+
+      new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(TARGET);
     } catch (final Exception e) {
       LOG.error("main", e);
     }
