@@ -1,5 +1,6 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
@@ -28,7 +29,7 @@ public class MeyleImportH2 {
     try {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
-      connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("deva-postgresql.jar"));
+      connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(new File("deva-postgresql.jar").toURI().toURL()));
       connectorRepository.addConnectionInfo(TARGET, new H2ConnectionInfo());
       connectorRepository.addTargetDatabaseConfiguration(DatabaseType.H2DB, new H2DbTargetDatabaseConfiguration(connectorRepository));
 

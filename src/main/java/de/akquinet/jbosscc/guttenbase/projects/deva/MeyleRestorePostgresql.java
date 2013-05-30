@@ -1,5 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 
 import de.akquinet.jbosscc.guttenbase.configuration.impl.PostgresqlTargetDatabaseConfiguration;
@@ -21,7 +23,7 @@ public class MeyleRestorePostgresql {
     try {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
-      connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("deva-postgresql.jar"));
+      connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(new File("deva-postgresql.jar").toURI().toURL()));
       connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
       connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
       connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));

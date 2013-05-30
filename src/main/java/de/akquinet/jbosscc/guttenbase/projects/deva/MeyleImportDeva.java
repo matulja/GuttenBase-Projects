@@ -1,5 +1,6 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +29,7 @@ public class MeyleImportDeva {
     try {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
-      connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo("deva.jar"));
+      connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(new File("deva.jar").toURI().toURL()));
       connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
       connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
       connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));

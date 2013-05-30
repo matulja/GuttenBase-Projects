@@ -1,6 +1,6 @@
 package de.akquinet.jbosscc.guttenbase.projects.aev;
 
-import java.sql.SQLException;
+import java.io.File;
 
 import org.apache.log4j.Logger;
 
@@ -8,9 +8,9 @@ import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.CheckEqualTableDataTool;
+import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
+import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 
 public class KvbbCopyAev {
   private static final Logger LOG = Logger.getLogger(KvbbCopyAev.class);
@@ -23,7 +23,7 @@ public class KvbbCopyAev {
 
       connectorRepository.addConnectionInfo("aevMySql", new AevMySqlConnectionInfo());
       connectorRepository.addConnectionInfo("aevExport", new ExportDumpConnectorInfo("aevMySql", "/home/dahm/aev.dump"));
-      connectorRepository.addConnectionInfo("aevImport", new ImportDumpConnectionInfo("/home/dahm/aev.dump"));
+      connectorRepository.addConnectionInfo("aevImport", new ImportDumpConnectionInfo(new File("/home/dahm/aev.dump").toURI().toURL()));
       connectorRepository.addConnectionInfo("aevPostgresql", new AevPostgresqlConnectionInfo());
       connectorRepository.addConnectorHint("aevMySql", tableNameHint);
       connectorRepository.addConnectorHint("aevMySql", new AevSplitByColumnHint());
@@ -38,7 +38,7 @@ public class KvbbCopyAev {
 
       new DefaultTableCopyTool(connectorRepository).copyTables("aevImport", "aevPostgresql");
       new CheckEqualTableDataTool(connectorRepository).checkTableData("aevMySql", "aevPostgresql");
-    } catch (final SQLException e) {
+    } catch (final Exception e) {
       LOG.error("main", e);
     }
   }
