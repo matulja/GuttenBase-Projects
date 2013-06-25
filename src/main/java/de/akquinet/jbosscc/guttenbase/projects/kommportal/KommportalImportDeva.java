@@ -4,7 +4,6 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -30,15 +29,18 @@ import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 
-public class KommportalImportDeva {
+public class KommportalImportDeva
+{
   private static final String TARGET = "Oracle";
   private static final String SOURCE = "meyleImport";
   private static final Logger LOG = Logger.getLogger(KommportalImportDeva.class);
 
   // private static Map<String, Serializable> _extraInformation;
 
-  public static void main(final String[] args) {
-    try {
+  public static void main(final String[] args)
+  {
+    try
+    {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
       connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(new File("deva.jar").toURI().toURL()));
@@ -58,11 +60,13 @@ public class KommportalImportDeva {
       // }
       // });
 
-      connectorRepository.addConnectorHint(TARGET, new TableMapperHint() {
+      connectorRepository.addConnectorHint(TARGET, new TableMapperHint()
+      {
         private final Map<String, String> _tableMap = new HashMap<String, String>();
 
         @Override
-        public TableMapper getValue() {
+        public TableMapper getValue()
+        {
           _tableMap.put("DEVA_ARTIKEL_VERANTWORTLICHE", "DEVA_ARTIKEL_V");
           _tableMap.put("DEVA_ARTIKEL_ZUSATZINFORMATIONEN", "DEVA_ARTIKEL_ZINFO");
           _tableMap.put("DEVA_BEZEICHNUNG_ZUSATZINFORMATION", "DEVA_BEZEICHNUNG_ZINFO");
@@ -91,13 +95,17 @@ public class KommportalImportDeva {
           _tableMap.put("JBPM_PROCESSINSTANCE_INFO_EVENTTYPES", "JBPM_PI_INFO_ET");
           _tableMap.put("JBPM_REASSIGNMENT_POTENTIALOWNERS", "JBPM_RA_POTOWNERS");
 
-          return new TableMapper() {
+          return new TableMapper()
+          {
             @Override
-            public TableMetaData map(final TableMetaData source, final DatabaseMetaData targetDatabaseMetaData) throws SQLException {
+            public TableMetaData map(final TableMetaData source, final DatabaseMetaData targetDatabaseMetaData)
+                throws SQLException
+            {
               final String tableName1 = source.getTableName().toUpperCase();
               String tableName2 = _tableMap.get(tableName1);
 
-              if (tableName2 == null) {
+              if (tableName2 == null)
+              {
                 tableName2 = tableName1;
               }
 
@@ -107,32 +115,41 @@ public class KommportalImportDeva {
         }
       });
 
-      connectorRepository.addConnectorHint(TARGET, new NumberOfRowsPerBatchHint() {
+      connectorRepository.addConnectorHint(TARGET, new NumberOfRowsPerBatchHint()
+      {
         @Override
-        public NumberOfRowsPerBatch getValue() {
-          return new NumberOfRowsPerBatch() {
+        public NumberOfRowsPerBatch getValue()
+        {
+          return new NumberOfRowsPerBatch()
+          {
             @Override
-            public boolean useMultipleValuesClauses(final TableMetaData targetTableMetaData) {
+            public boolean useMultipleValuesClauses(final TableMetaData targetTableMetaData)
+            {
               return false;
             }
 
             @Override
-            public int getNumberOfRowsPerBatch(final TableMetaData targetTableMetaData) {
+            public int getNumberOfRowsPerBatch(final TableMetaData targetTableMetaData)
+            {
               return 2000;
             }
           };
         }
       });
 
-      connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperProviderHint() {
+      connectorRepository.addConnectorHint(TARGET, new DefaultColumnDataMapperProviderHint()
+      {
         @Override
-        protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
+        protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory)
+        {
           super.addMappings(columnDataMapperFactory);
 
-          columnDataMapperFactory.addMapping(ColumnType.CLASS_STRING, ColumnType.CLASS_STRING, new ColumnDataMapper() {
+          columnDataMapperFactory.addMapping(ColumnType.CLASS_STRING, ColumnType.CLASS_STRING, new ColumnDataMapper()
+          {
             @Override
             public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData)
-                throws SQLException {
+                throws SQLException
+            {
               // final String columnName = sourceColumnMetaData.getColumnName().toUpperCase();
               // return columnName.equals("ORIG_MEYLENUMMER") || columnName.equals("RAW_MEYLENUMMER");
 
@@ -140,12 +157,16 @@ public class KommportalImportDeva {
             }
 
             @Override
-            public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData, final Object value)
-                throws SQLException {
+            public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData,
+                final Object value) throws SQLException
+            {
               // Workaround Oracle bug
-              if (value != null && "".equals(value.toString())) {
+              if (value != null && "".equals(value.toString()))
+              {
                 return " ";
-              } else {
+              }
+              else
+              {
                 return value;
               }
             }
@@ -153,21 +174,27 @@ public class KommportalImportDeva {
         }
       });
 
-      connectorRepository.addConnectorHint(TARGET, new ColumnMapperHint() {
+      connectorRepository.addConnectorHint(TARGET, new ColumnMapperHint()
+      {
         private final Map<String, String> _columnMap = new HashMap<String, String>();
 
         @Override
-        public ColumnMapper getValue() {
+        public ColumnMapper getValue()
+        {
           _columnMap.put("JBPM_EMAIL_NOTIFICATION_ID", "JBPM_EMAIL_NOT_ID");
           _columnMap.put("JBPM_PROCESSINSTANCE_INFO_ID", "JBPM_PIINFO_ID");
 
-          return new ColumnMapper() {
+          return new ColumnMapper()
+          {
             @Override
-            public List<ColumnMetaData> map(final ColumnMetaData source, final TableMetaData targetTableMetaData) throws SQLException {
+            public ColumnMapperResult map(final ColumnMetaData source, final TableMetaData targetTableMetaData)
+                throws SQLException
+            {
               final String columnName1 = source.getColumnName().toUpperCase();
               String columnName2 = _columnMap.get(columnName1);
 
-              if (columnName2 == null) {
+              if (columnName2 == null)
+              {
                 columnName2 = columnName1;
               }
 
@@ -177,7 +204,7 @@ public class KommportalImportDeva {
 
               assert columnMetaData != null : "columnMetaData != null: " + columnName1 + " vs. " + columnName2;
 
-              return Arrays.asList(columnMetaData);
+              return new ColumnMapperResult(Arrays.asList(columnMetaData));
             }
           };
         }
@@ -202,7 +229,9 @@ public class KommportalImportDeva {
 
       // scriptExecutorTool.executeScript(TARGET, false, false, "SELECT setval('public.sessioninfo_id_seq', 501, true);",
       // "SELECT setval('public.workiteminfo_id_seq', 1301, true);", "SELECT setval('public.hibernate_sequence', 317, true);");
-    } catch (final Exception e) {
+    }
+    catch (final Exception e)
+    {
       LOG.error("main", e);
     }
   }
