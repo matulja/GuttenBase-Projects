@@ -93,31 +93,7 @@ public class UbiAekCopyDb
         }
       });
 
-      //      connectorRepository.addConnectorHint(TARGET_E, new DefaultColumnDataMapperProviderHint()
-      //      {
-      //        @Override
-      //        protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory)
-      //        {
-      //          super.addMappings(columnDataMapperFactory);
-      //
-      //          columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_INTEGER, new ColumnDataMapper()
-      //          {
-      //            @Override
-      //            public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData)
-      //                throws SQLException
-      //            {
-      //              return true;
-      //            }
-      //
-      //            @Override
-      //            public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData,
-      //                final Object value) throws SQLException
-      //            {
-      //              return value != null ? ((Long) value).intValue() : null;
-      //            }
-      //          });
-      //        }
-      //      });
+      //      new DefaultTableCopyTool(connectorRepository).copyTables(SOURCE, DUMP_EXPORT);
 
       new CheckSchemaCompatibilityTool(connectorRepository).checkTableConfiguration(DUMP_IMPORT, TARGET_E);
       new DefaultTableCopyTool(connectorRepository).copyTables(DUMP_IMPORT, TARGET_E);
