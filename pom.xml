@@ -20,8 +20,8 @@
 
 		<dependency>
 			<groupId>com.ibm</groupId>
-			<artifactId>db2jcc</artifactId>
-			<version>9.5</version>
+			<artifactId>db2jcc4</artifactId>
+			<version>4.13</version>
 		</dependency>
 
 		<dependency>
