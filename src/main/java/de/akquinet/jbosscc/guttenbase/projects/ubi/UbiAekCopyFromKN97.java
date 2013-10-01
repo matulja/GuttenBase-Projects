@@ -63,7 +63,7 @@ public class UbiAekCopyFromKN97
 
   public void start() throws Exception
   {
-    new DefaultTableCopyTool(_connectorRepository).copyTables(SOURCE_Q, SOURCE_DUMP);
+    new DefaultTableCopyTool(_connectorRepository).copyTables(SOURCE_Q, TARGET_DUMP);
 
     new CheckSchemaCompatibilityTool(_connectorRepository).checkTableConfiguration(SOURCE_DUMP, TARGET_E);
     new DefaultTableCopyTool(_connectorRepository).copyTables(SOURCE_DUMP, TARGET_E);
