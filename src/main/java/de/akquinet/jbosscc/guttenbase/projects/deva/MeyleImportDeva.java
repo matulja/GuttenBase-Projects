@@ -94,8 +94,16 @@ public class MeyleImportDeva {
             .executeScript(
                 TARGET,
                 "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
-                    + "  VALUES (100002, 0,'markus.dahm@akquinet.de','markus.dahm@akquinet.de','Dahm, Markus','+KfB6ktN4I+tK8EnDDRpbs5SuQZhX/HqZSN07k2uTJc=',1);",
-                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100002, 1);");
+                    + "  VALUES (100001, 0,'markus.dahm@akquinet.de','markus.dahm@akquinet.de','Dahm, Markus','+KfB6ktN4I+tK8EnDDRpbs5SuQZhX/HqZSN07k2uTJc=',1);",
+                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100001, 1);",
+                //
+                "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
+                    + "  VALUES (100002, 0,'lars.kuettner@akquinet.de','lars.kuettner@akquinet.de','Küttner, Lars','ob6X0sKtYKEi5vkBJefh0vE/d0IyKDe4OIPeYMNxSQ8=',1);",
+                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100002, 1);",
+                //
+                "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
+                    + "  VALUES (100003, 0,'torsten.trzewik@akquinet.de','torsten.trzewik@akquinet.de', 'Trzewik, Torsten','XwICIwDcu+mP9ZQaQpFo/AO5ycZyGkB4zKE1W0iVejM=',1);",
+                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100003, 1);");
       } catch (final Exception e) {
         LOG.warn("Creating markus.dahm@akquinet.de user failed", e);
       }
