@@ -12,6 +12,8 @@ import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.SwingScriptExecutorProgressIndicatorHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.SwingTableCopyProgressIndicatorHint;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
@@ -30,11 +32,16 @@ public class MeyleImportDeva {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
       connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(new File("deva.jar").toURI().toURL()));
-      connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
       connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
+
+      connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
       connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
+      connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
+      connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
+
       connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
           connectorRepository, false));
+
       connectorRepository.addConnectorHint(SOURCE, new ImportDumpExtraInformationHint() {
         @Override
         public ImportDumpExtraInformation getValue() {
@@ -79,9 +86,7 @@ public class MeyleImportDeva {
       }
 
       // Step 6: Execute delta scripts
-      scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA1);
-      scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA2);
-      scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA3);
+      // scriptExecutorTool.executeFileScript(TARGET, DevaExporterClassResources.DELTA1);
 
       // Step 7: Create Admin user (may already exist)
       try {
@@ -89,10 +94,10 @@ public class MeyleImportDeva {
             .executeScript(
                 TARGET,
                 "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
-                    + "  VALUES (85, 0,'Lars.Kuettner@akquinet.de','Lars.Kuettner@akquinet.de','Kuettner, Lars','W9tA6KeRIqXFVT4jxp/h/wKy8juMP4o3DUXHehQjQ00=',1);",
-                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (85,1);");
+                    + "  VALUES (100002, 0,'markus.dahm@akquinet.de','markus.dahm@akquinet.de','Dahm, Markus','+KfB6ktN4I+tK8EnDDRpbs5SuQZhX/HqZSN07k2uTJc=',1);",
+                "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100002, 1);");
       } catch (final Exception e) {
-        LOG.warn("Creating admin user failed", e);
+        LOG.warn("Creating markus.dahm@akquinet.de user failed", e);
       }
 
       new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(TARGET);
