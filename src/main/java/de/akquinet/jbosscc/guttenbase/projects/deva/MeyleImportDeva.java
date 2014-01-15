@@ -100,7 +100,9 @@ public class MeyleImportDeva {
         LOG.warn("Creating markus.dahm@akquinet.de user failed", e);
       }
 
+      LOG.info("Run VACUUM ANALYZE");
       new PostgresqlVacuumTablesTool(connectorRepository).executeOnAllTables(TARGET);
+      LOG.info("VACUUM ANALYZE DONE");
     } catch (final Exception e) {
       LOG.error("main", e);
     }
