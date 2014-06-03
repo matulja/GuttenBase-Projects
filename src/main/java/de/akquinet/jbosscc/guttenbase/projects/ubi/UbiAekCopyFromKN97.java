@@ -1,14 +1,9 @@
 package de.akquinet.jbosscc.guttenbase.projects.ubi;
 
-import java.io.File;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
+import de.akquinet.jbosscc.guttenbase.defaults.impl.DroppingColumnMapper;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.hints.ColumnMapperHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.DroppingColumnMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
@@ -17,6 +12,10 @@ import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.db2.Db2ReorgIndexesTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.db2.Db2ReorgTablesTool;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.sql.SQLException;
 
 public class UbiAekCopyFromKN97
 {

@@ -1,18 +1,10 @@
 package de.akquinet.jbosscc.guttenbase.projects.kommportal;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
+import de.akquinet.jbosscc.guttenbase.defaults.impl.DefaultColumnDataMapperProvider;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.hints.ColumnMapperHint;
 import de.akquinet.jbosscc.guttenbase.hints.NumberOfRowsPerBatchHint;
 import de.akquinet.jbosscc.guttenbase.hints.TableMapperHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProvider;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProviderHint;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnDataMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
@@ -28,6 +20,13 @@ import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KommportalImportDeva
 {
@@ -99,7 +98,7 @@ public class KommportalImportDeva
           {
             @Override
             public TableMetaData map(final TableMetaData source, final DatabaseMetaData targetDatabaseMetaData)
-                throws SQLException
+                    throws SQLException
             {
               final String tableName1 = source.getTableName().toUpperCase();
               String tableName2 = _tableMap.get(tableName1);
@@ -148,7 +147,7 @@ public class KommportalImportDeva
           {
             @Override
             public boolean isApplicable(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData)
-                throws SQLException
+                    throws SQLException
             {
               // final String columnName = sourceColumnMetaData.getColumnName().toUpperCase();
               // return columnName.equals("ORIG_MEYLENUMMER") || columnName.equals("RAW_MEYLENUMMER");
@@ -158,7 +157,7 @@ public class KommportalImportDeva
 
             @Override
             public Object map(final ColumnMetaData sourceColumnMetaData, final ColumnMetaData targetColumnMetaData,
-                final Object value) throws SQLException
+                              final Object value) throws SQLException
             {
               // Workaround Oracle bug
               if (value != null && "".equals(value.toString()))
@@ -188,7 +187,7 @@ public class KommportalImportDeva
           {
             @Override
             public ColumnMapperResult map(final ColumnMetaData source, final TableMetaData targetTableMetaData)
-                throws SQLException
+                    throws SQLException
             {
               final String columnName1 = source.getColumnName().toUpperCase();
               String columnName2 = _columnMap.get(columnName1);

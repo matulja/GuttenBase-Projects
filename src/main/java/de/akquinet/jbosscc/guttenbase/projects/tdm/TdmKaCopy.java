@@ -1,12 +1,7 @@
 package de.akquinet.jbosscc.guttenbase.projects.tdm;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import de.akquinet.jbosscc.guttenbase.defaults.impl.DefaultColumnDataMapperProvider;
 import de.akquinet.jbosscc.guttenbase.hints.RepositoryColumnFilterHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProvider;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnDataMapperProviderHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultColumnMapperHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.DefaultTableMapperHint;
@@ -20,8 +15,13 @@ import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.DatabaseSchemaScriptCreator;
+import org.apache.log4j.Logger;
 
-public class TdmKaCopy {
+import java.sql.SQLException;
+import java.util.List;
+
+public class TdmKaCopy
+{
   private static final String SOURCE = "SOURCE";
   private static final String TARGET = "TARGET";
   // private static final String IMPORT = "IMPORT";
@@ -29,8 +29,10 @@ public class TdmKaCopy {
 
   private static final Logger LOG = Logger.getLogger(TdmKaCopy.class);
 
-  public static void main(final String[] args) {
-    try {
+  public static void main(final String[] args)
+  {
+    try
+    {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
       final TdmKaPostgresqlConnectionInfo sourceInfo = new TdmKaPostgresqlConnectionInfo();
       final TdmKaPostgresqlConnectionInfo2 targetInfo = new TdmKaPostgresqlConnectionInfo2();
@@ -44,11 +46,11 @@ public class TdmKaCopy {
 
       // Create insert statements needed later with ALL column
       final List<String> insertStatements = new TdmKaInsertSelectStatementCreator(connectorRepository, SOURCE, sourceInfo.getSchema(),
-          targetInfo.getSchema()).createInsertStatements();
+              targetInfo.getSchema()).createInsertStatements();
 
       // Create new "database", i.e. new tables used for migration
       final DatabaseMetaData mappingDatabaseMetaData = new TdmKaMappingTablesCreator(connectorRepository, SOURCE, targetInfo.getSchema())
-          .createMappingTablesDatabase();
+              .createMappingTablesDatabase();
 
       // Add new "database"
       connectorRepository.addConnectionInfo(TARGET_NEW_TABLES, new NewTablesConnectionInfo(mappingDatabaseMetaData));
@@ -67,71 +69,87 @@ public class TdmKaCopy {
       createNewTablesIndexes(connectorRepository, mappingDatabaseMetaData);
 
       new ScriptExecutorTool(connectorRepository).executeScript(TARGET, insertStatements);
-
-    } catch (final Exception e) {
+    }
+    catch (final Exception e)
+    {
       LOG.error("main", e);
     }
   }
 
   private static void removeDuplicates(final ConnectorRepository connectorRepository, final TdmKaPostgresqlConnectionInfo2 targetInfo)
-      throws SQLException {
+          throws SQLException
+  {
     final List<String> removeDuplicates = new TdmKaMappingTablesDuplicateRemoverTool(targetInfo.getSchema()).removeDuplicates(
-        "uuid_tdm_crash_brakeactuation", "uuid_tdm_crash_drivingspeed", "uuid_tdm_crash_features", "uuid_tdm_crash_steeringangle");
+            "uuid_tdm_crash_brakeactuation", "uuid_tdm_crash_drivingspeed", "uuid_tdm_crash_features", "uuid_tdm_crash_steeringangle");
     new ScriptExecutorTool(connectorRepository).executeScript(TARGET, false, true, removeDuplicates);
   }
 
   private static void createNewTablesIndexes(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData)
-      throws SQLException {
+          throws SQLException
+  {
     final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator(mappingDatabaseMetaData);
     new ScriptExecutorTool(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createIndexStatements());
   }
 
   private static void createNewTables(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData)
-      throws SQLException {
+          throws SQLException
+  {
     final DatabaseSchemaScriptCreator creator = new DatabaseSchemaScriptCreator(mappingDatabaseMetaData);
     new ScriptExecutorTool(connectorRepository).executeScript(TARGET_NEW_TABLES, creator.createTableStatements());
   }
 
-  private static void setupSourceConnector(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData) {
+  private static void setupSourceConnector(final ConnectorRepository connectorRepository, final DatabaseMetaData mappingDatabaseMetaData)
+  {
     connectorRepository.addConnectorHint(SOURCE, new OnlyTablesWithMappingsTableFilter(mappingDatabaseMetaData));
 
-    connectorRepository.addConnectorHint(SOURCE, new RepositoryColumnFilterHint() {
+    connectorRepository.addConnectorHint(SOURCE, new RepositoryColumnFilterHint()
+    {
       @Override
-      public RepositoryColumnFilter getValue() {
+      public RepositoryColumnFilter getValue()
+      {
         return new IdColumnsOnlyColumnFilter();
       }
     });
   }
 
-  private static void setupTargetConnector(final ConnectorRepository connectorRepository) {
+  private static void setupTargetConnector(final ConnectorRepository connectorRepository)
+  {
     final IdColumnDataMapper columnDataMapper = new IdColumnDataMapper();
 
-    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperProviderHint() {
+    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnDataMapperProviderHint()
+    {
       @Override
-      protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory) {
+      protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory)
+      {
         super.addMappings(columnDataMapperFactory);
         columnDataMapperFactory.addMapping(ColumnType.CLASS_LONG, ColumnType.CLASS_STRING, columnDataMapper);
         columnDataMapperFactory.addMapping(ColumnType.CLASS_BIGDECIMAL, ColumnType.CLASS_STRING, columnDataMapper);
       }
     });
 
-    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultTableMapperHint() {
+    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultTableMapperHint()
+    {
       @Override
-      public TableMapper getValue() {
+      public TableMapper getValue()
+      {
         return new TdmKaTableMapper();
       }
     });
 
-    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnMapperHint() {
+    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new DefaultColumnMapperHint()
+    {
       @Override
-      public ColumnMapper getValue() {
+      public ColumnMapper getValue()
+      {
         return new IdColumnsOnlyColumnFilter();
       }
     });
 
-    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new RepositoryColumnFilterHint() {
+    connectorRepository.addConnectorHint(TARGET_NEW_TABLES, new RepositoryColumnFilterHint()
+    {
       @Override
-      public RepositoryColumnFilter getValue() {
+      public RepositoryColumnFilter getValue()
+      {
         return new IdColumnsOnlyColumnFilter();
       }
     });
