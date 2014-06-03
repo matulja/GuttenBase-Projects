@@ -1,9 +1,5 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.export.zip.ZipExporterClassResources;
@@ -14,40 +10,56 @@ import de.akquinet.jbosscc.guttenbase.hints.impl.SwingTableCopyProgressIndicator
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
+import org.apache.log4j.Logger;
 
-public class MeyleExportDeva {
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class MeyleExportDeva
+{
   public static final String MEYLE_EXPORT = "meyleExport";
   public static final String MEYLE_MS_SQL = "meyleMsSql";
 
+  private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
   public static final Logger LOG = Logger.getLogger(MeyleExportDeva.class);
 
-  public static void main(final String[] args) {
-    try {
+  public static void main(final String[] args)
+  {
+    try
+    {
       final ConnectorRepository connectorRepository = new ConnectorRepositoryImpl();
 
       connectorRepository.addConnectionInfo(MEYLE_MS_SQL, new MeyleMsSqlConnectionInfo());
-      connectorRepository.addConnectionInfo(MEYLE_EXPORT, new ExportDumpConnectorInfo(MEYLE_MS_SQL, "deva.jar"));
+      connectorRepository.addConnectionInfo(MEYLE_EXPORT, new ExportDumpConnectorInfo(MEYLE_MS_SQL, "deva-dump-" + DATE_FORMAT.format(new Date()) + ".jar"));
       connectorRepository.addConnectorHint(MEYLE_EXPORT, new SwingTableCopyProgressIndicatorHint());
       connectorRepository.addConnectorHint(MEYLE_EXPORT, new SwingScriptExecutorProgressIndicatorHint());
 
-      connectorRepository.addConnectorHint(MEYLE_EXPORT, new ExportDumpExtraInformationHint() {
+      connectorRepository.addConnectorHint(MEYLE_EXPORT, new ExportDumpExtraInformationHint()
+      {
         @Override
-        public ExportDumpExtraInformation getValue() {
+        public ExportDumpExtraInformation getValue()
+        {
           return new DevaSequenceNumberExporter();
         }
       });
 
-      connectorRepository.addConnectorHint(MEYLE_EXPORT, new ZipExporterClassResourcesHint() {
+      connectorRepository.addConnectorHint(MEYLE_EXPORT, new ZipExporterClassResourcesHint()
+      {
         @Override
-        public ZipExporterClassResources getValue() {
+        public ZipExporterClassResources getValue()
+        {
           return new DevaExporterClassResources();
         }
       });
 
       new DefaultTableCopyTool(connectorRepository).copyTables(MEYLE_MS_SQL, MEYLE_EXPORT);
-    } catch (final SQLException e) {
+    }
+    catch (final SQLException e)
+    {
       LOG.error("main", e);
     }
   }
-
 }
