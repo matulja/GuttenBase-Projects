@@ -99,6 +99,7 @@ public class MeyleImportDeva
   public void dropTables(final String targetId) throws SQLException
   {
     final DropTablesTool dropTablesTool = new DropTablesTool(_connectorRepository);
+    dropTablesTool.dropForeignKeys(targetId);
     dropTablesTool.dropTables(targetId);
   }
 
