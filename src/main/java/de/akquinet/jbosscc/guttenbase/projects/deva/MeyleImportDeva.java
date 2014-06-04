@@ -1,13 +1,12 @@
 package de.akquinet.jbosscc.guttenbase.projects.deva;
 
 import de.akquinet.jbosscc.guttenbase.configuration.impl.PostgresqlTargetDatabaseConfiguration;
+import de.akquinet.jbosscc.guttenbase.connector.ConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.CaseConversionMode;
 import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.SwingScriptExecutorProgressIndicatorHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.SwingTableCopyProgressIndicatorHint;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
@@ -16,7 +15,7 @@ import de.akquinet.jbosscc.guttenbase.tools.DropTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.CreateSchemaTool;
-import de.akquinet.jbosscc.guttenbase.tools.schema.DefaultSchemaColumnTypeMapper;
+import de.akquinet.jbosscc.guttenbase.tools.schema.SchemaColumnTypeMapper;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -105,7 +104,11 @@ public class MeyleImportDeva
 
   public void recreateSchema(final String sourceId, final String targetId) throws SQLException
   {
-    final CreateSchemaTool createSchemaTool = new CreateSchemaTool(_connectorRepository, new DefaultSchemaColumnTypeMapper(),
+    final ConnectorInfo connectionInfo = _connectorRepository.getConnectionInfo(targetId);
+
+    SchemaColumnTypeMapper schemaColumnTypeMapper = new MeyleSchemaColumnTypeMapper(connectionInfo);
+
+    final CreateSchemaTool createSchemaTool = new CreateSchemaTool(_connectorRepository, schemaColumnTypeMapper,
             CaseConversionMode.UPPER);
 
     createSchemaTool.copySchema(sourceId, targetId);
@@ -141,8 +144,8 @@ public class MeyleImportDeva
 
     _connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
-    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
-    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
+//    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
+//    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
 
     _connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
             _connectorRepository, false));
