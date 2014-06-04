@@ -113,6 +113,8 @@ public class MeyleImportDeva
 
     createSchemaTool.copySchema(sourceId, targetId);
     new CheckSchemaCompatibilityTool(_connectorRepository).checkTableConfiguration(sourceId, targetId);
+
+    new MeylePostgresqlSequenceCreationTool(_connectorRepository).createSequences(targetId, 1, 1);
   }
 
   public void setDumpFile(final File file) throws Exception
