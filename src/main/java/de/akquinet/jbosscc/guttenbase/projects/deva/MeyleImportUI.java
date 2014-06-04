@@ -25,6 +25,7 @@ public class MeyleImportUI extends JFrame
     main.add(buttons, BorderLayout.NORTH);
 
     addFileChoose(buttons);
+    addRun(buttons);
 
     addRecreate(buttons);
 
@@ -41,7 +42,7 @@ public class MeyleImportUI extends JFrame
 
   public void addUpdateUsers(final JPanel buttons)
   {
-    final JButton users = new JButton("Update sequence numbers");
+    final JButton users = new JButton("Update users");
     buttons.add(users);
 
     users.addActionListener(new ActionListener()
@@ -150,6 +151,32 @@ public class MeyleImportUI extends JFrame
           {
             e1.printStackTrace();
           }
+        }
+      }
+    });
+  }
+
+  public void addRun(final JPanel buttons)
+  {
+    final JButton choose = new JButton("Complete run");
+    buttons.add(choose);
+
+    choose.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(final ActionEvent e)
+      {
+        try
+        {
+          _meyleImportDeva.dropTables(MeyleImportDeva.TARGET);
+          _meyleImportDeva.recreateSchema(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
+          _meyleImportDeva.copy(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
+          _meyleImportDeva.updateSequenceNumbers(MeyleImportDeva.TARGET);
+          _meyleImportDeva.updateUsers(MeyleImportDeva.TARGET);
+        }
+        catch (Exception e1)
+        {
+          e1.printStackTrace();
         }
       }
     });

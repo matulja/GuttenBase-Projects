@@ -7,6 +7,8 @@ import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.CaseConversionMode;
 import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.SwingScriptExecutorProgressIndicatorHint;
+import de.akquinet.jbosscc.guttenbase.hints.impl.SwingTableCopyProgressIndicatorHint;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
@@ -44,13 +46,7 @@ public class MeyleImportDeva
   public void copy(String sourceId, String targetId) throws Exception
   {
     new DefaultTableCopyTool(_connectorRepository).copyTables(sourceId, targetId);
-  }
-
-  public void vacuumPostgres() throws SQLException
-  {
-    LOG.info("Run VACUUM ANALYZE");
-    new PostgresqlVacuumTablesTool(_connectorRepository).executeOnAllTables(TARGET);
-    LOG.info("VACUUM ANALYZE DONE");
+    new PostgresqlVacuumTablesTool(_connectorRepository).executeOnAllTables(targetId);
   }
 
   public void updateUsers(String targetId) throws SQLException
@@ -115,6 +111,17 @@ public class MeyleImportDeva
     new CheckSchemaCompatibilityTool(_connectorRepository).checkTableConfiguration(sourceId, targetId);
 
     new MeylePostgresqlSequenceCreationTool(_connectorRepository).createSequences(targetId, 1, 1);
+
+    new ScriptExecutorTool(_connectorRepository).executeScript(targetId, "CREATE SEQUENCE hibernate_sequence START WITH 1" +
+                    "    INCREMENT BY 1" +
+                    "    NO MINVALUE" +
+                    "    NO MAXVALUE" +
+                    "    CACHE 1;",
+            "CREATE SEQUENCE workiteminfo_id_seq START WITH 1" +
+                    "    INCREMENT BY 1" +
+                    "    NO MINVALUE" +
+                    "    NO MAXVALUE" +
+                    "    CACHE 1;");
   }
 
   public void setDumpFile(final File file) throws Exception
@@ -146,8 +153,8 @@ public class MeyleImportDeva
 
     _connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
-//    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
-//    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
+    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
+    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
 
     _connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
             _connectorRepository, false));
