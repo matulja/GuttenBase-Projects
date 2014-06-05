@@ -7,14 +7,13 @@ import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.CaseConversionMode;
 import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.SwingScriptExecutorProgressIndicatorHint;
-import de.akquinet.jbosscc.guttenbase.hints.impl.SwingTableCopyProgressIndicatorHint;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
 import de.akquinet.jbosscc.guttenbase.tools.DropTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
+import de.akquinet.jbosscc.guttenbase.tools.mysql.MySqlReorgTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.CreateSchemaTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.SchemaColumnTypeMapper;
@@ -31,8 +30,8 @@ import java.util.Map.Entry;
 
 public class MeyleImportDeva
 {
-  public static final String TARGET = "meylePostgresql";
-  public static final String SOURCE = "meyleImport";
+  public static final String TARGET = "TARGET";
+  public static final String SOURCE = "SOURCE";
   private static final Logger LOG = Logger.getLogger(MeyleImportDeva.class);
   private static Map<String, Serializable> _extraInformation;
   public static final String GEHEIM = "rdsPXngmyFfXN20b2bwzwMVEeQourJYUSoryKxKYyUA=";
@@ -48,7 +47,17 @@ public class MeyleImportDeva
   public void copy(String sourceId, String targetId) throws Exception
   {
     new DefaultTableCopyTool(_connectorRepository).copyTables(sourceId, targetId);
-    new PostgresqlVacuumTablesTool(_connectorRepository).executeOnAllTables(targetId);
+
+    final DatabaseType databaseType = _connectorRepository.getConnectionInfo(targetId).getDatabaseType();
+
+    if (databaseType == DatabaseType.POSTGRESQL)
+    {
+      new PostgresqlVacuumTablesTool(_connectorRepository).executeOnAllTables(targetId);
+    }
+    else if (databaseType == DatabaseType.MYSQL)
+    {
+      new MySqlReorgTablesTool(_connectorRepository).executeOnAllTables(targetId);
+    }
   }
 
   public void updateUsers(String targetId) throws SQLException
@@ -123,6 +132,7 @@ public class MeyleImportDeva
 
         if (tableName.startsWith("deva_"))
         {
+          statements.add("ALTER TABLE " + tableName + " CHANGE COLUMN ID ID BIGINT AUTO_INCREMENT NOT NULL;");
           statements.add("ALTER TABLE " + tableName + " AUTO_INCREMENT = " + nextSequenceNumber + ";");
         }
         else
@@ -168,10 +178,10 @@ public class MeyleImportDeva
 
   public void setupConnections() throws MalformedURLException
   {
-    _connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
+    _connectorRepository.addConnectionInfo(TARGET, new MeyleMysqlConnectionInfo());
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
-    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
-    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
+//    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
+//    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
 
     _connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
             _connectorRepository, false));

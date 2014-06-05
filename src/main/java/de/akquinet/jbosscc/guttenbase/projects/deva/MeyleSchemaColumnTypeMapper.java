@@ -23,8 +23,7 @@ public class MeyleSchemaColumnTypeMapper extends DefaultSchemaColumnTypeMapper
 
     if (columnType.endsWith(MSSQL_IDCOLUMNTYPE))
     {
-      String newColumnType = columnType.substring(0, columnType.length() - MSSQL_IDCOLUMNTYPE.length());
-      return _connectorInfo.getDatabaseType() == DatabaseType.MYSQL ? newColumnType + " AUTO_INCREMENT" : newColumnType;
+      return columnType.substring(0, columnType.length() - MSSQL_IDCOLUMNTYPE.length());
     }
     else if (_connectorInfo.getDatabaseType() == DatabaseType.MYSQL && "TIMESTAMP".equalsIgnoreCase(columnType))
     {
