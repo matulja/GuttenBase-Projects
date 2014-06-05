@@ -3,7 +3,6 @@ package de.akquinet.jbosscc.guttenbase.projects.deva;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.TableOrderHint;
-import de.akquinet.jbosscc.guttenbase.mapping.TableNameMapper;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
@@ -54,7 +53,6 @@ public class DevaSequenceNumberExporter implements ExportDumpExtraInformation
   {
     final List<TableMetaData> tableMetaDatas = TableOrderHint.getSortedTables(connectorRepository, sourceConnectorId);
     final EntityTableChecker entityTableChecker = connectorRepository.getConnectorHint(sourceConnectorId, EntityTableChecker.class).getValue();
-    final TableNameMapper tableNameMapper = connectorRepository.getConnectorHint(sourceConnectorId, TableNameMapper.class).getValue();
     final MinMaxIdSelectorTool minMaxIdSelector = new MinMaxIdSelectorTool(connectorRepository);
 
     for (final TableMetaData tableMetaData : tableMetaDatas)
@@ -63,7 +61,7 @@ public class DevaSequenceNumberExporter implements ExportDumpExtraInformation
       {
         minMaxIdSelector.computeMinMax(sourceConnectorId, tableMetaData);
         final long sequenceValue = minMaxIdSelector.getMaxValue() + 1;
-        final String tableName = tableNameMapper.mapTableName(tableMetaData);
+        final String tableName = tableMetaData.getTableName();
 
         result.put(tableName, sequenceValue);
       }
