@@ -98,17 +98,40 @@ public class MeyleImportDeva
 
   public void recreateAndUpdateSequences(final String targetId) throws SQLException
   {
-    List<String> statements = new ArrayList<String>();
+    final List<String> statements = new ArrayList<String>();
+    final DatabaseType databaseType = _connectorRepository.getConnectionInfo(targetId).getDatabaseType();
 
-    for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
+    if (databaseType == DatabaseType.POSTGRESQL)
     {
-      String tableName = entry.getKey().toLowerCase();
-      Long nextSequenceNumber = (Long) entry.getValue();
-      String sequenceName = tableName.startsWith("deva_") ? getIdSequenceName(tableName) : tableName;
+      for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
+      {
+        String tableName = entry.getKey().toLowerCase();
+        Long nextSequenceNumber = (Long) entry.getValue();
+        String sequenceName = tableName.startsWith("deva_") ? getIdSequenceName(tableName) : tableName;
 
-      statements.add("DROP SEQUENCE IF EXISTS " + sequenceName + " CASCADE;");
-      statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
-      statements.add("SELECT setval('" + sequenceName + "', " + nextSequenceNumber + ", true);");
+        statements.add("DROP SEQUENCE IF EXISTS " + sequenceName + " CASCADE;");
+        statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
+        statements.add("SELECT setval('" + sequenceName + "', " + nextSequenceNumber + ", true);");
+      }
+    }
+    else if (databaseType == DatabaseType.MYSQL)
+    {
+      for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
+      {
+        String tableName = entry.getKey().toLowerCase();
+        Long nextSequenceNumber = (Long) entry.getValue();
+
+        if (tableName.startsWith("deva_"))
+        {
+          statements.add("ALTER TABLE " + tableName + " AUTO_INCREMENT = " + nextSequenceNumber + ";");
+        }
+        else
+        {
+          statements.add("DROP TABLE IF EXISTS " + tableName + " CASCADE;");
+          statements.add("CREATE TABLE " + tableName + " (next_val BIGINT);");
+          statements.add("INSERT INTO " + tableName + " (" + nextSequenceNumber + ");");
+        }
+      }
     }
 
     new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, false, statements);
