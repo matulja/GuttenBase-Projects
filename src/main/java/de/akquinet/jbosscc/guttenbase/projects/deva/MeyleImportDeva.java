@@ -128,7 +128,12 @@ public class MeyleImportDeva
       for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
       {
         String tableName = entry.getKey().toLowerCase();
-        Long nextSequenceNumber = (Long) entry.getValue();
+        final Long nextSequenceNumber = (Long) entry.getValue();
+
+        if (tableName.startsWith("dbo."))
+        {
+          tableName = tableName.substring(4);
+        }
 
         if (tableName.startsWith("deva_"))
         {
