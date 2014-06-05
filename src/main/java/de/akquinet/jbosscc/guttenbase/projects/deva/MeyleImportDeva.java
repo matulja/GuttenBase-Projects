@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -54,7 +56,6 @@ public class MeyleImportDeva
     final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(_connectorRepository);
     scriptExecutorTool.executeScript(targetId, "UPDATE deva_benutzer SET password = '" + GEHEIM + "';");
 
-    // Step 7: Create Admin user (may already exist)
     try
     {
       scriptExecutorTool.executeScript(targetId, "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
@@ -72,22 +73,6 @@ public class MeyleImportDeva
     catch (final Exception e)
     {
       LOG.warn("Creating users failed", e);
-    }
-  }
-
-  public void updateSequenceNumbers(String targetId) throws SQLException
-  {
-    final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(_connectorRepository);
-
-    // Step 5: Update max sequence number
-    _connectorRepository.addConnectorHint(targetId, new MeyleTableNameFilterHint(false, false));
-
-    new MeylePostgresqlSequenceUpdateTool(_connectorRepository).updateSequences(targetId);
-
-    for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
-    {
-      scriptExecutorTool.executeScript(targetId, false, false,
-              "SELECT setval('public." + entry.getKey().toLowerCase() + "', " + entry.getValue() + ", true);");
     }
   }
 
@@ -109,19 +94,23 @@ public class MeyleImportDeva
 
     createSchemaTool.copySchema(sourceId, targetId);
     new CheckSchemaCompatibilityTool(_connectorRepository).checkTableConfiguration(sourceId, targetId);
+  }
 
-    new MeylePostgresqlSequenceCreationTool(_connectorRepository).createSequences(targetId, 1, 1);
+  public void createAndUpdateSequences(final String targetId) throws SQLException
+  {
+    List<String> statements = new ArrayList<String>();
 
-    new ScriptExecutorTool(_connectorRepository).executeScript(targetId, "CREATE SEQUENCE hibernate_sequence START WITH 1" +
-                    "    INCREMENT BY 1" +
-                    "    NO MINVALUE" +
-                    "    NO MAXVALUE" +
-                    "    CACHE 1;",
-            "CREATE SEQUENCE workiteminfo_id_seq START WITH 1" +
-                    "    INCREMENT BY 1" +
-                    "    NO MINVALUE" +
-                    "    NO MAXVALUE" +
-                    "    CACHE 1;");
+    for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
+    {
+      String tableName = entry.getKey().toLowerCase();
+      Long nextSequenceNumber = (Long) entry.getValue();
+      String sequenceName = tableName.startsWith("deva_") ? tableName + "_id_seq" : tableName;
+
+      statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
+      statements.add("SELECT setval(' " + sequenceName + "', " + nextSequenceNumber + ", true);");
+    }
+
+    new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, false, statements);
   }
 
   public void setDumpFile(final File file) throws Exception
@@ -150,7 +139,6 @@ public class MeyleImportDeva
 
   public void setupConnections() throws MalformedURLException
   {
-
     _connectorRepository.addConnectionInfo(TARGET, new MeylePostgresqlConnectionInfo());
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
     _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());

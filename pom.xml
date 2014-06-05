@@ -81,7 +81,7 @@
         </pluginManagement>
 
 
-        <!-- Run with mvn -Dguttenbase.main=de.akquinet.jbosscc.guttenbase.projects.deva.MeyleExportDeva assembly:assembly -->
+        <!-- Run with mvn -Dguttenbase.main=de.akquinet.jbosscc.guttenbase.projects.deva.MeyleExportDeva clean assembly:assembly -->
         <finalName>maven-assembly-plugin</finalName>
 
         <plugins>

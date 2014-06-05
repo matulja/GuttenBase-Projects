@@ -31,8 +31,6 @@ public class MeyleImportUI extends JFrame
 
     addCopy(buttons);
 
-    addUpdateSequence(buttons);
-
     addUpdateUsers(buttons);
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -62,28 +60,6 @@ public class MeyleImportUI extends JFrame
     });
   }
 
-  public void addUpdateSequence(final JPanel buttons)
-  {
-    final JButton sequence = new JButton("Update sequence numbers");
-    buttons.add(sequence);
-
-    sequence.addActionListener(new ActionListener()
-    {
-      @Override
-      public void actionPerformed(final ActionEvent e)
-      {
-        try
-        {
-          _meyleImportDeva.updateSequenceNumbers(MeyleImportDeva.TARGET);
-        }
-        catch (Exception e1)
-        {
-          e1.printStackTrace();
-        }
-      }
-    });
-  }
-
   public void addCopy(final JPanel buttons)
   {
     final JButton copy = new JButton("Copy data");
@@ -97,6 +73,7 @@ public class MeyleImportUI extends JFrame
         try
         {
           _meyleImportDeva.copy(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
+          _meyleImportDeva.createAndUpdateSequences(MeyleImportDeva.TARGET);
         }
         catch (Exception e1)
         {
@@ -170,8 +147,9 @@ public class MeyleImportUI extends JFrame
         {
           _meyleImportDeva.dropTables(MeyleImportDeva.TARGET);
           _meyleImportDeva.recreateSchema(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
+
           _meyleImportDeva.copy(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
-          _meyleImportDeva.updateSequenceNumbers(MeyleImportDeva.TARGET);
+          _meyleImportDeva.createAndUpdateSequences(MeyleImportDeva.TARGET);
           _meyleImportDeva.updateUsers(MeyleImportDeva.TARGET);
         }
         catch (Exception e1)
