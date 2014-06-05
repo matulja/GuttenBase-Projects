@@ -140,16 +140,16 @@ public class MeyleImportDeva
           statements.add("ALTER TABLE " + tableName + " CHANGE COLUMN ID ID BIGINT AUTO_INCREMENT NOT NULL;");
           statements.add("ALTER TABLE " + tableName + " AUTO_INCREMENT = " + nextSequenceNumber + ";");
         }
-        else
+        else if (DevaSequenceNumberExporter.DEVA_SEQUENCETABLES.contains(tableName.toUpperCase()))
         {
           statements.add("DROP TABLE IF EXISTS " + tableName + " CASCADE;");
           statements.add("CREATE TABLE " + tableName + " (next_val BIGINT);");
-          statements.add("INSERT INTO " + tableName + " (" + nextSequenceNumber + ");");
+          statements.add("INSERT INTO " + tableName + " VALUES (" + nextSequenceNumber + ");");
         }
       }
     }
 
-    new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, false, statements);
+    new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, true, statements);
   }
 
   private String getIdSequenceName(final String tableName)
