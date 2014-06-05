@@ -37,7 +37,7 @@ public class MeyleShrinkDump
         protected void addMappings(final DefaultColumnDataMapperProvider columnDataMapperFactory)
         {
           super.addMappings(columnDataMapperFactory);
-          columnDataMapperFactory.addMapping(ColumnType.CLASS_BLOB, ColumnType.CLASS_BLOB, new MeyleBlobDataMapper());
+          columnDataMapperFactory.addMapping(ColumnType.CLASS_BLOB, ColumnType.CLASS_BLOB, new MeyleBlobShrinkMapper());
         }
       });
 
