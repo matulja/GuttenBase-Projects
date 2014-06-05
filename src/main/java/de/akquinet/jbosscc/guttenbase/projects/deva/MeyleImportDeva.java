@@ -96,7 +96,7 @@ public class MeyleImportDeva
     new CheckSchemaCompatibilityTool(_connectorRepository).checkTableConfiguration(sourceId, targetId);
   }
 
-  public void createAndUpdateSequences(final String targetId) throws SQLException
+  public void recreateAndUpdateSequences(final String targetId) throws SQLException
   {
     List<String> statements = new ArrayList<String>();
 
@@ -104,13 +104,19 @@ public class MeyleImportDeva
     {
       String tableName = entry.getKey().toLowerCase();
       Long nextSequenceNumber = (Long) entry.getValue();
-      String sequenceName = tableName.startsWith("deva_") ? tableName + "_id_seq" : tableName;
+      String sequenceName = tableName.startsWith("deva_") ? getIdSequenceName(tableName) : tableName;
 
+      statements.add("DROP SEQUENCE IF EXISTS " + sequenceName + " CASCADE;");
       statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
-      statements.add("SELECT setval(' " + sequenceName + "', " + nextSequenceNumber + ", true);");
+      statements.add("SELECT setval('" + sequenceName + "', " + nextSequenceNumber + ", true);");
     }
 
     new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, false, statements);
+  }
+
+  private String getIdSequenceName(final String tableName)
+  {
+    return tableName + "_id_seq";
   }
 
   public void setDumpFile(final File file) throws Exception

@@ -73,7 +73,7 @@ public class MeyleImportUI extends JFrame
         try
         {
           _meyleImportDeva.copy(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
-          _meyleImportDeva.createAndUpdateSequences(MeyleImportDeva.TARGET);
+          _meyleImportDeva.recreateAndUpdateSequences(MeyleImportDeva.TARGET);
         }
         catch (Exception e1)
         {
@@ -149,7 +149,7 @@ public class MeyleImportUI extends JFrame
           _meyleImportDeva.recreateSchema(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
 
           _meyleImportDeva.copy(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
-          _meyleImportDeva.createAndUpdateSequences(MeyleImportDeva.TARGET);
+          _meyleImportDeva.recreateAndUpdateSequences(MeyleImportDeva.TARGET);
           _meyleImportDeva.updateUsers(MeyleImportDeva.TARGET);
         }
         catch (Exception e1)
