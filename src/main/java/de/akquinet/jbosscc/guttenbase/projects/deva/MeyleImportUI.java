@@ -26,6 +26,7 @@ public class MeyleImportUI extends JFrame
   private JButton _copy;
   private JButton _sequences;
   private JButton _users;
+  private JButton _reorg;
 
   public MeyleImportUI(final MeyleImportDeva meyleImportDeva) throws HeadlessException
   {
@@ -49,6 +50,7 @@ public class MeyleImportUI extends JFrame
     _copy = addCopy(stepwiseActionsPanel);
     _sequences = addUpdateSequences(stepwiseActionsPanel);
     _users = addUpdateUser(stepwiseActionsPanel);
+    _reorg = addReorg(stepwiseActionsPanel);
 
     enableActions(false);
     main.add(new JScrollPane(new JTable(_tableModel)), BorderLayout.CENTER);
@@ -122,6 +124,7 @@ public class MeyleImportUI extends JFrame
         _meyleImportDeva.copy(MeyleImportDeva.SOURCE, MeyleImportDeva.TARGET);
         _meyleImportDeva.recreateAndUpdateSequences(MeyleImportDeva.TARGET);
         _meyleImportDeva.updateUsers(MeyleImportDeva.TARGET);
+        _meyleImportDeva.reorgTables(MeyleImportDeva.TARGET);
         return null;
       }
     });
@@ -166,6 +169,19 @@ public class MeyleImportUI extends JFrame
     });
   }
 
+  private JButton addReorg(final JPanel buttons)
+  {
+    return addButton("Reorganize tables", buttons, new Callable()
+    {
+      @Override
+      public Object call() throws Exception
+      {
+        _meyleImportDeva.reorgTables(MeyleImportDeva.TARGET);
+        return null;
+      }
+    });
+  }
+
   private JButton addUpdateSequences(final JPanel buttons)
   {
     return addButton("Recreate and update sequences", buttons, new Callable()
@@ -201,6 +217,7 @@ public class MeyleImportUI extends JFrame
     _dropTables.setEnabled(enable);
     _sequences.setEnabled(enable);
     _users.setEnabled(enable);
+    _reorg.setEnabled(enable);
 
     if (enable)
     {
