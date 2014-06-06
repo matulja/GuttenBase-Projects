@@ -5,6 +5,8 @@ import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.tools.schema.DefaultSchemaColumnTypeMapper;
 
+import java.util.Arrays;
+
 public class MeyleSchemaColumnTypeMapper extends DefaultSchemaColumnTypeMapper
 {
   public static final String MSSQL_IDCOLUMNTYPE = " IDENTITY";
@@ -31,7 +33,14 @@ public class MeyleSchemaColumnTypeMapper extends DefaultSchemaColumnTypeMapper
     }
     else if (_connectorInfo.getDatabaseType() == DatabaseType.POSTGRESQL && "DATETIME".equalsIgnoreCase(columnType))
     {
-      return "TIMESTAMP";
+      if (Arrays.asList("GEWAEHRT_AM", "SOLL_DATUM", "IST_DATUM", "WEITERGESCHALTET_DATUM", "DEADLINE_DATE", "CREATEDON").contains(columnMetaData.getColumnName().toUpperCase()))
+      {
+        return "DATE";
+      }
+      else
+      {
+        return "TIMESTAMP";
+      }
     }
     else if (MSSQL_BLOBTYPE.equalsIgnoreCase(columnType))
     {
