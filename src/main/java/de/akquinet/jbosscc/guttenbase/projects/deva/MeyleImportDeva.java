@@ -135,7 +135,14 @@ public class MeyleImportDeva
         {
           statements.add("DROP SEQUENCE IF EXISTS " + sequenceName + " CASCADE;");
           statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
-          statements.add("SELECT setval('" + sequenceName + "', " + nextSequenceNumber + ", true);");
+
+          if (tableName.startsWith("deva_"))
+          {
+            statements.add("ALTER SEQUENCE " + sequenceName + " OWNED BY " + tableName + ".ID;");
+            statements.add("ALTER TABLE ONLY " + tableName + " ALTER COLUMN ID SET DEFAULT nextval('" + sequenceName + "'::regclass);");
+          }
+
+          statements.add("SELECT SETVAL('" + sequenceName + "', " + nextSequenceNumber + ", true);");
         }
       }
     }
