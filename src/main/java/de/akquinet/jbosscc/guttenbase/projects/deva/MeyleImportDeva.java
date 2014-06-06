@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,14 +46,20 @@ public class MeyleImportDeva
   public void copy(String sourceId, String targetId) throws Exception
   {
     new DefaultTableCopyTool(_connectorRepository).copyTables(sourceId, targetId);
+  }
 
+  public void reorgTables(String targetId) throws SQLException
+  {
     final DatabaseType databaseType = _connectorRepository.getConnectionInfo(targetId).getDatabaseType();
 
     if (databaseType == DatabaseType.POSTGRESQL)
+
     {
       new PostgresqlVacuumTablesTool(_connectorRepository).executeOnAllTables(targetId);
     }
+
     else if (databaseType == DatabaseType.MYSQL)
+
     {
       new MySqlReorgTablesTool(_connectorRepository).executeOnAllTables(targetId);
     }
@@ -109,18 +114,29 @@ public class MeyleImportDeva
   {
     final List<String> statements = new ArrayList<String>();
     final DatabaseType databaseType = _connectorRepository.getConnectionInfo(targetId).getDatabaseType();
+    _connectorRepository.getDatabaseMetaData(SOURCE); // Make sure extra info is read
 
     if (databaseType == DatabaseType.POSTGRESQL)
     {
       for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
       {
         String tableName = entry.getKey().toLowerCase();
+
+        if (tableName.startsWith("dbo.")) // workaround
+        {
+          tableName = tableName.substring(4);
+        }
+
         Long nextSequenceNumber = (Long) entry.getValue();
+
         String sequenceName = tableName.startsWith("deva_") ? getIdSequenceName(tableName) : tableName;
 
-        statements.add("DROP SEQUENCE IF EXISTS " + sequenceName + " CASCADE;");
-        statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
-        statements.add("SELECT setval('" + sequenceName + "', " + nextSequenceNumber + ", true);");
+        if (tableName.startsWith("deva_") || DevaSequenceNumberExporter.DEVA_SEQUENCETABLES.contains(tableName.toUpperCase()))
+        {
+          statements.add("DROP SEQUENCE IF EXISTS " + sequenceName + " CASCADE;");
+          statements.add("CREATE SEQUENCE " + sequenceName + " START WITH 1 INCREMENT BY 1;");
+          statements.add("SELECT setval('" + sequenceName + "', " + nextSequenceNumber + ", true);");
+        }
       }
     }
     else if (databaseType == DatabaseType.MYSQL)
@@ -130,7 +146,7 @@ public class MeyleImportDeva
         String tableName = entry.getKey().toLowerCase();
         final Long nextSequenceNumber = (Long) entry.getValue();
 
-        if (tableName.startsWith("dbo."))
+        if (tableName.startsWith("dbo."))// workaround
         {
           tableName = tableName.substring(4);
         }
@@ -175,18 +191,17 @@ public class MeyleImportDeva
           public void processExtraInformation(final Map<String, Serializable> extraInformation) throws Exception
           {
             _extraInformation = extraInformation;
+            LOG.info("Additional information extracted from dump");
           }
         };
       }
     });
   }
 
-  public void setupConnections() throws MalformedURLException
+  public void setupTarget(ConnectorInfo connectorInfo)
   {
-    _connectorRepository.addConnectionInfo(TARGET, new MeyleMysqlConnectionInfo());
+    _connectorRepository.addConnectionInfo(TARGET, connectorInfo);
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
-//    _connectorRepository.addConnectorHint(TARGET, new SwingTableCopyProgressIndicatorHint());
-//    _connectorRepository.addConnectorHint(TARGET, new SwingScriptExecutorProgressIndicatorHint());
 
     _connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
             _connectorRepository, false));
@@ -198,7 +213,6 @@ public class MeyleImportDeva
 
     try
     {
-      tool.setupConnections();
       tool.start();
     }
     catch (final Exception e)
