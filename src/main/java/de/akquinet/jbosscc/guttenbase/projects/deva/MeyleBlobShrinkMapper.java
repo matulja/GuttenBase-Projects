@@ -26,11 +26,6 @@ public class MeyleBlobShrinkMapper implements ColumnDataMapper
         {
           return byteArrayInputStream;
         }
-
-        @Override
-        public void free() throws SQLException
-        {
-        }
       };
     }
     else
