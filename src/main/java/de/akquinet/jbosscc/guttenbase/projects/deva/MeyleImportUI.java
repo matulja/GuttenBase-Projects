@@ -241,7 +241,7 @@ public class MeyleImportUI extends JFrame
       super(new Object[][]{
               {true, "jdbc:postgresql://localhost:5432/meyle-devA", "meyle", "meylenstein", "org.postgresql.Driver", "public", DatabaseType.POSTGRESQL},
               {false, "jdbc:mysql://localhost:3306/deva", "ubiusr", "geheim", "com.mysql.jdbc.Driver", "deva", DatabaseType.MYSQL},
-              {false, "jdbc:jtds:sqlserver://172.20.201.71:1433/PDP_PROD;instance=SQLEXPRESS", "PDP-DB-User", "pdp4meyle", "net.sourceforge.jtds.jdbc.Driver", "public", DatabaseType.POSTGRESQL},
+              {false, "jdbc:jtds:sqlserver://172.20.201.71:1433/PDP_PROD;instance=SQLEXPRESS", "PDP-DB-User", "pdp4meyle", "net.sourceforge.jtds.jdbc.Driver", "dbo", DatabaseType.MSSQL},
               {false, "URL", "Username", "Password", "Driver", "Schema", "DB-Type"}
       }, new Object[]{"", "URL", "Username", "Password", "Driver", "Schema", "DB-Type"});
     }

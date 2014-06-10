@@ -177,6 +177,25 @@ public class MeyleImportDeva
         }
       }
     }
+    else if (databaseType == DatabaseType.MSSQL)
+    {
+      for (final Entry<String, Serializable> entry : _extraInformation.entrySet())
+      {
+        String tableName = entry.getKey().toLowerCase();
+        final Long nextSequenceNumber = (Long) entry.getValue();
+
+        if (tableName.startsWith("dbo."))// workaround
+        {
+          tableName = tableName.substring(4);
+        }
+
+        statements.add("DBCC CHECKIDENT('" + tableName + "', RESEED, " + nextSequenceNumber + ");");
+      }
+    }
+    else
+    {
+      throw new IllegalStateException("Unhandled Data base type " + databaseType);
+    }
 
     new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, true, statements);
   }
