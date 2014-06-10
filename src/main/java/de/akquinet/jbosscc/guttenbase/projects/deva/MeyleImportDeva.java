@@ -17,10 +17,12 @@ import de.akquinet.jbosscc.guttenbase.tools.mysql.MySqlReorgTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.CreateSchemaTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.SchemaColumnTypeMapper;
+import de.akquinet.jbosscc.guttenbase.utils.ResourceUtil;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +37,12 @@ public class MeyleImportDeva
   private static Map<String, Serializable> _extraInformation;
   public static final String GEHEIM = "rdsPXngmyFfXN20b2bwzwMVEeQourJYUSoryKxKYyUA=";
   private final ConnectorRepository _connectorRepository = new ConnectorRepositoryImpl();
+  private MeyleImportUI _importUI = new MeyleImportUI(this);
 
   public void start()
   {
-    final MeyleImportUI ui = new MeyleImportUI(this);
-    ui.init();
-    ui.start();
+    _importUI.init();
+    _importUI.start();
   }
 
   public void copy(String sourceId, String targetId) throws Exception
@@ -182,8 +184,13 @@ public class MeyleImportDeva
 
   public void setDumpFile(final File file) throws Exception
   {
+    final URL url = file.toURI().toURL();
+
+    _importUI.setTitle(url.toExternalForm());
+
     _connectorRepository.removeConnectionInfo(SOURCE);
-    _connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(file.toURI().toURL()));
+
+    _connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(url));
 
     _connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
 
@@ -220,6 +227,13 @@ public class MeyleImportDeva
 
     try
     {
+      final ResourceUtil.ResourceInfo resourceInfo = new ResourceUtil().getResourceInfo(MeyleImportDeva.class);
+
+      if (resourceInfo.isJarFile())
+      {
+        tool.setDumpFile(resourceInfo.getJarFileOrFolder());
+      }
+
       tool.start();
     }
     catch (final Exception e)
