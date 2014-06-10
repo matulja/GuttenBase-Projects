@@ -71,12 +71,8 @@ public class MeyleImportUI extends JFrame
         {
           File file = _fileChooser.getSelectedFile();
 
-          if (file.exists() && file.isFile() && file.canRead())
-          {
-            _meyleImportDeva.setDumpFile(file);
-            enableActions(true);
-            return null;
-          }
+          _meyleImportDeva.setDumpFile(file);
+          return null;
         }
 
         enableActions(false);
@@ -208,7 +204,7 @@ public class MeyleImportUI extends JFrame
     });
   }
 
-  private void enableActions(final boolean enable)
+  public void enableActions(final boolean enable)
   {
     _runAll.setEnabled(enable);
 

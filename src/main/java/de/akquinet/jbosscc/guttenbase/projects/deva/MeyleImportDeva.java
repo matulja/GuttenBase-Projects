@@ -41,8 +41,12 @@ public class MeyleImportDeva
 
   public void start()
   {
-    _importUI.init();
     _importUI.start();
+  }
+
+  public void init()
+  {
+    _importUI.init();
   }
 
   public void copy(String sourceId, String targetId) throws Exception
@@ -184,32 +188,37 @@ public class MeyleImportDeva
 
   public void setDumpFile(final File file) throws Exception
   {
-    final URL url = file.toURI().toURL();
-
-    _importUI.setTitle(url.toExternalForm());
-
-    _connectorRepository.removeConnectionInfo(SOURCE);
-
-    _connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(url));
-
-    _connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
-
-    _connectorRepository.addConnectorHint(SOURCE, new ImportDumpExtraInformationHint()
+    if (file.exists() && file.isFile() && file.canRead())
     {
-      @Override
-      public ImportDumpExtraInformation getValue()
+      _importUI.enableActions(true);
+
+      final URL url = file.toURI().toURL();
+
+      _importUI.setTitle(url.toExternalForm());
+
+      _connectorRepository.removeConnectionInfo(SOURCE);
+
+      _connectorRepository.addConnectionInfo(SOURCE, new ImportDumpConnectionInfo(url));
+
+      _connectorRepository.addConnectorHint(SOURCE, new MeyleTableNameFilterHint(true, true));
+
+      _connectorRepository.addConnectorHint(SOURCE, new ImportDumpExtraInformationHint()
       {
-        return new ImportDumpExtraInformation()
+        @Override
+        public ImportDumpExtraInformation getValue()
         {
-          @Override
-          public void processExtraInformation(final Map<String, Serializable> extraInformation) throws Exception
+          return new ImportDumpExtraInformation()
           {
-            _extraInformation = extraInformation;
-            LOG.info("Additional information extracted from dump");
-          }
-        };
-      }
-    });
+            @Override
+            public void processExtraInformation(final Map<String, Serializable> extraInformation) throws Exception
+            {
+              _extraInformation = extraInformation;
+              LOG.info("Additional information extracted from dump");
+            }
+          };
+        }
+      });
+    }
   }
 
   public void setupTarget(ConnectorInfo connectorInfo)
@@ -224,6 +233,8 @@ public class MeyleImportDeva
   public static void main(final String[] args)
   {
     MeyleImportDeva tool = new MeyleImportDeva();
+
+    tool.init();
 
     try
     {
