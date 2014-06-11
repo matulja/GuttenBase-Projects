@@ -7,12 +7,12 @@ import de.akquinet.jbosscc.guttenbase.export.ImportDumpConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpExtraInformation;
 import de.akquinet.jbosscc.guttenbase.hints.CaseConversionMode;
 import de.akquinet.jbosscc.guttenbase.hints.ImportDumpExtraInformationHint;
+import de.akquinet.jbosscc.guttenbase.hints.MaxNumberOfDataItemsHint;
+import de.akquinet.jbosscc.guttenbase.hints.NumberOfRowsPerBatchHint;
+import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
-import de.akquinet.jbosscc.guttenbase.tools.CheckSchemaCompatibilityTool;
-import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.DropTablesTool;
-import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
+import de.akquinet.jbosscc.guttenbase.tools.*;
 import de.akquinet.jbosscc.guttenbase.tools.mysql.MySqlReorgTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.CreateSchemaTool;
@@ -106,9 +106,7 @@ public class MeyleImportDeva
   public void recreateSchema(final String sourceId, final String targetId) throws SQLException
   {
     final ConnectorInfo connectionInfo = _connectorRepository.getConnectionInfo(targetId);
-
-    SchemaColumnTypeMapper schemaColumnTypeMapper = new MeyleSchemaColumnTypeMapper(connectionInfo);
-
+    final SchemaColumnTypeMapper schemaColumnTypeMapper = new MeyleSchemaColumnTypeMapper(connectionInfo);
     final CreateSchemaTool createSchemaTool = new CreateSchemaTool(_connectorRepository, schemaColumnTypeMapper,
             CaseConversionMode.UPPER);
 
@@ -189,7 +187,10 @@ public class MeyleImportDeva
           tableName = tableName.substring(4);
         }
 
-        statements.add("DBCC CHECKIDENT('" + tableName + "', RESEED, " + nextSequenceNumber + ");");
+        if (tableName.startsWith("deva_"))
+        {
+          statements.add("DBCC CHECKIDENT('" + tableName + "', RESEED, " + nextSequenceNumber + ");");
+        }
       }
     }
     else
@@ -244,6 +245,65 @@ public class MeyleImportDeva
   {
     _connectorRepository.addConnectionInfo(TARGET, connectorInfo);
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
+
+    if (connectorInfo.getDatabaseType() == DatabaseType.MSSQL)
+    {
+      _connectorRepository.addConnectorHint(TARGET, new MaxNumberOfDataItemsHint()
+      {
+        @Override
+        public MaxNumberOfDataItems getValue()
+        {
+          return new MaxNumberOfDataItems()
+          {
+
+            @Override
+            public int getMaxNumberOfDataItems(TableMetaData targetTableMetaData)
+            {
+              return 1990; // MSSQL only supports 2000
+            }
+          };
+        }
+      });
+
+      _connectorRepository.addConnectorHint(TARGET, new MaxNumberOfDataItemsHint()
+      {
+        @Override
+        public MaxNumberOfDataItems getValue()
+        {
+          return new MaxNumberOfDataItems()
+          {
+
+            @Override
+            public int getMaxNumberOfDataItems(TableMetaData targetTableMetaData)
+            {
+              return 1990; // MSSQL only supports 2000
+            }
+          };
+        }
+      });
+
+      _connectorRepository.addConnectorHint(TARGET, new NumberOfRowsPerBatchHint()
+      {
+        @Override
+        public NumberOfRowsPerBatch getValue()
+        {
+          return new NumberOfRowsPerBatch()
+          {
+            @Override
+            public int getNumberOfRowsPerBatch(TableMetaData targetTableMetaData)
+            {
+              return 2000;
+            }
+
+            @Override
+            public boolean useMultipleValuesClauses(TableMetaData targetTableMetaData)
+            {
+              return false;
+            }
+          };
+        }
+      });
+    }
 
     _connectorRepository.addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(
             _connectorRepository, false));

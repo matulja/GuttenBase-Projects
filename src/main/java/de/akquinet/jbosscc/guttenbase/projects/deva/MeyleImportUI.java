@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,8 +57,10 @@ public class MeyleImportUI extends JFrame
     enableActions(false);
     main.add(new JScrollPane(_table), BorderLayout.CENTER);
 
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    TableColumn column = _table.getColumnModel().getColumn(6);
+    column.setCellEditor(new DefaultCellEditor(new JComboBox(DatabaseType.values())));
 
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setContentPane(main);
   }
 
@@ -265,6 +268,7 @@ public class MeyleImportUI extends JFrame
               {true, "jdbc:postgresql://localhost:5432/meyle-devA", "meyle", "meylenstein", "org.postgresql.Driver", "public", DatabaseType.POSTGRESQL},
               {false, "jdbc:mysql://localhost:3306/deva", "ubiusr", "geheim", "com.mysql.jdbc.Driver", "deva", DatabaseType.MYSQL},
               {false, "jdbc:jtds:sqlserver://172.20.201.71:1433/PDP_PROD;instance=SQLEXPRESS", "PDP-DB-User", "pdp4meyle", "net.sourceforge.jtds.jdbc.Driver", "dbo", DatabaseType.MSSQL},
+              {false, "jdbc:jtds:sqlserver://172.20.201.71:1433/PDP_PROD;instance=SQLEXPRESS", "PDP-DB-User", "pdp4meyle", "net.sourceforge.jtds.jdbc.Driver", "DEVA_TEST", DatabaseType.MSSQL},
               {false, "URL", "Username", "Password", "Driver", "Schema", DatabaseType.GENERIC}
       }, new Object[]{"", "URL", "Username", "Password", "Driver", "Schema", "DB-Type"});
     }
@@ -292,7 +296,7 @@ public class MeyleImportUI extends JFrame
     @Override
     public boolean isCellEditable(final int row, final int column)
     {
-      return column == 0 || row > 2;
+      return column == 0 || row > 3;
     }
 
     @Override
