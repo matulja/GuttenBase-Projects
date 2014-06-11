@@ -13,6 +13,7 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.ConnectorRepositoryImpl;
 import de.akquinet.jbosscc.guttenbase.tools.*;
+import de.akquinet.jbosscc.guttenbase.tools.mssql.MSSqlReorgTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.mysql.MySqlReorgTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.postgresql.PostgresqlVacuumTablesTool;
 import de.akquinet.jbosscc.guttenbase.tools.schema.CreateSchemaTool;
@@ -63,11 +64,13 @@ public class MeyleImportDeva
     {
       new PostgresqlVacuumTablesTool(_connectorRepository).executeOnAllTables(targetId);
     }
-
     else if (databaseType == DatabaseType.MYSQL)
-
     {
       new MySqlReorgTablesTool(_connectorRepository).executeOnAllTables(targetId);
+    }
+    else if (databaseType == DatabaseType.MSSQL)
+    {
+      new MSSqlReorgTablesTool(_connectorRepository).executeOnAllTables(targetId);
     }
   }
 
@@ -76,8 +79,15 @@ public class MeyleImportDeva
     final ScriptExecutorTool scriptExecutorTool = new ScriptExecutorTool(_connectorRepository);
     scriptExecutorTool.executeScript(targetId, "UPDATE deva_benutzer SET password = '" + GEHEIM + "';");
 
+    final DatabaseType databaseType = _connectorRepository.getConnectionInfo(targetId).getDatabaseType();
+
     try
     {
+      if (databaseType == DatabaseType.MSSQL)
+      {
+        scriptExecutorTool.executeScript(targetId, "SET IDENTITY_INSERT deva_benutzer ON;");
+      }
+
       scriptExecutorTool.executeScript(targetId, "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
                       + "  VALUES (100001, 0,'markus.dahm@akquinet.de','markus.dahm@akquinet.de','Dahm, Markus','" + GEHEIM + "',1);",
               "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100001, 1);",
@@ -89,6 +99,11 @@ public class MeyleImportDeva
               "INSERT INTO deva_benutzer (id,version,email,username,name,password,firma) "
                       + "  VALUES (100003, 0,'torsten.trzewik@akquinet.de','torsten.trzewik@akquinet.de', 'Trzewik, Torsten','" + GEHEIM
                       + "',1);", "INSERT INTO deva_benutzer_rollen (benutzer,rolle) VALUES (100003, 1);");
+
+      if (databaseType == DatabaseType.MSSQL)
+      {
+        scriptExecutorTool.executeScript(targetId, "SET IDENTITY_INSERT deva_benutzer OFF;");
+      }
     }
     catch (final Exception e)
     {
