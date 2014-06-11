@@ -44,7 +44,17 @@ public class MeyleSchemaColumnTypeMapper extends DefaultSchemaColumnTypeMapper
     }
     else if (MSSQL_BLOBTYPE.equalsIgnoreCase(columnType))
     {
-      return _connectorInfo.getDatabaseType() == DatabaseType.POSTGRESQL ? "OID" : "BLOB";
+      switch (_connectorInfo.getDatabaseType())
+      {
+        case POSTGRESQL:
+          return "OID";
+        case MYSQL:
+          return "MEDIUMBLOB";
+        case MSSQL:
+          return columnType;
+        default:
+          return "BLOB";
+      }
     }
     else
     {
