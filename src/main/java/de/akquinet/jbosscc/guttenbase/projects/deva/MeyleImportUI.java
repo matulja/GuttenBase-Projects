@@ -21,6 +21,7 @@ public class MeyleImportUI extends JFrame
   private final JFileChooser _fileChooser = new JFileChooser(System.getProperty("user.home"));
   private JButton _runAll;
   private final MeyleImportTableModel _tableModel = new MeyleImportTableModel();
+  private final MeyleImportTable _table = new MeyleImportTable();
   private JButton _dropTables;
   private JButton _createSchema;
   private JButton _copy;
@@ -53,7 +54,7 @@ public class MeyleImportUI extends JFrame
     _reorg = addReorg(stepwiseActionsPanel);
 
     enableActions(false);
-    main.add(new JScrollPane(new JTable(_tableModel)), BorderLayout.CENTER);
+    main.add(new JScrollPane(_table), BorderLayout.CENTER);
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -72,10 +73,11 @@ public class MeyleImportUI extends JFrame
           File file = _fileChooser.getSelectedFile();
 
           _meyleImportDeva.setDumpFile(file);
-          return null;
         }
-
-        enableActions(false);
+        else
+        {
+          enableActions(false);
+        }
 
         return null;
       }
@@ -214,11 +216,6 @@ public class MeyleImportUI extends JFrame
     _sequences.setEnabled(enable);
     _users.setEnabled(enable);
     _reorg.setEnabled(enable);
-
-    if (enable)
-    {
-      _meyleImportDeva.setupTarget(_tableModel.getConnectorInfo());
-    }
   }
 
   public static void main(String[] args)
@@ -234,7 +231,33 @@ public class MeyleImportUI extends JFrame
     setVisible(true);
   }
 
-  private static class MeyleImportTableModel extends DefaultTableModel
+  private class MeyleImportTable extends JTable
+  {
+    private MeyleImportTable()
+    {
+      super(_tableModel);
+    }
+
+    @Override
+    public void setValueAt(final Object value, final int row, final int column)
+    {
+      if (column == 0 && ((Boolean) value))
+      {
+        for (int i = 0; i < getRowCount(); i++)
+        {
+          super.setValueAt(i == row, i, 0);
+        }
+
+        _meyleImportDeva.setupTarget(_tableModel.getConnectorInfo());
+      }
+      else
+      {
+        super.setValueAt(value, row, column);
+      }
+    }
+  }
+
+  private class MeyleImportTableModel extends DefaultTableModel
   {
     public MeyleImportTableModel()
     {
@@ -242,7 +265,7 @@ public class MeyleImportUI extends JFrame
               {true, "jdbc:postgresql://localhost:5432/meyle-devA", "meyle", "meylenstein", "org.postgresql.Driver", "public", DatabaseType.POSTGRESQL},
               {false, "jdbc:mysql://localhost:3306/deva", "ubiusr", "geheim", "com.mysql.jdbc.Driver", "deva", DatabaseType.MYSQL},
               {false, "jdbc:jtds:sqlserver://172.20.201.71:1433/PDP_PROD;instance=SQLEXPRESS", "PDP-DB-User", "pdp4meyle", "net.sourceforge.jtds.jdbc.Driver", "dbo", DatabaseType.MSSQL},
-              {false, "URL", "Username", "Password", "Driver", "Schema", "DB-Type"}
+              {false, "URL", "Username", "Password", "Driver", "Schema", DatabaseType.GENERIC}
       }, new Object[]{"", "URL", "Username", "Password", "Driver", "Schema", "DB-Type"});
     }
 
