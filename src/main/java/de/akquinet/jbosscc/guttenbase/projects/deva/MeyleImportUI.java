@@ -101,7 +101,7 @@ public class MeyleImportUI extends JFrame
         catch (Exception e)
         {
           LOG.error("An error occured", e);
-          JOptionPane.showMessageDialog(MeyleImportUI.this, "An Error occured!\nSee console for details" + e.toString());
+          JOptionPane.showMessageDialog(MeyleImportUI.this, "An Error occured!\nSee console for details: " + e.toString());
         }
       }
     });

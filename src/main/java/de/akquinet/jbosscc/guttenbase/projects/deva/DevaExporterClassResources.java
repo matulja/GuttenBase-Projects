@@ -24,6 +24,8 @@ public class DevaExporterClassResources extends DefaultZipExporterClassResources
   {
     final List<Class<?>> result = super.getClassResources();
     result.add(org.postgresql.Driver.class);
+    result.add(com.mysql.jdbc.Driver.class);
+    result.add(net.sourceforge.jtds.jdbc.Driver.class);
     return result;
   }
 
