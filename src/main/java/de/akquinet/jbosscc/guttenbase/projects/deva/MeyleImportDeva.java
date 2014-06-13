@@ -258,6 +258,8 @@ public class MeyleImportDeva
 
   public void setupTarget(ConnectorInfo connectorInfo)
   {
+    _connectorRepository.removeConnectionInfo(TARGET);
+
     _connectorRepository.addConnectionInfo(TARGET, connectorInfo);
     _connectorRepository.addConnectorHint(TARGET, new MeyleTableNameFilterHint(true, true));
 

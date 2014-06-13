@@ -62,6 +62,8 @@ public class MeyleImportUI extends JFrame
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setContentPane(main);
+
+    _meyleImportDeva.setupTarget(_tableModel.getConnectorInfo());
   }
 
   private void addFileChoose(final JPanel buttons)
